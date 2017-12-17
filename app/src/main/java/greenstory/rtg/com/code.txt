@@ -1,0 +1,55 @@
+ScrollView scrollView;
+    LinearLayout scrollChildLayout;
+    TextView trackTV;
+    Button addText;
+    public Context context = this;
+    public int i = 1;
+
+    @Override
+    protected void onCreate(Bundle savedInstanceState) {
+        super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_home);
+
+        scrollView = (ScrollView) findViewById(R.id.scroller);
+        scrollChildLayout = (LinearLayout) findViewById(R.id.scroll_contents);
+
+
+        addText = (Button) findViewById(R.id.add_item_button);
+
+
+        addText.setOnClickListener(listener);
+
+    }
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item){
+        if (item.getItemId()==R.id.user_preferences_menu_item) {
+            Intent intent = new Intent(this, UserActivity.class);
+            startActivity(intent);
+        }
+        return true;
+    }
+
+    View.OnClickListener listener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+            if (v.getId() == addText.getId()) {
+                trackTV = new TextView(context);
+                trackTV.setLayoutParams(layoutParams);
+                trackTV.setText("view " + String.valueOf(i));
+                i++;
+                scrollChildLayout.addView(trackTV);
+                Log.d("Pressed", "onClick: ");
+            }
+        }
+    };

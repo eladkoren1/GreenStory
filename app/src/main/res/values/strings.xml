@@ -1,5 +1,8 @@
 <resources>
     <string name="app_name">Green Story</string>
-    <string name="title_activity_home">Home Activity</string>
+    <string name="title_activity_home">Green Story</string>
     <string name="title_activity_maps">Map</string>
+    <string name="title_activity_user">ניהול משתמש</string>
+    <string name="user_settings">ניהול משתמש</string>
+    <string name="about">אודות</string>
 </resources>

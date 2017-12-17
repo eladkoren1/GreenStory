@@ -7,45 +7,24 @@
     tools:context="greenstory.rtg.com.UserActivity"
     android:orientation="vertical">
 
+    <LinearLayout
 
+        android:id="@+id/name_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
 
-    <TextView
-        android:id="@+id/tv_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="שם" />
+        <TextView
+            android:id="@+id/tv_name"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="שם" />
 
-    <EditText
-        android:id="@+id/et_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/tv_name"/>
+        <EditText
+            android:id="@+id/et_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toRightOf="@+id/tv_name" />
 
-    <TextView
-        android:id="@+id/tv_family_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="משפחה"
-        android:layout_below="@+id/tv_name"/>
-
-    <EditText
-        android:id="@+id/et_family_name"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_toRightOf="@+id/tv_family_name"/>
-
-    <TextView
-        android:id="@+id/tv_age"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="גיל"
-        android:layout_below="@+id/tv_family_name"
-        />
-
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="בן זוג" />
+    </LinearLayout>
 
 </RelativeLayout>

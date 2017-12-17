@@ -53,3 +53,47 @@ ScrollView scrollView;
             }
         }
     };
+
+
+
+    <TextView
+        android:id="@+id/tv_family_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="משפחה"
+        android:layout_below="@+id/name_layout"/>
+
+    <EditText
+        android:id="@+id/et_family_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_toRightOf="@+id/tv_family_name"
+        android:layout_alignTop="@id/tv_family_name"/>
+
+    <TextView
+        android:id="@+id/tv_age"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="גיל"
+        android:layout_below="@+id/tv_family_name"
+        />
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ed_age"
+        android:layout_toRightOf="@id/tv_age"
+        android:layout_alignTop="@id/tv_age"/>
+
+    <TextView
+        android:id="@+id/tv_partner_name"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/tv_age"
+        android:text="בן זוג" />
+
+    <EditText
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:id="@+id/ed_partner_name"
+        android:layout_toRightOf="@id/tv_partner_name"
+        android:layout_alignTop="@id/tv_partner_name"/>

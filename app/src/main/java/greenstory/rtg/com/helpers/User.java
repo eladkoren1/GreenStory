@@ -6,6 +6,4 @@ package greenstory.rtg.com.helpers;
 
 public class User {
 
-    private String u
-
 }

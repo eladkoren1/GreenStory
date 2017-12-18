@@ -18,6 +18,7 @@ public class User {
     private String familyName;
     private boolean isFamily = false;
     private ArrayList<Child> children;
+    private Points points;
 
 
     public User(String userName, String partnerName,Integer userAge,Integer partnerAge,
@@ -30,6 +31,7 @@ public class User {
         this.isFamily = isFamily;
         children = new ArrayList<Child>(1);
         uId = String.valueOf(java.util.Calendar.getInstance().getTimeInMillis());
+        points = new Points();
     }
 
     public User(String userName, String familyName, boolean isFamily) {

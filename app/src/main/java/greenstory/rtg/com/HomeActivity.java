@@ -4,12 +4,10 @@ import android.Manifest;
 import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v7.app.AppCompatActivity;
-import android.telephony.TelephonyManager;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -50,11 +48,20 @@ public class HomeActivity extends AppCompatActivity {
         scrollView = (ScrollView) findViewById(R.id.scroller);
         scrollChildLayout = (LinearLayout) findViewById(R.id.scroll_contents);
 
-
         addText = (Button) findViewById(R.id.add_item_button);
 
 
         addText.setOnClickListener(listener);
+        
+        //TODO if guest, check in SQLITE if there is a user already and store in a boolean var
+        //if none, add popup first run box.
+        //if there is, skip popup first run and use settings.
+        //TODO use aAsyncLoader TO SYNC WITH MYSQL.
+        // if no connection availabe, use local data anyway.
+
+
+
+
 
 
     }

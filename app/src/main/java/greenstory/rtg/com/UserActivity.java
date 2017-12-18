@@ -2,6 +2,7 @@ package greenstory.rtg.com;
 
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.widget.Button;
 
 public class UserActivity extends AppCompatActivity {
 
@@ -11,5 +12,7 @@ public class UserActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_user);
     }
+
+    private Button points;
 
 }

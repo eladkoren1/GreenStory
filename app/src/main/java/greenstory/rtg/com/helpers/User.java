@@ -96,4 +96,71 @@ public class User {
         isFamily = family;
     }
 
+    public class Child {
+
+        private String firstName;
+        private String lastName;
+        private int age;
+
+        public Child(String firstName, String lastName, Integer age){
+            this.firstName = firstName;
+            this.lastName = lastName;
+            this.age = age;
+        }
+
+        public String getFirstName() {
+            return firstName;
+        }
+
+        public void setFirstName(String firstName) {
+            this.firstName = firstName;
+        }
+
+        public String getLastName() {
+            return lastName;
+        }
+
+        public void setLastName(String lastName) {
+            this.lastName = lastName;
+        }
+
+        public int getAge() {
+            return age;
+        }
+
+        public void setAge(int age) {
+            this.age = age;
+        }
+    }
+
+    public class Points {
+
+        private String trackName;
+        private int totalPoints;
+
+        public Points() {
+
+            this.trackName = null;
+            this.totalPoints = 0;
+        }
+
+        public void setTrackName(String trackName) {
+            this.trackName = trackName;
+        }
+
+        public void setTotalPoints(int totalPoints) {
+            this.totalPoints = totalPoints;
+        }
+
+        public String getTrackName() {
+            return trackName;
+        }
+
+        public int getTotalPoints() {
+            return totalPoints;
+        }
+
+
+    }
+
 }

@@ -1,8 +1,6 @@
-package greenstory.rtg.com.helpers;
+package greenstory.rtg.com.classes;
 
 import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
 
 /**
  * Created by Elad on 17/12/2017.
@@ -162,5 +160,6 @@ public class User {
 
 
     }
+
 
 }

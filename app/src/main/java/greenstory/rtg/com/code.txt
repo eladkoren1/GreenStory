@@ -5,6 +5,12 @@ ScrollView scrollView;
     public Context context = this;
     public int i = 1;
 
+    Cursor cursor = mDb.query("users",null,null,null,null,null,null);
+
+     Cursor cursor = mDb.query("users",null,null,null,null,null,null);
+            cursor.moveToFirst();
+            Log.d ("db",String.valueOf(cursor.getString(cursor.getColumnIndex("uId"))));
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);

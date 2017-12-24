@@ -5,10 +5,14 @@ import android.content.ContentValues;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
+import android.os.AsyncTask;
 import android.os.Environment;
 
 import java.io.File;
+import java.io.IOException;
+import java.net.URL;
 
+import greenstory.rtg.com.classes.TravelSite;
 import greenstory.rtg.com.classes.User;
 import greenstory.rtg.com.data.UsersContract.UsersEntry;
 
@@ -37,21 +41,16 @@ public class GreenStoryDbHelper extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-
-        // COMPLETED (6) Inside, create an String query called SQL_CREATE_WAITLIST_TABLE that will create the table
-        // Create a table to hold waitlist data
-
-        sqLiteDatabase.execSQL(UsersEntry.SQL_CREATE_USERS_TABLE);
+        sqLiteDatabase.execSQL(TravelSitesContract.TravelSiteEntry.SQL_CREATE_TRAVEL_SITES_TABLE);
     }
 
-    // COMPLETED (8) Override the onUpgrade method
     @Override
     public void onUpgrade(SQLiteDatabase sqLiteDatabase, int i, int i1) {
         // For now simply drop the table and create a new one. This means if you change the
         // DATABASE_VERSION the table will be dropped.
         // In a production app, this method might be modified to ALTER the table
         // instead of dropping it, so that existing data is not deleted.
-        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + UsersEntry.TABLE_NAME);
+        sqLiteDatabase.execSQL("DROP TABLE IF EXISTS " + TravelSitesContract.TravelSiteEntry.TABLE_NAME);
         onCreate(sqLiteDatabase);
     }
 

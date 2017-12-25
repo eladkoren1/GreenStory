@@ -66,6 +66,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         mMap.setMyLocationEnabled(true);
+        layer.isLayerOnMap();
+        LoadMarkers(layer);
 
+    }
+
+    public void LoadMarkers(KmlLayer kmlLayer){
+        if (kmlLayer.isLayerOnMap()) {
+            if (kmlLayer.hasPlacemarks()) {
+                KmlPlacemark placemark = kmlLayer.getPlacemarks().iterator().next();
+                placemark.toString();
+
+            }
+        }
     }
 }

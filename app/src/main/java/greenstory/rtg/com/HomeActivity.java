@@ -27,6 +27,7 @@ import java.util.ArrayList;
 
 import greenstory.rtg.com.classes.User;
 import greenstory.rtg.com.data.GreenStoryDbHelper;
+import greenstory.rtg.com.data.UsersContract;
 import greenstory.rtg.com.data.Utils;
 
 
@@ -53,7 +54,7 @@ public class HomeActivity extends AppCompatActivity {
         setContentView(R.layout.activity_home);
         Log.d("unsigned int",String.valueOf(java.util.Calendar.getInstance().getTimeInMillis()));
 
-        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this);
+        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this, UsersContract.UsersEntry.SQL_CREATE_USERS_TABLE);
         mDb = dbHelper.getWritableDatabase();
         scrollView = (ScrollView) findViewById(R.id.scroller);
         scrollChildLayout = (LinearLayout) findViewById(R.id.scroll_contents);

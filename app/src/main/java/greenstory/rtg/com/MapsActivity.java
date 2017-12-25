@@ -2,18 +2,14 @@ package greenstory.rtg.com;
 
 import android.Manifest;
 import android.content.pm.PackageManager;
-import android.location.Location;
-import android.location.LocationManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
 
-import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.data.kml.KmlLayer;
 import com.google.maps.android.data.kml.KmlPlacemark;
 
@@ -52,7 +48,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         try {
-            layer = new KmlLayer(googleMap, R.raw.Academic_TLV, getApplicationContext());
+            layer = new KmlLayer(googleMap, R.raw.academic_tlv, getApplicationContext());
             layer.addLayerToMap();
         } catch (XmlPullParserException e) {
             e.printStackTrace();
@@ -70,14 +66,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             return;
         }
         mMap.setMyLocationEnabled(true);
-        try{
-            if (layer.getPlacemarks().iterator().hasNext()) {
-                KmlPlacemark placemark = layer.getPlacemarks().iterator().next();
-                LatLng markerLatLng = placemark.getMarkerOptions().getPosition();
-                LatLng cuurentLatLng = new LatLng();
-        }
-        }
-
 
     }
 }

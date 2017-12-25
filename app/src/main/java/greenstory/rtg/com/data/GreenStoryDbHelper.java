@@ -32,16 +32,17 @@ public class GreenStoryDbHelper extends SQLiteOpenHelper {
     public static final String TYPE_TEXT = " TEXT, ";
     public static final String TYPE_TEXT_NOT_NULL = " TEXT NOT NULL, ";
 
-
+    public String tableName = null;
     private static final int DATABASE_VERSION = 1;
 
-    public GreenStoryDbHelper(Context context) {
+    public GreenStoryDbHelper(Context context, String TableName) {
         super(context, Environment.getExternalStorageDirectory()+ File.separator+DATABASE_NAME, null, DATABASE_VERSION);
+        this.tableName = TableName;
     }
 
     @Override
     public void onCreate(SQLiteDatabase sqLiteDatabase) {
-        sqLiteDatabase.execSQL(TravelSitesContract.TravelSiteEntry.SQL_CREATE_TRAVEL_SITES_TABLE);
+        sqLiteDatabase.execSQL(this.tableName);
     }
 
     @Override

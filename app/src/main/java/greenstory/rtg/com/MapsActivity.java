@@ -10,6 +10,7 @@ import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.maps.android.data.kml.KmlContainer;
 import com.google.maps.android.data.kml.KmlLayer;
 import com.google.maps.android.data.kml.KmlPlacemark;
 
@@ -48,7 +49,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
         try {
-            layer = new KmlLayer(googleMap, R.raw.academic_tlv, getApplicationContext());
+            layer = new KmlLayer(mMap, R.raw.academic_tlv, getApplicationContext());
             layer.addLayerToMap();
         } catch (XmlPullParserException e) {
             e.printStackTrace();
@@ -73,10 +74,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void LoadMarkers(KmlLayer kmlLayer){
         if (kmlLayer.isLayerOnMap()) {
-            if (kmlLayer.hasPlacemarks()) {
-                KmlPlacemark placemark = kmlLayer.getPlacemarks().iterator().next();
-                placemark.toString();
+            if (kmlLayer.hasContainers()) {
+                KmlContainer kmlContainer = kmlLayer.getContainers().iterator().next();
+                if (kmlContainer.hasPlacemarks()){
+                    KmlPlacemark placemark = kmlContainer.getPlacemarks().iterator().next();
+                    while (placemark.toString()==null){
 
+                    }
+                }
             }
         }
     }

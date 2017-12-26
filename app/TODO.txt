@@ -1,0 +1,33 @@
+live map
+chat
+quizes
+	table:
+		trackId (from tracks table
+		checkpoint (unique primary key)
+		latitude (double)
+		longitude (double)
+		question (text)
+		ans1 (text)
+		ans2 (text)
+		ans3 (text)
+		ans4 (text)
+		correctAns (int)
+		points
+		
+		
+photos
+
+users management + points
+	complete the users screen including DB operations
+	
+	table:
+		uId: primary key, used to identify each user
+		name: 
+
+
+track:
+	table:
+		Id
+		
+		
+screens skeleton

@@ -10,22 +10,24 @@ public class User {
 
     private String uId;
     private String userName;
+    private String familyName;
     private String partnerName;
     private int userAge;
     private int partnerAge;
-    private String familyName;
+
     private boolean isFamily = false;
     private ArrayList<Child> children;
     private Points points;
 
 
-    public User(String userName, String partnerName,Integer userAge,Integer partnerAge,
-                String familyName, Boolean isFamily) {
+    public User(String userName, String familyName, String partnerName,Integer userAge,Integer partnerAge,
+                 Boolean isFamily) {
         this.userName = userName;
+        this.familyName = familyName;
         this.partnerName = partnerName;
         this.userAge = userAge;
         this.partnerAge = partnerAge;
-        this.familyName = familyName;
+
         this.isFamily = isFamily;
         children = new ArrayList<Child>(1);
         uId = String.valueOf(java.util.Calendar.getInstance().getTimeInMillis());

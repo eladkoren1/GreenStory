@@ -96,22 +96,39 @@ public class UserActivity extends AppCompatActivity {
                     isSetFieldsBtnEdit = false;
                 }
                 else {
-                    User editedUser = new User(String.valueOf(mNameET.getText()),
-                            String.valueOf(mFamilyNameET.getText()),
-                            String.valueOf(mPartnerNameET.getText()),
-                            Integer.parseInt(String.valueOf(mAgeET.getText())),
-                            Integer.parseInt(String.valueOf(mPartnerAgeET.getText())),
-                            mIsFamilyCB.isChecked());
-                    new DBEditUserDetailsTask().execute(editedUser);
-                    findViewById(R.id.editTextLayout).setVisibility(View.GONE);
-                    findViewById(R.id.textViewLayout).setVisibility(View.VISIBLE);
+                    if (isNumber(String.valueOf(mAgeET.getText()))&&isNumber(String.valueOf(mPartnerAgeET.getText()))) {
+                        User editedUser = new User(String.valueOf(mNameET.getText()),
+                                String.valueOf(mFamilyNameET.getText()),
+                                String.valueOf(mPartnerNameET.getText()),
+                                Integer.parseInt(String.valueOf(mAgeET.getText())),
+                                Integer.parseInt(String.valueOf(mPartnerAgeET.getText())),
+                                mIsFamilyCB.isChecked());
+                        new DBEditUserDetailsTask().execute(editedUser);
+                        findViewById(R.id.editTextLayout).setVisibility(View.GONE);
+                        findViewById(R.id.textViewLayout).setVisibility(View.VISIBLE);
 
-                    mSetFieldsBtn.setText("עריכה");
-                    isSetFieldsBtnEdit = true;
+                        mSetFieldsBtn.setText("עריכה");
+                        isSetFieldsBtnEdit = true;
+                    }
+                    else {
+                        Toast.makeText(context, "Insert number in age!", Toast.LENGTH_SHORT).show();
+                    }
                 }
             }
         }
     };
+
+    private boolean isNumber(String text){
+        try{
+            Integer.parseInt(text);
+            return true;
+        }
+        catch (Exception e){
+            e.getMessage();
+            return false;
+        }
+
+    }
 
 
     public class DBEditUserDetailsTask extends AsyncTask<User, Void, Void> {

@@ -60,13 +60,14 @@ public class HomeActivity extends AppCompatActivity {
 
         GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this, UsersContract.UsersEntry.SQL_CREATE_USERS_TABLE);
         mDb = dbHelper.getWritableDatabase();
-        resetDB = (Button)findViewById(R.id.btn_delete_db);
 
         scrollView = (ScrollView) findViewById(R.id.scroller);
         scrollChildLayout = (LinearLayout) findViewById(R.id.scroll_contents);
 
         goToMap = (Button) findViewById(R.id.goToMaps);
         goToMap.setOnClickListener(listener);
+        resetDB = (Button)findViewById(R.id.btn_delete_db);
+        resetDB.setOnClickListener(listener);
 
         if (!isUserIdExists(mDb)){
 

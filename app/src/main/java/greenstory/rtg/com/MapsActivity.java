@@ -5,14 +5,19 @@ import android.content.pm.PackageManager;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.os.Bundle;
+import android.util.Log;
 
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Polygon;
+import com.google.maps.android.data.Geometry;
+import com.google.maps.android.data.Point;
 import com.google.maps.android.data.kml.KmlContainer;
 import com.google.maps.android.data.kml.KmlLayer;
 import com.google.maps.android.data.kml.KmlPlacemark;
+import com.google.maps.android.data.kml.KmlPoint;
 
 import org.xmlpull.v1.XmlPullParserException;
 
@@ -72,14 +77,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void LoadMarkers(KmlLayer kmlLayer){
+    public void LoadMarkers(KmlLayer kmlLayer) {
         if (kmlLayer.isLayerOnMap()) {
             if (kmlLayer.hasContainers()) {
                 KmlContainer kmlContainer = kmlLayer.getContainers().iterator().next();
-                if (kmlContainer.hasPlacemarks()){
-                    KmlPlacemark placemark = kmlContainer.getPlacemarks().iterator().next();
-                    while (placemark.toString()==null){
-
+                if (kmlContainer.hasPlacemarks()) {
+                    Iterable<KmlPlacemark> placemark = kmlContainer.getPlacemarks();
+                    for (KmlPlacemark p : placemark) {
+                        if (p.getGeometry().toString().contains("Point")) {
+                            KmlPoint point = (KmlPoint) p.getGeometry();
+                            LatLng latlng = new LatLng(point.getGeometryObject().latitude,point.getGeometryObject().longitude);
+                            Log.d("latlng",point.toString());
+                        }
                     }
                 }
             }

@@ -95,8 +95,7 @@ public class UserActivity extends AppCompatActivity {
                     mSetFieldsBtn.setText("סיום");
                     isSetFieldsBtnEdit = false;
                 }
-                else{
-
+                else {
                     User editedUser = new User(String.valueOf(mNameET.getText()),
                             String.valueOf(mFamilyNameET.getText()),
                             String.valueOf(mPartnerNameET.getText()),

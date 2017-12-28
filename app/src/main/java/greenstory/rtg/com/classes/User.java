@@ -12,9 +12,8 @@ public class User {
     private String userName;
     private String familyName;
     private String partnerName;
-    private int userAge;
-    private int partnerAge;
-
+    private int userAge=0;
+    private int partnerAge=0;
     private boolean isFamily = false;
     private ArrayList<Child> children;
     private Points points;

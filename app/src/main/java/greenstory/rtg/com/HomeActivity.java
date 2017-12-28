@@ -48,7 +48,7 @@ public class HomeActivity extends AppCompatActivity {
     EditText mUserName;
     EditText mFamilyName;
     CheckBox mIsFamily;
-    Button updateDB;
+    Button resetDB;
     Button goToMap;
 
 
@@ -60,6 +60,7 @@ public class HomeActivity extends AppCompatActivity {
 
         GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this, UsersContract.UsersEntry.SQL_CREATE_USERS_TABLE);
         mDb = dbHelper.getWritableDatabase();
+        resetDB = (Button)findViewById(R.id.btn_delete_db);
 
         scrollView = (ScrollView) findViewById(R.id.scroller);
         scrollChildLayout = (LinearLayout) findViewById(R.id.scroll_contents);
@@ -151,16 +152,13 @@ public class HomeActivity extends AppCompatActivity {
         @Override
         public void onClick(View v) {
 
-
-            if (v.getId() == addText.getId()) {
-                scrollChildLayout.addView(getTextView());
-                mDb.delete("users",null,null);
-                Log.d("Pressed", "onClick: ");
-            }
-
             if (v.getId() == goToMap.getId()) {
                 Intent intent = new Intent(context, MapsActivity.class);
                 startActivity(intent);
+            }
+
+            if (v.getId()==resetDB.getId()) {
+                mDb.delete("users",null,null);
             }
         }
     };

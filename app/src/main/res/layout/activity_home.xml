@@ -15,9 +15,10 @@
             android:id="@+id/btn_delete_db"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_above="@+id/goToMaps"
+            android:layout_centerHorizontal="true"
             android:gravity="center"
-            android:text="deleteDB"
-            android:textSize="22sp" />
+            android:text="Delete DB" />
 
         <Button
             android:id="@+id/goToMaps"
@@ -31,7 +32,6 @@
             android:id="@+id/scroller"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:layout_below="@+id/add_item_button"
             android:layout_gravity="center">
 
             <LinearLayout

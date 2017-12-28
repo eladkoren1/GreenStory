@@ -12,32 +12,11 @@
         android:layout_height="match_parent">
 
         <Button
-            android:id="@+id/add_item_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerHorizontal="true"
-            android:text="add line">
-
-        </Button>
-
-        <Button
-            android:id="@+id/update_db_button"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignLeft="@+id/add_item_button"
-            android:layout_alignStart="@+id/add_item_button"
-            android:layout_below="@+id/add_item_button"
-            android:text="add user">
-
-        </Button>
-
-        <Button
             android:id="@+id/goToMaps"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_alignEnd="@+id/update_db_button"
-            android:layout_alignRight="@+id/update_db_button"
-            android:layout_below="@+id/update_db_button"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
             android:text="open map" />
 
         <ScrollView

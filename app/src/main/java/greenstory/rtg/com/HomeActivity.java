@@ -56,17 +56,14 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        Log.d("unsigned int",String.valueOf(java.util.Calendar.getInstance().getTimeInMillis()));
         checkPermissions();
 
         GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this, UsersContract.UsersEntry.SQL_CREATE_USERS_TABLE);
         mDb = dbHelper.getWritableDatabase();
+
         scrollView = (ScrollView) findViewById(R.id.scroller);
         scrollChildLayout = (LinearLayout) findViewById(R.id.scroll_contents);
-        addText = (Button) findViewById(R.id.add_item_button);
-        addText.setOnClickListener(listener);
-        updateDB = (Button) findViewById(R.id.update_db_button);
-        updateDB.setOnClickListener(listener);
+
         goToMap = (Button) findViewById(R.id.goToMaps);
         goToMap.setOnClickListener(listener);
 

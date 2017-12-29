@@ -61,6 +61,13 @@ ScrollView scrollView;
     };
 
 
+    ScrollView scrollView;
+    LinearLayout scrollChildLayout;
+
+    scrollView = (ScrollView) findViewById(R.id.scroller);
+            scrollChildLayout = (LinearLayout) findViewById(R.id.scroll_contents);
+
+
 
     <TextView
         android:id="@+id/tv_family_name"

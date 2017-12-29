@@ -79,7 +79,7 @@ public class UserActivity extends AppCompatActivity {
 
         mSetFieldsBtn = (Button) findViewById(R.id.btn_edit_fields);
         mSetFieldsBtn.setOnClickListener(listener);
-        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this, UsersContract.UsersEntry.SQL_CREATE_USERS_TABLE);
+        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this, UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
         mDb = dbHelper.getWritableDatabase();
 
     }
@@ -102,7 +102,7 @@ public class UserActivity extends AppCompatActivity {
                                 String.valueOf(mPartnerNameET.getText()),
                                 Integer.parseInt(String.valueOf(mAgeET.getText())),
                                 Integer.parseInt(String.valueOf(mPartnerAgeET.getText())),
-                                mIsFamilyCB.isChecked());
+                                mIsFamilyCB.isChecked(),0);
                         new DBEditUserDetailsTask().execute(editedUser);
                         findViewById(R.id.editTextLayout).setVisibility(View.GONE);
                         findViewById(R.id.textViewLayout).setVisibility(View.VISIBLE);

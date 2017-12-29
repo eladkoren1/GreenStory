@@ -38,12 +38,8 @@ import greenstory.rtg.com.data.Utils;
 public class HomeActivity extends AppCompatActivity {
 
     private SQLiteDatabase mDb;
-    ScrollView scrollView;
-    LinearLayout scrollChildLayout;
-    TextView trackTV;
-    Button addText;
+
     public Context context = this;
-    public int textViewId = 1;
     ArrayList<String> tracks = new ArrayList<>();
     EditText mUserName;
     EditText mFamilyName;
@@ -56,79 +52,18 @@ public class HomeActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+
         checkPermissions();
-
-        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this, UsersContract.UsersEntry.SQL_CREATE_USERS_TABLE);
-        mDb = dbHelper.getWritableDatabase();
-
-        scrollView = (ScrollView) findViewById(R.id.scroller);
-        scrollChildLayout = (LinearLayout) findViewById(R.id.scroll_contents);
 
         goToMap = (Button) findViewById(R.id.goToMaps);
         goToMap.setOnClickListener(listener);
         resetDB = (Button)findViewById(R.id.btn_delete_db);
         resetDB.setOnClickListener(listener);
-
-        if (!isUserIdExists(mDb)){
-
-            AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-            View mView = getLayoutInflater().inflate(R.layout.dialog_login, null);
-            Button mLogin = (Button) mView.findViewById(R.id.btnLogin);
-            mUserName = mView.findViewById(R.id.etUserName);
-            mFamilyName = mView.findViewById(R.id.etFamilyName);
-            mIsFamily = mView.findViewById(R.id.cbIsFamily);
-            mBuilder.setView(mView);
-            final AlertDialog dialog = mBuilder.create();
-            dialog.show();
-            mLogin.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if(!mUserName.getText().toString().isEmpty() && !mFamilyName.getText().toString().isEmpty()){
-                        Toast.makeText(context,
-                                 "ברוך הבא " + mUserName.getText(),
-                                Toast.LENGTH_SHORT).show();
-                                User user = new User(String.valueOf(mUserName.getText()),String.valueOf(mFamilyName.getText()),mIsFamily.isChecked());
-                                new DBUserRegisterTask().execute(user,null,null);
-                        dialog.dismiss();
-                    }
-                    else{
-                        Toast.makeText(context,
-                                "השלם שדות חסרים",
-                                Toast.LENGTH_SHORT).show();
-                    }
-
-                }
-            });
-        }
     }
 
-    private void checkPermissions() {
-        // Here, thisActivity is the current activity
-        if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission.WRITE_EXTERNAL_STORAGE)
-                != PackageManager.PERMISSION_GRANTED) {
 
-            // Should we show an explanation?
-            if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission.WRITE_EXTERNAL_STORAGE)) {
 
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
 
-            } else {
-
-                // No explanation needed, we can request the permission.
-
-                ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
-
-                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-                // app-defined int constant. The callback method gets the
-                // result of the request.
-            }
-        }
-    }
 
 
     @Override
@@ -164,19 +99,42 @@ public class HomeActivity extends AppCompatActivity {
         }
     };
 
-    public TextView getTextView(){
+    public void initiateDB() {
+        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this, UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
+        mDb = dbHelper.getWritableDatabase();
+        if (!isUserIdExists(mDb)){
+            AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+            View mView = getLayoutInflater().inflate(R.layout.dialog_login, null);
+            Button mLogin = (Button) mView.findViewById(R.id.btnLogin);
+            mUserName = mView.findViewById(R.id.etUserName);
+            mFamilyName = mView.findViewById(R.id.etFamilyName);
+            mIsFamily = mView.findViewById(R.id.cbIsFamily);
+            mBuilder.setView(mView);
+            final AlertDialog dialog = mBuilder.create();
+            dialog.show();
+            dialog.setCancelable(false);
+            dialog.setCanceledOnTouchOutside(false);
+            mLogin.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    if(!mUserName.getText().toString().isEmpty() && !mFamilyName.getText().toString().isEmpty()){
+                        Toast.makeText(context,
+                                "ברוך הבא " + mUserName.getText(),
+                                Toast.LENGTH_SHORT).show();
+                        User user = new User(String.valueOf(mUserName.getText()),String.valueOf(mFamilyName.getText()),mIsFamily.isChecked());
+                        new DBUserRegisterTask().execute(user,null,null);
+                        dialog.dismiss();
+                    }
+                    else{
+                        Toast.makeText(context,
+                                "השלם שדות חסרים",
+                                Toast.LENGTH_SHORT).show();
+                    }
 
-        trackTV = new TextView(context);
-        LayoutParams layoutParams = new LayoutParams(LayoutParams.WRAP_CONTENT, LayoutParams.WRAP_CONTENT);
+                }
+            });
+        }
 
-        trackTV.setLayoutParams(layoutParams);
-        trackTV.setText("הר ארבל");
-        trackTV.setTextSize(30);
-        trackTV.setId(textViewId);
-        trackTV.setOnClickListener(listener);
-        textViewId++;
-
-        return trackTV;
     }
 
 
@@ -224,6 +182,55 @@ public class HomeActivity extends AppCompatActivity {
                     "פעולת רישום משתמש הושלמה בהצלחה",
                     Toast.LENGTH_SHORT).show();
 
+        }
+    }
+
+    private void checkPermissions() {
+        // Here, thisActivity is the current activity
+        if (ContextCompat.checkSelfPermission(this,
+                Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                != PackageManager.PERMISSION_GRANTED) {
+
+            // Should we show an explanation?
+
+                // No explanation needed, we can request the permission.
+
+                ActivityCompat.requestPermissions(this,
+                        new String[]{Manifest.permission.WRITE_EXTERNAL_STORAGE},1);
+
+                // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
+                // app-defined int constant. The callback method gets the
+                // result of the request.
+        }
+        else {
+            initiateDB();
+        }
+    }
+
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode,
+                                           String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case 1: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0
+                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+
+                    // permission was granted, yay! Do the
+                    // contacts-related task you need to do.
+                    initiateDB();
+
+                } else {
+                        Toast.makeText(context,"Can't work without permissions :(",Toast.LENGTH_LONG).show();
+                    // permission denied, boo! Disable the
+                    // functionality that depends on this permission.
+                }
+                return;
+            }
+
+            // other 'case' lines to check for other
+            // permissions this app might request
         }
     }
 }

@@ -54,7 +54,7 @@ public class Utils {
             Cursor cursor = db.query("users", null, null, null, null, null, null);
             cursor.moveToFirst();
             String args[] = new String[]{String.valueOf(cursor.getInt(cursor.getColumnIndex("uId")))};
-            db.update(UsersContract.UsersEntry.TABLE_NAME,cv,"uId=?",args);
+            db.update(UsersContract.UserEntry.TABLE_NAME,cv,"uId=?",args);
             db.setTransactionSuccessful();
         }
         catch (Exception e) {

@@ -16,21 +16,20 @@ public class User {
     private int partnerAge=0;
     private boolean isFamily = false;
     private ArrayList<Child> children;
-    private Points points;
 
+    private int points;
 
     public User(String userName, String familyName, String partnerName,Integer userAge,Integer partnerAge,
-                 Boolean isFamily) {
+                 Boolean isFamily, Integer points) {
         this.userName = userName;
         this.familyName = familyName;
         this.partnerName = partnerName;
         this.userAge = userAge;
         this.partnerAge = partnerAge;
-
         this.isFamily = isFamily;
         children = new ArrayList<Child>(1);
         uId = String.valueOf(java.util.Calendar.getInstance().getTimeInMillis());
-        points = new Points();
+        this.points = points;
     }
 
     public User(String userName, String familyName, boolean isFamily) {

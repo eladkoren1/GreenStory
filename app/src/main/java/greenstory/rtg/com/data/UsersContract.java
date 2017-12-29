@@ -15,7 +15,7 @@ import static greenstory.rtg.com.data.GreenStoryDbHelper.*;
 public class UsersContract {
 
 
-    public static final class UsersEntry implements BaseColumns {
+    public static final class UserEntry implements BaseColumns {
 
         public static final String TABLE_NAME = "users";
         public static final String COLUMN_UID = "uId";

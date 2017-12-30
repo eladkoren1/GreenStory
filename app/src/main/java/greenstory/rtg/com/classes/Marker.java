@@ -9,15 +9,14 @@ import com.google.android.gms.maps.model.LatLng;
 public class Marker {
 
     private int id;
-    private String markerName;
-    private double pointLatitude;
-    private double pointLongitude;
+    private String markerName=null;
+    private LatLng latLng;
+    private Question question;
 
-    public Marker(int id, String markerName, double pointLatitude, double pointLongitude) {
+    public Marker(int id, String markerName, LatLng latLng) {
         this.id = id;
-        markerName = markerName;
-        this.pointLatitude = pointLatitude;
-        this.pointLongitude = pointLongitude;
+        this.markerName = markerName;
+        this.latLng=latLng;
     }
 
     public int getId() {
@@ -28,13 +27,16 @@ public class Marker {
         return markerName;
     }
 
-    public double getPointLatitude() {
-        return pointLatitude;
+    public LatLng getLatLng() {
+        return latLng;
     }
 
-    public double getPointLongitude() {
-        return pointLongitude;
+    public Question getQuestion() {
+        return question;
+    }
 
+    public void setQuestion(Question question) {
+        this.question = question;
     }
 
     @Override
@@ -42,8 +44,8 @@ public class Marker {
         return "Marker{" +
                 "id=" + id +
                 ", markerName='" + markerName + '\'' +
-                ", pointLatitude=" + pointLatitude +
-                ", pointLongitude=" + pointLongitude +
+                ", LatLng" + latLng +
+                ",Question=" + question +
                 '}';
     }
 }

@@ -1,57 +1,116 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<kml xmlns="http://www.opengis.net/kml/2.2">
-  <Document>
-    <name>KmlFile</name>
-      <Placemark>
-        <Style>
-          <LineStyle>
-              <width>3</width>
-              <color>641400FF</color>
-          </LineStyle>
+<kml xmlns="http://www.opengis.net/kml/2.2"
+    id="map_name">
+    <Document>
+        <name id="map_name">Kml template</name>
+
+        <!--Styles-->
+        <Style id="icon-1899-0288D1-labelson">
+            <IconStyle>
+                <color>ffd18802</color>
+                <scale>1</scale>
+                <Icon>
+                    <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+                </Icon>
+                <hotSpot x="16" xunits="pixels" y="32" yunits="insetPixels"/>
+            </IconStyle>
         </Style>
-        <Polygon>
-          <outerBoundaryIs>
-            <LinearRing>
-              <coordinates>
-                34.9120572,32.1793471,0
-                34.91209629,32.17939362,73
-                34.91202729,32.179436,66
-                34.91203966,32.17942697,68
-                34.91195183,32.17960257,96
-                34.91183768,32.17971896,95
-                34.91180434,32.17973168,93
-                34.91176243,32.17974535,92
-                34.91172513,32.17974193,92
-                34.91168683,32.17976071,87
-                34.911555,32.1798256,86
-                34.91153475,32.1798844,86
-                34.91148709,32.17991906,84
-                34.91140914,32.17992609,82
-                34.91134088,32.17992843,79
-                34.91136208,32.17994708,81
-                34.91141153,32.17998788,79
-                34.91145392,32.18000518,77
-                34.91150084,32.18001941,78
-                34.91158429,32.1800229,79
-                34.91165102,32.18001506,79
-                34.91170943,32.17999186,79
-                34.91178043,32.1799679,79
-                34.91186833,32.17994819,79
-                34.91191857,32.17994063,75
-                34.91195875,32.17992293,73
-                34.91202383,32.17990363,70
-                34.9120279,32.1798593,70
-                34.91209292,32.17983611,70
-                34.91214209,32.1798487,71
-                34.91209316,32.17987065,68
-                34.91203145,32.17981052,68
-                34.91198866,32.17974045,67
-                34.91197452,32.17966578,67
-                34.91195636,32.1796611,67
-              </coordinates>
-            </LinearRing>
-          </outerBoundaryIs>
-        </Polygon>
-      </Placemark>
-  </Document>
+
+        <Style id="line-FF5252-3325-nodesc-normal">
+            <LineStyle>
+                <color>ff5252ff</color>
+                <width>3.325</width>
+            </LineStyle>
+            <BalloonStyle>
+                <text><![CDATA[<h3>$[name]</h3>]]></text>
+            </BalloonStyle>
+        </Style>
+
+        <StyleMap id="line-FF5252-3325-nodesc">
+            <Pair>
+                <key>normal</key>
+                <styleUrl>#line-FF5252-3325-nodesc-normal</styleUrl>
+            </Pair>
+            <Pair>
+                <key>highlight</key>
+                <styleUrl>#line-FF5252-3325-nodesc-highlight</styleUrl>
+            </Pair>
+        </StyleMap>
+        <!--Styles-->
+
+        <!--site placemark-->
+        <Placemark id="site_point_placemark">
+            <name>Site Point Placemark</name>
+            <Point>
+                <extrude>1</extrude>
+                <altitudeMode>relativeToGround</altitudeMode>
+                <coordinates> 32.179208,34.9119238,73 </coordinates>
+            </Point>
+        </Placemark>
+
+        <Folder id="track_1"> <!--in order to organize tracks with their placemarks-->
+            <name>Track 1</name>
+
+            <!--Track placemarks-->
+            <Placemark id="track_placemark_1">
+
+                <!--Track-->
+                <name>Track name here</name>
+                <styleUrl>#line-FF5252-3325-nodesc</styleUrl> <!--from styles-->
+                <Polygon>
+                    <outerBoundaryIs>
+                        <LinearRing>
+                            <coordinates>
+                                34.9120572,32.1793471,0
+                                34.91209629,32.17939362,73
+                                34.91202729,32.179436,66
+                                34.91203966,32.17942697,68
+                                34.91195183,32.17960257,96
+                                34.91183768,32.17971896,95
+                                34.91180434,32.17973168,93
+                                34.91176243,32.17974535,92
+                                34.91172513,32.17974193,92
+                                34.91168683,32.17976071,87
+                                34.911555,32.1798256,86
+                                34.91153475,32.1798844,86
+                                34.91148709,32.17991906,84
+                                34.91140914,32.17992609,82
+                                34.91134088,32.17992843,79
+                                34.91136208,32.17994708,81
+                                34.91141153,32.17998788,79
+                                34.91145392,32.18000518,77
+                                34.91150084,32.18001941,78
+                                34.91158429,32.1800229,79
+                                34.91165102,32.18001506,79
+                                34.91170943,32.17999186,79
+                                34.91178043,32.1799679,79
+                                34.91186833,32.17994819,79
+                                34.91191857,32.17994063,75
+                                34.91195875,32.17992293,73
+                                34.91202383,32.17990363,70
+                                34.9120279,32.1798593,70
+                                34.91209292,32.17983611,70
+                                34.91214209,32.1798487,71
+                                34.91209316,32.17987065,68
+                                34.91203145,32.17981052,68
+                                34.91198866,32.17974045,67
+                                34.91197452,32.17966578,67
+                                34.91195636,32.1796611,67
+                            </coordinates>
+                        </LinearRing>
+                    </outerBoundaryIs>
+                </Polygon>
+            </Placemark>
+
+            <!--Point placemarks-->
+            <Placemark id="point_placemark_1">
+                <name>POI on track</name>
+                <Point>
+                    <extrude>1</extrude>
+                    <altitudeMode>relativeToGround</altitudeMode>
+                    <coordinates> 34.91209629,32.17939362,73 </coordinates>
+                </Point>
+            </Placemark>
+        </Folder>
+    </Document>
 </kml>

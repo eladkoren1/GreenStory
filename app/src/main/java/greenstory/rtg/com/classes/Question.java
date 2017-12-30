@@ -1,11 +1,15 @@
 package greenstory.rtg.com.classes;
 
+import com.google.android.gms.maps.model.LatLng;
+
 /**
  * Created by Elad on 29/12/2017.
  */
 
 public class Question {
 
+    private int questionID;
+    private LatLng latLng;
     private String question;
     private String answerA;
     private String answerB;
@@ -13,7 +17,17 @@ public class Question {
     private String answerD;
     private String correctAnswer;
 
-    public Question(String question, String answerA, String answerB, String answerC, String answerD, String correctAnswer) {
+    public Question(int questionID,
+                    LatLng latLng,
+                    String question,
+                    String answerA,
+                    String answerB,
+                    String answerC,
+                    String answerD,
+                    String correctAnswer) {
+
+        this.questionID = questionID;
+        this.latLng = latLng;
         this.question = question;
         this.answerA = answerA;
         this.answerB = answerB;
@@ -21,6 +35,10 @@ public class Question {
         this.answerD = answerD;
         this.correctAnswer = correctAnswer;
 
+    }
+
+    public int getQuestionID() {
+        return questionID;
     }
 
     public String question() {

@@ -62,10 +62,6 @@ public class HomeActivity extends AppCompatActivity {
     }
 
 
-
-
-
-
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
 
@@ -203,7 +199,7 @@ public class HomeActivity extends AppCompatActivity {
                 // result of the request.
         }
         else {
-            initiateDB();
+            //initiateDB();
         }
     }
 

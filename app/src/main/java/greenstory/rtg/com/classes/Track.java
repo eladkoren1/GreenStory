@@ -1,5 +1,14 @@
 package greenstory.rtg.com.classes;
 
+import android.support.annotation.NonNull;
+
+import java.lang.reflect.Array;
+import java.util.Collection;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.List;
+import java.util.ListIterator;
+
 /**
  * Created by Elad on 23/12/2017.
  */
@@ -8,12 +17,14 @@ public class Track {
 
     private String trackName;
     private String trackArea;
-    private Marker markers;
+    private HashMap<Integer,Question> questionsHashMap = new HashMap<Integer, Question>();
 
-    public Track(String trackName, String trackArea, Marker markers) {
+
+    public Track(String trackName, String trackArea, HashMap<Integer,Question> questionsHashMap) {
         this.trackName = trackName;
         this.trackArea = trackArea;
-        this.markers = markers;
+        this.questionsHashMap = questionsHashMap;
+
     }
 
     public String getTrackName() {
@@ -22,8 +33,8 @@ public class Track {
 
     public String getTrackArea() { return trackArea; }
 
-    public Marker getTracksMarkers() {
-        return markers;
+    public HashMap<Integer,Question> getQuestionsHashMap() {
+        return questionsHashMap;
     }
 
     @Override

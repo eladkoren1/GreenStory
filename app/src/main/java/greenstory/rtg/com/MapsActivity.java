@@ -43,26 +43,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     KmlLayer siteLayer;
     Context context = this;
     private LocationManager locationManager;
-    LocationListener locationListener = new LocationListener() {
-        @Override
-        public void onLocationChanged(Location location) {
-
-            currentLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-            Log.d("location","current: " + String.valueOf(currentLatLng.toString())+
-                    ", question: " + String.valueOf(question.getLatLng().toString()));
-            mMap.animateCamera(CameraUpdateFactory.zoomTo(15),1,null);
-            mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
-            if (currentLatLng.latitude-question.getLatLng().latitude<0.00000005){
-                Log.d("location","found");
-            }
-        }
-    };
 
     View view;
 
     LatLng currentLatLng;
     Question question = new Question(1,
-            new LatLng(32.1788951,34.9118428),
+            new LatLng(32.1793631,34.9117938),
             "why","a","b","c","d","a",false);
 
     boolean isCoarseLocationGranted = false;
@@ -149,11 +135,47 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @SuppressLint("MissingPermission")
     void initiateLocation() {
-        //locationManager.requestLocationUpdates(GPS_PROVIDER,1000,3, new android.location.LocationListener)
-
         mMap.setMyLocationEnabled(true);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(32.17939362, 34.91209629)));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(20), 5000, null);
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(20), 3000,
+                new GoogleMap.CancelableCallback() {
+            @Override
+            public void onFinish() {
+                locationManager.requestLocationUpdates(GPS_PROVIDER,5000,3,
+                        new android.location.LocationListener() {
+                            @Override
+                            public void onLocationChanged(Location location) {
+                                currentLatLng = new LatLng(location.getLatitude(),location.getLongitude());
+                                Log.d("location","current: " + String.valueOf(currentLatLng.toString())+
+                                        ", question: " + String.valueOf(question.getLatLng().toString()));
+                                mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
+                                if (currentLatLng.latitude-question.getLatLng().latitude<0.00005){
+                                    Log.d("location",String.valueOf((currentLatLng.latitude-question.getLatLng().latitude)/100000000));
+                                    Toast.makeText(context,"LOCATION FOUND!",Toast.LENGTH_LONG).show();
+                                }
+                            }
+
+                            @Override
+                            public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                            }
+
+                            @Override
+                            public void onProviderEnabled(String provider) {
+
+                            }
+
+                            @Override
+                            public void onProviderDisabled(String provider) {
+
+                            }
+                        });
+            }
+            @Override
+            public void onCancel() {
+
+            }
+        });
     }
 
 

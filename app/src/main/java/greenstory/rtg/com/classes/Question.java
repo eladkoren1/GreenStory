@@ -16,6 +16,7 @@ public class Question {
     private String answerC;
     private String answerD;
     private String correctAnswer;
+    private boolean isAnswered = false;
 
     public Question(int questionID,
                     LatLng latLng,
@@ -24,7 +25,7 @@ public class Question {
                     String answerB,
                     String answerC,
                     String answerD,
-                    String correctAnswer) {
+                    String correctAnswer,boolean isAnswered) {
 
         this.questionID = questionID;
         this.latLng = latLng;
@@ -34,11 +35,16 @@ public class Question {
         this.answerC = answerC;
         this.answerD = answerD;
         this.correctAnswer = correctAnswer;
+        this.isAnswered = isAnswered;
 
     }
 
     public int getQuestionID() {
         return questionID;
+    }
+
+    public LatLng getLatLng() {
+        return latLng;
     }
 
     public String question() {

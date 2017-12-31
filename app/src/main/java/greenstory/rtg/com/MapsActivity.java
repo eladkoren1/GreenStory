@@ -7,10 +7,9 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.location.Location;
 import android.location.LocationManager;
-import android.support.annotation.NonNull;
+import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.os.Bundle;
 import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
@@ -18,17 +17,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.google.android.gms.location.FusedLocationProviderClient;
 import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationServices;
-import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.tasks.OnCompleteListener;
-import com.google.android.gms.tasks.Task;
 import com.google.maps.android.data.kml.KmlContainer;
 import com.google.maps.android.data.kml.KmlLayer;
 import com.google.maps.android.data.kml.KmlPlacemark;
@@ -38,14 +32,10 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
 import java.util.HashMap;
-import java.util.Properties;
 
-import greenstory.rtg.com.classes.Marker;
 import greenstory.rtg.com.classes.Question;
-import greenstory.rtg.com.classes.Site;
-import greenstory.rtg.com.classes.Track;
 
-import static android.location.LocationManager.*;
+import static android.location.LocationManager.GPS_PROVIDER;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
@@ -53,13 +43,27 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     KmlLayer siteLayer;
     Context context = this;
     private LocationManager locationManager;
-    private LocationListener locationListener;
+    LocationListener locationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+
+            currentLatLng = new LatLng(location.getLatitude(),location.getLongitude());
+            Log.d("location","current: " + String.valueOf(currentLatLng.toString())+
+                    ", question: " + String.valueOf(question.getLatLng().toString()));
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(15),1,null);
+            mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
+            if (currentLatLng.latitude-question.getLatLng().latitude<0.00000005){
+                Log.d("location","found");
+            }
+        }
+    };
+
     View view;
 
     LatLng currentLatLng;
     Question question = new Question(1,
-            new LatLng(2.2,2.2),
-            "why","a","b","c","d","a");
+            new LatLng(32.1788951,34.9118428),
+            "why","a","b","c","d","a",false);
 
     boolean isCoarseLocationGranted = false;
     boolean isFineLocationGranted = false;
@@ -72,13 +76,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
 
-
-
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
     }
-
 
     @Override
     public void onMapReady(GoogleMap googleMap) {
@@ -146,131 +147,83 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         thread.start();
     }
 
-
-
     @SuppressLint("MissingPermission")
     void initiateLocation() {
+        locationManager.requestLocationUpdates(GPS_PROVIDER,1000,3, new android.location.LocationListener)
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(32.17939362,34.91209629)));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(20),1,null);
-        locationManager.requestLocationUpdates(GPS_PROVIDER, 100, 1,
-                new android.location.LocationListener() {
-            @Override
-            public void onLocationChanged(Location location) {
-                currentLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-                Log.d("location",String.valueOf(currentLatLng.toString()));
-                mMap.animateCamera(CameraUpdateFactory.zoomTo(15),1,null);
-                mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
-            }
-
-            @Override
-            public void onStatusChanged(String provider, int status, Bundle extras) {
-
-            }
-
-            @Override
-            public void onProviderEnabled(String provider) {
-
-            }
-
-            @Override
-            public void onProviderDisabled(String provider) {
-
-            }
-        });
         mMap.setMyLocationEnabled(true);
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(new LatLng(32.17939362,34.91209629),5));
-        mMap.animateCamera(CameraUpdateFactory.zoomTo(15),5000,null);
+        mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(32.17939362, 34.91209629)));
+        mMap.animateCamera(CameraUpdateFactory.zoomTo(20), 5000, null);
     }
 
+
+
+
     private void checkPermissions() {
-        // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            // Should we show an explanation?
-
-            // No explanation needed, we can request the permission.
-
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
-            // ActivityCompat.requestPermissions(this,
-            //  new String[]{Manifest.permission.ACCESS_FINE_LOCATION},2);
-
-            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-            // app-defined int constant. The callback method gets the
-            // result of the request.
         }
         else {
             Toast.makeText(this,"fine location granted already",Toast.LENGTH_SHORT).show();
             isFineLocationGranted=true;
-            initiateLocation();
         }
 
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
-            // Should we show an explanation?
-
-            // No explanation needed, we can request the permission.
-
             ActivityCompat.requestPermissions(this,
                     new String[]{Manifest.permission.ACCESS_COARSE_LOCATION},2);
-            // ActivityCompat.requestPermissions(this,
-            //  new String[]{Manifest.permission.ACCESS_FINE_LOCATION},2);
-
-            // MY_PERMISSIONS_REQUEST_READ_CONTACTS is an
-            // app-defined int constant. The callback method gets the
-            // result of the request.
         }
+
         else {
             Toast.makeText(this,"coarse location granted already",Toast.LENGTH_SHORT).show();
             isCoarseLocationGranted=true;
-         initiateLocation();
+        }
+        if(isCoarseLocationGranted&&isFineLocationGranted){
+            Log.d("Initiation: ","check permissions");
+            initiateLocation();
         }
     }
 
-
     @Override
-    public void onRequestPermissionsResult(int requestCode,
-                                           String permissions[], int[] grantResults) {
-        switch (requestCode) {
-            case 1: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        if(isFineLocationGranted&&isFineLocationGranted){
+            return;
+        }
+        else {
+            switch (requestCode) {
+                    case 1: {
+                        // If request is cancelled, the result arrays are empty.
+                        if (grantResults.length > 0
+                                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    isCoarseLocationGranted = true;
+                            isCoarseLocationGranted = true;
 
-                } else {
+                        } else {
+                            return;
+                        }
+                    }
+                    case 2: {
+                        if (grantResults.length > 0
+                                && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
 
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-
+                            isFineLocationGranted = true;
+                        }
+                        else {
+                            return;
+                        }
+                    }
                 }
             }
-            case 2: {
-                // If request is cancelled, the result arrays are empty.
-                if (grantResults.length > 0
-                        && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-
-                    // permission was granted, yay! Do the
-                    // contacts-related task you need to do.
-                    isFineLocationGranted = true;
-
-                } else {
-
-                    // permission denied, boo! Disable the
-                    // functionality that depends on this permission.
-
-
-                }
-            }
-            if (isFineLocationGranted&&isCoarseLocationGranted) {
+            if (isFineLocationGranted && isCoarseLocationGranted) {
+                Log.d("Initiation: ","permissions results");
                 initiateLocation();
             }
+            else {
+                return;
         }
     }
 

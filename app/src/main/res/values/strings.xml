@@ -6,9 +6,19 @@
     <string name="user_settings">ניהול משתמש</string>
     <string name="about">אודות</string>
     <string name="text_medium_size">22sp</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="text_back_button">חזרה</string>
+    <string-array name="planets_array">
+        <item>Mercury</item>
+        <item>Venus</item>
+        <item>Earth</item>
+        <item>Mars</item>
+        <item>Jupiter</item>
+        <item>Saturn</item>
+        <item>Uranus</item>
+        <item>Neptune</item>
+    </string-array>
+    <string name="action_settings">Settings</string>
+
 
 </resources>

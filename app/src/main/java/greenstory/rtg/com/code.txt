@@ -110,3 +110,45 @@ ScrollView scrollView;
         android:id="@+id/ed_partner_name"
         android:layout_toRightOf="@id/tv_partner_name"
         android:layout_alignTop="@id/tv_partner_name"/>
+
+
+        <Button
+                android:id="@+id/btn_delete_db"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentEnd="true"
+                android:layout_alignParentRight="true"
+                android:layout_alignParentTop="true"
+                android:layout_marginEnd="17dp"
+                android:layout_marginRight="17dp"
+                android:layout_marginTop="28dp"
+                android:gravity="center"
+                android:text="Delete DB" />
+
+            <Button
+                android:id="@+id/goToMaps"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
+                android:layout_below="@+id/btn_delete_db"
+                android:layout_marginLeft="86dp"
+                android:layout_marginStart="86dp"
+                android:text="open map" />
+
+            <ScrollView
+                android:id="@+id/scroller"
+                android:layout_width="wrap_content"
+                android:layout_height="match_parent"
+                android:layout_gravity="center">
+
+                <LinearLayout
+                    android:id="@+id/scroll_contents"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                </LinearLayout>
+
+            </ScrollView>

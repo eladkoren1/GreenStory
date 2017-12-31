@@ -149,7 +149,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     @SuppressLint("MissingPermission")
     void initiateLocation() {
-        locationManager.requestLocationUpdates(GPS_PROVIDER,1000,3, new android.location.LocationListener)
+        //locationManager.requestLocationUpdates(GPS_PROVIDER,1000,3, new android.location.LocationListener)
 
         mMap.setMyLocationEnabled(true);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(32.17939362, 34.91209629)));

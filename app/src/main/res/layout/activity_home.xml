@@ -7,45 +7,95 @@
     android:orientation="vertical"
     tools:context="greenstory.rtg.com.HomeActivity">
 
-        <Button
-            android:id="@+id/btn_delete_db"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentEnd="true"
-            android:layout_alignParentRight="true"
-            android:layout_alignParentTop="true"
-            android:layout_marginEnd="17dp"
-            android:layout_marginRight="17dp"
-            android:layout_marginTop="28dp"
-            android:gravity="center"
-            android:text="Delete DB" />
-
-        <Button
-            android:id="@+id/goToMaps"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentLeft="true"
-            android:layout_alignParentStart="true"
-            android:layout_below="@+id/btn_delete_db"
-            android:layout_marginLeft="86dp"
-            android:layout_marginStart="86dp"
-            android:text="open map" />
-
-        <ScrollView
-            android:id="@+id/scroller"
-            android:layout_width="wrap_content"
+    <android.support.v4.widget.DrawerLayout
+        xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/drawer_layout"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+        <LinearLayout
+            android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_gravity="center">
+            android:orientation="vertical">
+        <!-- As the main content view, the view below consumes the entire
+             space available using match_parent in both dimensions. -->
 
             <LinearLayout
-                android:id="@+id/scroll_contents"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:gravity="center"
-                android:orientation="vertical">
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:orientation="horizontal"
+                android:weightSum="2">
+
+
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:orientation="vertical"
+                    android:layout_weight="1">
+
+                    <ImageView
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:src="@drawable/shvil_map"/>
+
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:orientation="vertical"
+                    android:weightSum="2">
+
+
+                    <TextView
+                        android:id="@+id/textView2"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:gravity="start"
+                        android:text="חירטוט, חירטוט, חירטוט, חירטוט, חירטוט, חירטוט, חירטוט, חירטוט, חירטוט, "
+                        android:layout_weight="1"
+                        android:textSize="22sp"/>
+
+
+                    <ListView
+                        android:id="@+id/lv_users"
+                        android:layout_width="match_parent"
+                        android:layout_height="200dp">
+
+                    </ListView>
+
+
+                </LinearLayout>
 
             </LinearLayout>
 
-        </ScrollView>
+        </LinearLayout>
+
+
+        <!-- android:layout_gravity="start" tells DrawerLayout to treat
+             this as a sliding drawer on the left side for left-to-right
+             languages and on the right side for right-to-left languages.
+             The drawer is given a fixed width in dp and extends the full height of
+             the container. A solid background is used for contrast
+             with the content view. -->
+        <ListView
+            android:id="@+id/left_drawer"
+            android:layout_width="200dp"
+            android:layout_height="match_parent"
+            android:layout_gravity="end"
+            android:choiceMode="singleChoice"
+            android:divider="@android:color/transparent"
+            android:dividerHeight="0dp"
+            android:background="#111"/>
+
+    </android.support.v4.widget.DrawerLayout>
 
 </LinearLayout>
+
+
+    <!--
+
+
+ -->
+

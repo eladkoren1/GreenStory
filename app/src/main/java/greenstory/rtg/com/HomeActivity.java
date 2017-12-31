@@ -1,30 +1,26 @@
 package greenstory.rtg.com;
 
 import android.Manifest;
-import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.os.Build;
 import android.os.Bundle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
-import android.support.v7.app.AlertDialog;
+import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.view.View;
+import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.ScrollView;
-import android.widget.TextView;
-import android.view.ViewGroup.LayoutParams;
+import android.widget.ListView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -47,18 +43,39 @@ public class HomeActivity extends AppCompatActivity {
     Button resetDB;
     Button goToMap;
 
+    private DrawerLayout mDrawerLayout;
+    private ListView mDrawerList;
+    private ActionBarDrawerToggle mDrawerToggle;
+    private CharSequence mDrawerTitle;
+    private CharSequence mTitle;
+    private String[] mPlanetTitles;
+    String[] mobileArray = {"Android","IPhone","WindowsMobile","Blackberry",
+            "WebOS","Ubuntu","Windows7","Max OS X"};
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        mTitle = mDrawerTitle = getTitle();
+
+        mPlanetTitles = getResources().getStringArray(R.array.planets_array);
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer);
+
+        ArrayAdapter adapter = new ArrayAdapter<String>(this,
+                R.layout.users_listview, mobileArray);
+        ListView listView = (ListView) findViewById(R.id.lv_users);
+        listView.setAdapter(adapter);
+
+
 
         checkPermissions();
 
-        goToMap = (Button) findViewById(R.id.goToMaps);
-        goToMap.setOnClickListener(listener);
-        resetDB = (Button)findViewById(R.id.btn_delete_db);
-        resetDB.setOnClickListener(listener);
+        //goToMap = (Button) findViewById(R.id.goToMaps);
+        //goToMap.setOnClickListener(listener);
+        //resetDB = (Button)findViewById(R.id.btn_delete_db);
+        //resetDB.setOnClickListener(listener);
     }
 
 
@@ -79,7 +96,7 @@ public class HomeActivity extends AppCompatActivity {
         return true;
     }
 
-    View.OnClickListener listener = new View.OnClickListener() {
+    /*View.OnClickListener listener = new View.OnClickListener() {
         @TargetApi(Build.VERSION_CODES.O)
         @Override
         public void onClick(View v) {
@@ -93,12 +110,12 @@ public class HomeActivity extends AppCompatActivity {
                 mDb.delete("users",null,null);
             }
         }
-    };
+    };*/
 
     public void initiateDB() {
         GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this, UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
         mDb = dbHelper.getWritableDatabase();
-        if (!isUserIdExists(mDb)){
+        /*if (!isUserIdExists(mDb)){
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
             View mView = getLayoutInflater().inflate(R.layout.dialog_login, null);
             Button mLogin = (Button) mView.findViewById(R.id.btnLogin);
@@ -129,7 +146,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 }
             });
-        }
+        }*/
 
     }
 
@@ -199,7 +216,7 @@ public class HomeActivity extends AppCompatActivity {
                 // result of the request.
         }
         else {
-            //initiateDB();
+            initiateDB();
         }
     }
 

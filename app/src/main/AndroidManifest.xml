@@ -50,9 +50,6 @@
             android:label="@string/title_activity_maps" />
         <activity
             android:name=".SiteActivity">
-            <intent-filter>
-            <action android:name="android.intent.action.MAIN" />
-            </intent-filter>
 
         </activity>
     </application>

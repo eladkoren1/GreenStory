@@ -47,7 +47,7 @@ public class Question {
         return latLng;
     }
 
-    public String question() {
+    public String getQuestion() {
         return question;
     }
 

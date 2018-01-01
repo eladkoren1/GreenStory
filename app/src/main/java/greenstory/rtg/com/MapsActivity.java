@@ -15,6 +15,8 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.RadioButton;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.location.LocationListener;
@@ -31,6 +33,7 @@ import com.google.maps.android.data.kml.KmlPoint;
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.HashMap;
 
 import greenstory.rtg.com.classes.Question;
@@ -149,13 +152,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 Log.d("location","current: " + String.valueOf(currentLatLng.toString())+
                                         ", question: " + String.valueOf(question.getLatLng().toString()));
                                 mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
-                                Float delta = (float) ((Math.abs(currentLatLng.latitude-question.getLatLng().latitude)));
+                                double delta = ((Math.abs(currentLatLng.latitude-question.getLatLng().latitude)));
+                                BigDecimal bigDelta = BigDecimal.valueOf(delta);
                                 String latitudeValue = currentLatLng.toString();
                                 //Log.d("current latlng",latitudeValue);
-                                Log.d("location delta",delta.toString());
-                                if (delta<0.0000000001){
-                                    Log.d("location delta", String.valueOf(delta));
-                                    //Toast.makeText(context,"LOCATION FOUND!",Toast.LENGTH_SHORT).show();
+                                Log.d("location delta",bigDelta.toString());
+                                if (delta<0.0005){
+                                    Log.d("location delta", "enough");
+                                    Toast.makeText(context,"LOCATION FOUND!",Toast.LENGTH_SHORT).show();
+                                    showQuestionDialog(question);
                                 }
                             }
 
@@ -267,6 +272,34 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
                 Intent intent = new Intent(context,HomeActivity.class);
                 startActivity(intent);
+            }
+        });
+    }
+
+    private void showQuestionDialog(Question question){
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+        View mView = getLayoutInflater().inflate(R.layout.dialog_question, null);
+        TextView tvQuestion = (TextView) mView.findViewById(R.id.tv_dialog_question);
+        Button btnSubmitAnswer = (Button) mView.findViewById(R.id.btn_question_answer);
+        RadioButton rbAnswerA = (RadioButton) mView.findViewById(R.id.rb_answer_a);
+        RadioButton rbAnswerB = (RadioButton) mView.findViewById(R.id.rb_answer_b);
+        RadioButton rbAnswerC = (RadioButton) mView.findViewById(R.id.rb_answer_c);
+        RadioButton rbAnswerD = (RadioButton) mView.findViewById(R.id.rb_answer_d);
+        tvQuestion.setText(question.getQuestion());
+        rbAnswerA.setText(question.getAnswerA());
+        rbAnswerB.setText(question.getAnswerB());
+        rbAnswerC.setText(question.getAnswerC());
+        rbAnswerD.setText(question.getAnswerD());
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        btnSubmitAnswer.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //TODO: answer checking mechanism
+                dialog.dismiss();
             }
         });
     }

@@ -4,6 +4,7 @@
     <modules>
       <module fileurl="file://$PROJECT_DIR$/GreenStory.iml" filepath="$PROJECT_DIR$/GreenStory.iml" />
       <module fileurl="file://$PROJECT_DIR$/app/app.iml" filepath="$PROJECT_DIR$/app/app.iml" />
+      <module fileurl="file://C:\Users\Elad\AndroidStudioProjects\GreenStory\app\app.iml" filepath="C:\Users\Elad\AndroidStudioProjects\GreenStory\app\app.iml" />
     </modules>
   </component>
 </project>

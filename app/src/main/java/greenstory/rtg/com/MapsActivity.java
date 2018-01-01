@@ -149,12 +149,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 Log.d("location","current: " + String.valueOf(currentLatLng.toString())+
                                         ", question: " + String.valueOf(question.getLatLng().toString()));
                                 mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
-                                Float delta = (float) ((Math.abs(currentLatLng.latitude-question.getLatLng().latitude)/1000000000));
+                                Float delta = (float) ((Math.abs(currentLatLng.latitude-question.getLatLng().latitude)));
                                 String latitudeValue = currentLatLng.toString();
                                 //Log.d("current latlng",latitudeValue);
-                                //Log.d("location delta",delta.toString());
-                                if (delta<0.00000000000000000000005){
-                                    Log.d("location delta",String.valueOf(delta));
+                                Log.d("location delta",delta.toString());
+                                if (delta<0.0000000001){
+                                    Log.d("location delta", String.valueOf(delta));
                                     //Toast.makeText(context,"LOCATION FOUND!",Toast.LENGTH_SHORT).show();
                                 }
                             }

@@ -10,18 +10,24 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
+            android:padding="6dp"
             android:layout_above="@id/text2"
-            android:textSize="22sp"
-            android:text="טקסט 1" />
+            android:textSize="@dimen/text_medium"
+            android:textAlignment="center"
+            android:textColor="@color/rtgGreen"
+            android:text="מס' שאלות שעניתי: 8" />
 
-        <TextView
+        <Button
             android:id="@+id/text2"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
+            android:padding="6dp"
             android:layout_alignParentBottom="true"
             android:layout_centerHorizontal="true"
-            android:text="טקסט 2"
-            android:textSize="22sp" />
+            android:text="צלם תמונה ושתף"
+            android:textAlignment="center"
+            android:textColor="@color/rtgGreen"
+            android:textSize="@dimen/text_medium" />
 
         <fragment
             android:id="@+id/map"

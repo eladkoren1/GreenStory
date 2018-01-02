@@ -2,6 +2,7 @@ package greenstory.rtg.com;
 
 import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -50,9 +51,11 @@ public class HomeActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-    String[] homeScreenOptionsArray = {"משתמש","מסלולים","משתתפים","אודות","צור קשר","חנות"};
+    String[] homeScreenOptionsArray = {"משתמש","מסלולים","מפה","משתתפים","אודות","צור קשר","חנות"};
     String[] usersArray = {"אלעד","משה","יוסי","דני", "קרן","אבי","הדר","עדי"};
-    String[] usersPointsArray = {"18","20","15","16", "17","25","200","1000"};
+    String[] usersAndPointsArray =
+            {"אלעד: 18","משה: 20","יוסי: 15","דני: 16", "קרן: 17","אבי:25","הדר: 200","עדי: 1000"};
+
 
 
     @Override
@@ -63,8 +66,12 @@ public class HomeActivity extends AppCompatActivity {
         checkPermissions();
 
         //users list
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.users_list_item, usersArray);
+        ArrayAdapter adapter = new ArrayAdapter<String>(this,
+                R.layout.users_list_item, usersAndPointsArray);
         usersListView = (ListView) findViewById(R.id.lv_users);
+        for (int i=0;i<8;i++){
+
+        }
         usersListView.setAdapter(adapter);
 
         //drawer things
@@ -225,7 +232,15 @@ public class HomeActivity extends AppCompatActivity {
     private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-
+            mDrawerList.setItemChecked(position, true);
+            if (position==0){
+                Intent intent = new Intent(context, UsersOptionsActivity.class);
+                startActivity(intent);
+            }
+            if (position==2){
+                Intent intent = new Intent(context, MapsActivity.class);
+                startActivity(intent);
+            }
         }
     }
 }

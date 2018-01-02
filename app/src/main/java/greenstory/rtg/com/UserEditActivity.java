@@ -3,7 +3,6 @@ package greenstory.rtg.com;
 import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
-import android.provider.Telephony;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 import android.view.View;
@@ -18,7 +17,7 @@ import greenstory.rtg.com.data.UsersContract;
 import greenstory.rtg.com.data.Utils;
 import greenstory.rtg.com.data.GreenStoryDbHelper;
 
-public class UserActivity extends AppCompatActivity {
+public class UserEditActivity extends AppCompatActivity {
 
     private Button points;
     private EditText mNameET;
@@ -53,7 +52,7 @@ public class UserActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_user);
+        setContentView(R.layout.activity_user_edit);
 
         mNameET = (EditText) findViewById(R.id.et_name);
         mNameTV = (TextView) findViewById(R.id.tv_name);

@@ -4,6 +4,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:padding="10dip"
-        android:textSize="16dip"
-        android:textStyle="bold"
-        android:layout_weight="3"/>
+        android:textSize="@dimen/text_small"
+        android:textColor="@color/rtgGreen"
+        android:textStyle="bold"/>

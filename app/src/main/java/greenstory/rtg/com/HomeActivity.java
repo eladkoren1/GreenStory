@@ -2,7 +2,6 @@ package greenstory.rtg.com;
 
 import android.Manifest;
 import android.content.Context;
-import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -18,8 +17,6 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
@@ -54,8 +51,8 @@ public class HomeActivity extends AppCompatActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     String[] homeScreenOptionsArray = {"משתמש","מסלולים","משתתפים","אודות","צור קשר","חנות"};
-    String[] usersArray = {"Android","IPhone","WindowsMobile","Blackberry",
-            "WebOS","Ubuntu","Windows7","Max OS X"};
+    String[] usersArray = {"אלעד","משה","יוסי","דני", "קרן","אבי","הדר","עדי"};
+    String[] usersPointsArray = {"18","20","15","16", "17","25","200","1000"};
 
 
     @Override
@@ -66,7 +63,7 @@ public class HomeActivity extends AppCompatActivity {
         checkPermissions();
 
         //users list
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.users_listview, usersArray);
+        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.users_list_item, usersArray);
         usersListView = (ListView) findViewById(R.id.lv_users);
         usersListView.setAdapter(adapter);
 

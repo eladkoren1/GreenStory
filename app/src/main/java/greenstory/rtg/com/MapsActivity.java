@@ -53,7 +53,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LatLng currentLatLng;
     Question question = new Question(1,
             new LatLng(32.1788842,34.9123703),
-            "why","a","b","c","d","a",false);
+            "שאלה","תשובה א'","תשובה ב'","תשובה ג'",
+            "תשובה ד'","תשובה א'",false);
 
     boolean isCoarseLocationGranted = false;
     boolean isFineLocationGranted = false;
@@ -118,9 +119,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                             for (KmlPlacemark placemark: trackPlacemarks) {
                                                 if (placemark.hasGeometry()) {
                                                     if (placemark.getGeometry().toString().contains("Point")) {
-                                                        MarkerOptions options = placemark.getMarkerOptions();
-                                                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                                                        //mMap.marker
                                                         KmlPoint point = (KmlPoint) placemark.getGeometry();
                                                         LatLng latLng = new LatLng(point.getGeometryObject().latitude, point.getGeometryObject().longitude);
                                                         tracksPlacemarksHashMap.put(latLng, 1);
@@ -190,9 +188,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-
-
-
 
     private void checkPermissions() {
         if (ContextCompat.checkSelfPermission(this,
@@ -311,4 +306,5 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
+
 }

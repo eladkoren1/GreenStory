@@ -34,6 +34,7 @@
                     android:layout_weight="1">
 
                     <ImageView
+                        android:padding="5dp"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:src="@drawable/shvil_map"/>
@@ -49,20 +50,22 @@
 
 
                     <TextView
+                        android:padding="10dp"
                         android:id="@+id/RTG_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:gravity="start"
-                        android:text="טקסט לדוגמא"
                         android:layout_weight="1"
-                        android:textSize="22sp"/>
+                        android:gravity="start"
+                        android:text="מי שמטייל יותר, נהנה יותר וזוכה יותר!"
+                        android:textSize="22sp" />
 
 
 
                     <ListView
+                        android:padding="10dp"
                         android:id="@+id/lv_users"
                         android:layout_width="match_parent"
-                        android:layout_height="120dp"
+                        android:layout_height="220dp"
                         android:layout_weight="1">
 
                     </ListView>

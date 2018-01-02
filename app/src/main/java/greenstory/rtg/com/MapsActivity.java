@@ -19,12 +19,10 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -266,7 +264,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void showOutDialog(){
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-        View mView = getLayoutInflater().inflate(R.layout.dialog_out, null);
+        View mView = getLayoutInflater().inflate(R.layout.activity_maps_dialog_out, null);
         Button btn_out = (Button) mView.findViewById(R.id.btn_out);
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
@@ -284,7 +282,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void showQuestionDialog(final Question question){
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-        View mView = getLayoutInflater().inflate(R.layout.dialog_question, null);
+        View mView = getLayoutInflater().inflate(R.layout.activity_maps_dialog_question, null);
         TextView tvQuestion = (TextView) mView.findViewById(R.id.tv_dialog_question);
         Button btnSubmitAnswer = (Button) mView.findViewById(R.id.btn_question_answer);
         RadioButton rbAnswerA = (RadioButton) mView.findViewById(R.id.rb_answer_a);

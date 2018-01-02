@@ -12,10 +12,12 @@ import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -49,6 +51,7 @@ public class HomeActivity extends AppCompatActivity {
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
     private String[] mPlanetTitles;
+
     String[] mobileArray = {"Android","IPhone","WindowsMobile","Blackberry",
             "WebOS","Ubuntu","Windows7","Max OS X"};
 
@@ -63,12 +66,9 @@ public class HomeActivity extends AppCompatActivity {
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
-        ArrayAdapter adapter = new ArrayAdapter<String>(this,
-                R.layout.users_listview, mobileArray);
+        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.users_listview, mobileArray);
         ListView listView = (ListView) findViewById(R.id.lv_users);
         listView.setAdapter(adapter);
-
-
 
         checkPermissions();
 
@@ -113,11 +113,12 @@ public class HomeActivity extends AppCompatActivity {
     };*/
 
     public void initiateDB() {
-        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this, UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
+        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this,
+                UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
         mDb = dbHelper.getWritableDatabase();
-        /*if (!isUserIdExists(mDb)){
+        if (!isUserIdExists(mDb)){
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-            View mView = getLayoutInflater().inflate(R.layout.dialog_login, null);
+            View mView = getLayoutInflater().inflate(R.layout.activity_home_dialog_login, null);
             Button mLogin = (Button) mView.findViewById(R.id.btnLogin);
             mUserName = mView.findViewById(R.id.etUserName);
             mFamilyName = mView.findViewById(R.id.etFamilyName);
@@ -146,7 +147,7 @@ public class HomeActivity extends AppCompatActivity {
 
                 }
             });
-        }*/
+        }
 
     }
 

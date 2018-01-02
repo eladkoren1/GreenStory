@@ -122,7 +122,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                                     if (placemark.getGeometry().toString().contains("Point")) {
                                                         MarkerOptions options = placemark.getMarkerOptions();
                                                         options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                                                        mMap.marker
+                                                        //mMap.marker
                                                         KmlPoint point = (KmlPoint) placemark.getGeometry();
                                                         LatLng latLng = new LatLng(point.getGeometryObject().latitude, point.getGeometryObject().longitude);
                                                         tracksPlacemarksHashMap.put(latLng, 1);

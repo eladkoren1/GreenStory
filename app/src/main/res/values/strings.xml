@@ -3,6 +3,7 @@
     <string name="title_activity_home">Green Story</string>
     <string name="title_activity_maps">Map</string>
     <string name="title_activity_user">ניהול משתמש</string>
+    <string name="title_activity_users_options">אפשרויות משתמשים</string>
     <string name="user_settings">ניהול משתמש</string>
     <string name="about">אודות</string>
     <string name="text_medium_size">22sp</string>

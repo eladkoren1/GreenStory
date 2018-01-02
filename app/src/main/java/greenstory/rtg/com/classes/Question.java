@@ -71,6 +71,14 @@ public class Question {
         return correctAnswer;
     }
 
+    public void setIsAnswered(boolean isAnswered){
+        this.isAnswered = isAnswered;
+    }
+
+    public boolean isAnswered(){
+        return isAnswered;
+    }
+
     @Override
     public String toString() {
         return "Question{" +

@@ -24,7 +24,10 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptor;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.data.kml.KmlContainer;
 import com.google.maps.android.data.kml.KmlLayer;
 import com.google.maps.android.data.kml.KmlPlacemark;
@@ -51,7 +54,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     LatLng currentLatLng;
     Question question = new Question(1,
-            new LatLng(32.1793631,34.9117938),
+            new LatLng(32.1788842,34.9123703),
             "why","a","b","c","d","a",false);
 
     boolean isCoarseLocationGranted = false;
@@ -117,6 +120,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                             for (KmlPlacemark placemark: trackPlacemarks) {
                                                 if (placemark.hasGeometry()) {
                                                     if (placemark.getGeometry().toString().contains("Point")) {
+                                                        MarkerOptions options = placemark.getMarkerOptions();
+                                                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
+                                                        mMap.marker
                                                         KmlPoint point = (KmlPoint) placemark.getGeometry();
                                                         LatLng latLng = new LatLng(point.getGeometryObject().latitude, point.getGeometryObject().longitude);
                                                         tracksPlacemarksHashMap.put(latLng, 1);
@@ -157,7 +163,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 String latitudeValue = currentLatLng.toString();
                                 //Log.d("current latlng",latitudeValue);
                                 Log.d("location delta",bigDelta.toString());
-                                if (delta<0.0005){
+                                if (delta<0.0001){
                                     Log.d("location delta", "enough");
                                     Toast.makeText(context,"LOCATION FOUND!",Toast.LENGTH_SHORT).show();
                                     showQuestionDialog(question);
@@ -276,7 +282,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    private void showQuestionDialog(Question question){
+    private void showQuestionDialog(final Question question){
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
         View mView = getLayoutInflater().inflate(R.layout.dialog_question, null);
         TextView tvQuestion = (TextView) mView.findViewById(R.id.tv_dialog_question);
@@ -292,13 +298,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         rbAnswerD.setText(question.getAnswerD());
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
-        dialog.show();
+        if (!question.isAnswered()){
+            dialog.show();
+        }
+
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
         btnSubmitAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 //TODO: answer checking mechanism
+                question.setIsAnswered(true);
                 dialog.dismiss();
             }
         });

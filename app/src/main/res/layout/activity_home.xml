@@ -49,19 +49,21 @@
 
 
                     <TextView
-                        android:id="@+id/textView2"
+                        android:id="@+id/RTG_info"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:gravity="start"
-                        android:text="חירטוט, חירטוט, חירטוט, חירטוט, חירטוט, חירטוט, חירטוט, חירטוט, חירטוט, "
+                        android:text="טקסט לדוגמא"
                         android:layout_weight="1"
                         android:textSize="22sp"/>
+
 
 
                     <ListView
                         android:id="@+id/lv_users"
                         android:layout_width="match_parent"
-                        android:layout_height="200dp">
+                        android:layout_height="120dp"
+                        android:layout_weight="1">
 
                     </ListView>
 
@@ -80,7 +82,7 @@
              the container. A solid background is used for contrast
              with the content view. -->
         <ListView
-            android:id="@+id/left_drawer"
+            android:id="@+id/left_drawer_list"
             android:layout_width="200dp"
             android:layout_height="match_parent"
             android:layout_gravity="end"

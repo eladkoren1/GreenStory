@@ -44,7 +44,11 @@
 
         <activity
             android:name=".UserEditActivity"
-            android:label="@string/title_activity_user" />
+            android:label="@string/title_activity_user" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+            </intent-filter>
+        </activity>
         <activity
             android:name=".MapsActivity"
             android:label="@string/title_activity_maps">

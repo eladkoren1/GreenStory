@@ -6,6 +6,7 @@
     android:layout_height="match_parent"
     tools:context="greenstory.rtg.com.UserEditActivity"
     android:orientation="vertical">
+
     <!--TextView Scroll Layout-->
     <ScrollView
         android:id="@+id/textViewLayout"
@@ -34,7 +35,8 @@
                     android:layoutDirection="rtl"
                     android:text="שם:"
                     android:textDirection="rtl"
-                    android:textSize="22sp"
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/rtgGreen"
                     android:visibility="visible" />
 
                 <TextView
@@ -43,7 +45,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_toLeftOf="@id/tv_name"
-                    android:textSize="22sp"
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/rtgGreen"
                     android:visibility="visible" />
 
             </RelativeLayout>
@@ -64,7 +67,8 @@
                     android:layoutDirection="rtl"
                     android:text="שם משפחה:"
                     android:textDirection="rtl"
-                    android:textSize="22sp"
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/rtgGreen"
                     android:visibility="visible" />
 
                 <TextView
@@ -73,7 +77,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_toLeftOf="@id/tv_familyName"
-                    android:textSize="22sp"
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/rtgGreen"
                     android:visibility="visible" />
 
             </RelativeLayout>
@@ -94,7 +99,8 @@
                     android:layoutDirection="rtl"
                     android:text="בן זוג:"
                     android:textDirection="rtl"
-                    android:textSize="22sp"
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/rtgGreen"
                     android:visibility="visible" />
 
                 <TextView
@@ -103,7 +109,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_toLeftOf="@id/tv_partnerName"
-                    android:textSize="22sp"
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/rtgGreen"
                     android:visibility="visible" />
 
             </RelativeLayout>
@@ -124,7 +131,8 @@
                     android:layoutDirection="rtl"
                     android:text="גיל:"
                     android:textDirection="rtl"
-                    android:textSize="22sp"
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/rtgGreen"
                     android:visibility="visible" />
 
                 <TextView
@@ -133,7 +141,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_toLeftOf="@id/tv_age"
-                    android:textSize="22sp"
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/rtgGreen"
                     android:visibility="visible" />
 
             </RelativeLayout>
@@ -154,7 +163,8 @@
                     android:layoutDirection="rtl"
                     android:text="גיל בן זוג:"
                     android:textDirection="rtl"
-                    android:textSize="22sp"
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/rtgGreen"
                     android:visibility="visible" />
 
                 <TextView
@@ -163,7 +173,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginTop="16dp"
                     android:layout_toLeftOf="@id/tv_partnerAge"
-                    android:textSize="22sp"
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/rtgGreen"
                     android:visibility="visible" />
 
             </RelativeLayout>
@@ -196,7 +207,8 @@
                     android:hint="שם"
                     android:layoutDirection="rtl"
                     android:textDirection="rtl"
-                    android:textSize="22sp" />
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/rtgGreen" />
 
             </RelativeLayout>
 
@@ -213,7 +225,8 @@
                     android:hint="שם משפחה"
                     android:layoutDirection="rtl"
                     android:textDirection="rtl"
-                    android:textSize="22sp" />
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/rtgGreen" />
 
             </RelativeLayout>
 
@@ -230,7 +243,8 @@
                     android:hint="בן זוג"
                     android:layoutDirection="rtl"
                     android:textDirection="rtl"
-                    android:textSize="22sp"/>
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/rtgGreen"/>
 
             </RelativeLayout>
 
@@ -248,7 +262,8 @@
                     android:inputType="number"
                     android:layoutDirection="rtl"
                     android:textDirection="rtl"
-                    android:textSize="22sp"/>
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/rtgGreen"/>
 
             </RelativeLayout>
 
@@ -266,7 +281,8 @@
                     android:inputType="number"
                     android:layoutDirection="rtl"
                     android:textDirection="rtl"
-                    android:textSize="22sp"/>
+                    android:textSize="@dimen/text_medium"
+                    android:textColor="@color/rtgGreen"/>
 
             </RelativeLayout>
 
@@ -289,7 +305,8 @@
             android:textDirection="rtl"
             android:text="משפחה"
             android:hint="משפחה"
-            android:textSize="22sp"
+            android:textSize="@dimen/text_medium"
+            android:textColor="@color/rtgGreen"
             android:padding="16dp"/>
 
     </RelativeLayout>

@@ -9,6 +9,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,6 +81,9 @@ public class UserEditActivity extends AppCompatActivity {
         mSetFieldsBtn.setOnClickListener(listener);
         GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this, UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
         mDb = dbHelper.getWritableDatabase();
+
+        //ImageView familyPictureImageView = (ImageView) findViewById(R.id.im_family_picture);
+
 
     }
 

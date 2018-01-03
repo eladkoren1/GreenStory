@@ -1,0 +1,137 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2"
+    id="map_name">
+    <Document>
+        <name id="map_name">תוצרת הארץ</name>
+
+        <!--Styles-->
+        <Style id="icon-1899-0288D1-labelson">
+            <IconStyle>
+                <color>ffd18802</color>
+                <scale>1</scale>
+                <Icon>
+                    <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+                </Icon>
+                <hotSpot x="16" xunits="pixels" y="32" yunits="insetPixels"/>
+            </IconStyle>
+        </Style>
+
+        <Style id="line-FF5252-3325-nodesc-normal">
+            <LineStyle>
+                <color>ff5252ff</color>
+                <width>3.325</width>
+            </LineStyle>
+            <BalloonStyle>
+                <text><![CDATA[<h3>$[name]</h3>]]></text>
+            </BalloonStyle>
+        </Style>
+
+        <StyleMap id="line-FF5252-3325-nodesc">
+            <Pair>
+                <key>normal</key>
+                <styleUrl>#line-FF5252-3325-nodesc-normal</styleUrl>
+            </Pair>
+            <Pair>
+                <key>highlight</key>
+                <styleUrl>#line-FF5252-3325-nodesc-highlight</styleUrl>
+            </Pair>
+        </StyleMap>
+        <!--Styles-->
+
+        <!--site placemark-->
+        <Placemark id="site_point_placemark">
+            <name>Site Point Placemark</name>
+            <Point>
+                <extrude>1</extrude>
+                <altitudeMode>relativeToGround</altitudeMode>
+                <coordinates> 32.179208,34.9119238,73 </coordinates>
+            </Point>
+        </Placemark>
+
+        <Folder id="track_1"> <!--in order to organize tracks with their placemarks-->
+            <name>תוצרת הארץ</name>
+
+            <!--Track placemarks-->
+            <Placemark id="track_placemark_1">
+
+                <!--Track-->
+                <name>מקיף תוצרת הארץ</name>
+                <styleUrl>#line-FF5252-3325-nodesc</styleUrl> <!--from styles-->
+                <Polygon>
+                    <outerBoundaryIs>
+                        <LinearRing>
+                            <coordinates>
+                                34.79514,32.07367,0
+                                34.7957,32.07349,0
+                                34.79677,32.07315,0
+                                34.79743,32.07296,0
+                                34.79746,32.07294,0
+                                34.79748,32.07293,0
+                                34.79751,32.0729,0
+                                34.79752,32.07288,0
+                                34.79752,32.07286,0
+                                34.79752,32.07283,0
+                                34.79752,32.07281,0
+                                34.79728,32.07232,0
+                                34.79717,32.07205,0
+                                34.79708,32.07183,0
+                                34.79704,32.07174,0
+                                34.79622,32.072,0
+                                34.79604,32.07206,0
+                                34.79534,32.07227,0
+                                34.79509,32.07235,0
+                                34.79492,32.07249,0
+                                34.79487,32.07256,0
+                                34.79482,32.07263,0
+                                34.79477,32.07272,0
+                                34.79485,32.07294,0
+                                34.79484,32.07298,0
+                                34.79495,32.07326,0
+                                34.79505,32.07348,0
+                                34.79513,32.07365,0
+                            </coordinates>
+                        </LinearRing>
+                    </outerBoundaryIs>
+                </Polygon>
+            </Placemark>
+
+            <!--Point placemarks-->
+            <Placemark>
+                <name>נקודה 1</name>
+                <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+                <Point>
+                    <coordinates>
+                        34.7963482,32.0732843,0
+                    </coordinates>
+                </Point>
+            </Placemark>
+            <Placemark>
+                <name>נקודה 2</name>
+                <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+                <Point>
+                    <coordinates>
+                        34.7949018,32.0731386,0
+                    </coordinates>
+                </Point>
+            </Placemark>
+            <Placemark>
+                <name>נקודה 3</name>
+                <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+                <Point>
+                    <coordinates>
+                        34.7957219,32.0721558,0
+                    </coordinates>
+                </Point>
+            </Placemark>
+            <Placemark>
+                <name>נקודה 4</name>
+                <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+                <Point>
+                    <coordinates>
+                        34.7973027,32.0723749,0
+                    </coordinates>
+                </Point>
+            </Placemark>
+        </Folder>
+    </Document>
+</kml>

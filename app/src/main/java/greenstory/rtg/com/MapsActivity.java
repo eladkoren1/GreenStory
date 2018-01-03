@@ -51,11 +51,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     View view;
 
     LatLng currentLatLng;
-    Question question = new Question(1,
-            new LatLng(32.1788842,34.9123703),
+    Question question1 = new Question(1,
+            new LatLng(32.0732843,34.7963482),
+            "מהו הרחוב הוותיק ביותר בתל אביב?","רחוב הרצל","שדרות קק''ל","רחוב אלנבי",
+            "שדרות רוטשילד",1,false);
+    Question question2 = new Question(2,
+            new LatLng(32.0731386,34.7949018),
+            "איזו כתובת מהבאות יוצאת דופ]ן","תשובה א'","תשובה ב'","תשובה ג'",
+            "תשובה ד'",2,false);
+    Question question3 = new Question(3,
+            new LatLng(32.0721558,34.7957219),
             "שאלה","תשובה א'","תשובה ב'","תשובה ג'",
-            "תשובה ד'",1,false);
-
+            "תשובה ד'",3,false);
+    Question question4 = new Question(4,
+            new LatLng(32.0723749,34.7973027),
+            "שאלה","תשובה א'","תשובה ב'","תשובה ג'",
+            "תשובה ד'",4,false);
     boolean isCoarseLocationGranted = false;
     boolean isFineLocationGranted = false;
 
@@ -91,7 +102,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     public void addSiteLayer() {
         try {
-            siteLayer = new KmlLayer(mMap, R.raw.kfar_saba, getApplicationContext());
+            siteLayer = new KmlLayer(mMap, R.raw.totzeret_haaretz, getApplicationContext());
             siteLayer.addLayerToMap();
         } catch (XmlPullParserException e) {
             e.printStackTrace();
@@ -150,15 +161,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         new android.location.LocationListener() {
                             @Override
                             public void onLocationChanged(Location location) {
+                                //Log.d("location","current: " + String.valueOf(currentLatLng.toString())+
+                                        //", question: " + String.valueOf(question.getLatLng().toString()));
                                 currentLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-                                Log.d("location","current: " + String.valueOf(currentLatLng.toString())+
-                                        ", question: " + String.valueOf(question.getLatLng().toString()));
                                 mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
-                                double delta = ((Math.abs(currentLatLng.latitude-question.getLatLng().latitude)));
+                                double delta1Lat = ((Math.abs(currentLatLng.latitude-question1.getLatLng().latitude)));
+                                double delta2Lat = ((Math.abs(currentLatLng.latitude-question2.getLatLng().latitude)));
+                                double delta3Lat = ((Math.abs(currentLatLng.latitude-question3.getLatLng().latitude)));
+                                double delta4Lat = ((Math.abs(currentLatLng.latitude-question4.getLatLng().latitude)));
+                                double delta1Lon = ((Math.abs(currentLatLng.longitude-question1.getLatLng().longitude)));
+                                double delta2Lon = ((Math.abs(currentLatLng.longitude-question2.getLatLng().longitude)));
+                                double delta3Lon = ((Math.abs(currentLatLng.longitude-question3.getLatLng().longitude)));
+                                double delta4Lon = ((Math.abs(currentLatLng.longitude-question4.getLatLng().longitude)));
                                 BigDecimal bigDelta = BigDecimal.valueOf(delta);
                                 String latitudeValue = currentLatLng.toString();
                                 //Log.d("current latlng",latitudeValue);
-                                Log.d("location delta",bigDelta.toString());
+                                //Log.d("location delta",bigDelta.toString());
                                 if (delta<0.0001){
                                     Log.d("location delta", "enough");
                                     showQuestionDialog(question);

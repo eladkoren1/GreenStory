@@ -11,8 +11,8 @@ import android.widget.ListView;
 
 public class UsersOptionsActivity extends AppCompatActivity {
 
-    String[] mobileArray = {"ניקוד","כמות שאלות",
-            "אתרים","מיקום בטבלה","לחנות הוירטואלית"};
+    String[] mobileArray = {"ניקוד: 8","כמות שאלות: 5",
+            "אתרים: יפו, הר ארבל","מיקום בטבלה: 15"};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

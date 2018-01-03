@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#014B3E</color>
-    <!-- original color: 68b676 -->
+    <color name="colorPrimary">#68b676</color>
     <color name="colorPrimaryDark">#303F9F</color>
     <color name="colorAccent">#89b983</color>
     <color name="rtgGreen">#004b3f</color>
-    <!--#68b676-->
 </resources>

@@ -54,7 +54,7 @@ public class HomeActivity extends AppCompatActivity {
     String[] homeScreenOptionsArray = {"משתמש","מסלולים","מפה","משתתפים","אודות","צור קשר","חנות"};
     String[] usersArray = {"אלעד","משה","יוסי","דני", "קרן","אבי","הדר","עדי"};
     String[] usersAndPointsArray =
-            {"אלעד: 18","משה: 20","יוסי: 15","דני: 16", "קרן: 17","אבי:25","הדר: 200","עדי: 1000"};
+            {"אלעד: 8","משה: 20","יוסי: 15","דני: 16", "קרן: 17","אבי:25","הדר: 200","עדי: 1000"};
 
 
 
@@ -69,9 +69,8 @@ public class HomeActivity extends AppCompatActivity {
         ArrayAdapter adapter = new ArrayAdapter<String>(this,
                 R.layout.users_list_item, usersAndPointsArray);
         usersListView = (ListView) findViewById(R.id.lv_users);
-        for (int i=0;i<8;i++){
 
-        }
+
         usersListView.setAdapter(adapter);
 
         //drawer things

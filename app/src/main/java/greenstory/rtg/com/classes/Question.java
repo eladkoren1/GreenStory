@@ -15,7 +15,7 @@ public class Question {
     private String answerB;
     private String answerC;
     private String answerD;
-    private String correctAnswer;
+    private int correctAnswer;
     private boolean isAnswered = false;
 
     public Question(int questionID,
@@ -25,7 +25,7 @@ public class Question {
                     String answerB,
                     String answerC,
                     String answerD,
-                    String correctAnswer,boolean isAnswered) {
+                    int correctAnswer,boolean isAnswered) {
 
         this.questionID = questionID;
         this.latLng = latLng;
@@ -67,7 +67,7 @@ public class Question {
         return answerD;
     }
 
-    public String getCorrectAnswer() {
+    public int getCorrectAnswer() {
         return correctAnswer;
     }
 

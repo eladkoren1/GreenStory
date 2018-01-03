@@ -8,14 +8,18 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.support.v4.app.ActionBarDrawerToggle;
+
+import android.support.v4.view.GravityCompat;
+import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.widget.DrawerLayout;
+import android.support.v7.app.ActionBar;
+import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
-import android.view.Menu;
-import android.view.MenuItem;
+import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -37,87 +41,68 @@ public class HomeActivity extends AppCompatActivity {
 
     public Context context = this;
     ArrayList<String> tracks = new ArrayList<>();
+    ListView usersListView;
     EditText mUserName;
     EditText mFamilyName;
     CheckBox mIsFamily;
-    Button resetDB;
-    Button goToMap;
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-    private String[] mPlanetTitles;
-    String[] mobileArray = {"Android","IPhone","WindowsMobile","Blackberry",
-            "WebOS","Ubuntu","Windows7","Max OS X"};
+    String[] homeScreenOptionsArray = {"משתמש","מסלולים","מפה","משתתפים","אודות","צור קשר","חנות"};
+    String[] usersArray = {"אלעד","משה","יוסי","דני", "קרן","אבי","הדר","עדי"};
+    String[] usersAndPointsArray =
+            {"אלעד: 18","משה: 20","יוסי: 15","דני: 16", "קרן: 17","אבי:25","הדר: 200","עדי: 1000"};
+
 
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        mTitle = mDrawerTitle = getTitle();
-
-        mPlanetTitles = getResources().getStringArray(R.array.planets_array);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
-        ArrayAdapter adapter = new ArrayAdapter<String>(this,
-                R.layout.users_listview, mobileArray);
-        ListView listView = (ListView) findViewById(R.id.lv_users);
-        listView.setAdapter(adapter);
-
-
 
         checkPermissions();
 
-        //goToMap = (Button) findViewById(R.id.goToMaps);
-        //goToMap.setOnClickListener(listener);
-        //resetDB = (Button)findViewById(R.id.btn_delete_db);
-        //resetDB.setOnClickListener(listener);
-    }
+        //users list
+        ArrayAdapter adapter = new ArrayAdapter<String>(this,
+                R.layout.users_list_item, usersAndPointsArray);
+        usersListView = (ListView) findViewById(R.id.lv_users);
+        for (int i=0;i<8;i++){
 
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-
-        getMenuInflater().inflate(R.menu.menu_main, menu);
-
-        return true;
-    }
-
-    @Override
-    public boolean onOptionsItemSelected(MenuItem item) {
-        if (item.getItemId() == R.id.user_preferences_menu_item) {
-            Intent intent = new Intent(this, UserActivity.class);
-            startActivity(intent);
         }
-        return true;
+        usersListView.setAdapter(adapter);
+
+        //drawer things
+        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        mDrawerList = (ListView) findViewById(R.id.left_drawer_list);
+        mDrawerList.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.drawer_list_item, homeScreenOptionsArray));
+        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
+
+        ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+
     }
 
-    /*View.OnClickListener listener = new View.OnClickListener() {
-        @TargetApi(Build.VERSION_CODES.O)
+    View.OnClickListener listener = new View.OnClickListener() {
+
         @Override
         public void onClick(View v) {
 
-            if (v.getId() == goToMap.getId()) {
-                Intent intent = new Intent(context, MapsActivity.class);
-                startActivity(intent);
-            }
-
-            if (v.getId()==resetDB.getId()) {
-                mDb.delete("users",null,null);
-            }
         }
-    };*/
+    };
 
     public void initiateDB() {
-        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this, UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
+        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this,
+                UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
         mDb = dbHelper.getWritableDatabase();
-        /*if (!isUserIdExists(mDb)){
+        if (!isUserIdExists(mDb)){
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-            View mView = getLayoutInflater().inflate(R.layout.dialog_login, null);
+            View mView = getLayoutInflater().inflate(R.layout.activity_home_dialog_login, null);
             Button mLogin = (Button) mView.findViewById(R.id.btnLogin);
             mUserName = mView.findViewById(R.id.etUserName);
             mFamilyName = mView.findViewById(R.id.etFamilyName);
@@ -146,11 +131,9 @@ public class HomeActivity extends AppCompatActivity {
 
                 }
             });
-        }*/
+        }
 
     }
-
-
 
     public boolean isUserIdExists(SQLiteDatabase db) {
         String[] columns = new String[1];
@@ -220,7 +203,6 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-
     @Override
     public void onRequestPermissionsResult(int requestCode,
                                            String permissions[], int[] grantResults) {
@@ -246,6 +228,19 @@ public class HomeActivity extends AppCompatActivity {
             // permissions this app might request
         }
     }
+
+    private class DrawerItemClickListener implements android.widget.AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            mDrawerList.setItemChecked(position, true);
+            if (position==0){
+                Intent intent = new Intent(context, UsersOptionsActivity.class);
+                startActivity(intent);
+            }
+            if (position==2){
+                Intent intent = new Intent(context, MapsActivity.class);
+                startActivity(intent);
+            }
+        }
+    }
 }
-
-

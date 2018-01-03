@@ -19,12 +19,10 @@ import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
@@ -55,7 +53,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     LatLng currentLatLng;
     Question question = new Question(1,
             new LatLng(32.1788842,34.9123703),
-            "why","a","b","c","d","a",false);
+            "שאלה","תשובה א'","תשובה ב'","תשובה ג'",
+            "תשובה ד'",1,false);
 
     boolean isCoarseLocationGranted = false;
     boolean isFineLocationGranted = false;
@@ -120,9 +119,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                             for (KmlPlacemark placemark: trackPlacemarks) {
                                                 if (placemark.hasGeometry()) {
                                                     if (placemark.getGeometry().toString().contains("Point")) {
-                                                        MarkerOptions options = placemark.getMarkerOptions();
-                                                        options.icon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN));
-                                                        //mMap.marker
                                                         KmlPoint point = (KmlPoint) placemark.getGeometry();
                                                         LatLng latLng = new LatLng(point.getGeometryObject().latitude, point.getGeometryObject().longitude);
                                                         tracksPlacemarksHashMap.put(latLng, 1);
@@ -165,7 +161,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 Log.d("location delta",bigDelta.toString());
                                 if (delta<0.0001){
                                     Log.d("location delta", "enough");
-                                    Toast.makeText(context,"LOCATION FOUND!",Toast.LENGTH_SHORT).show();
                                     showQuestionDialog(question);
                                 }
                             }
@@ -192,9 +187,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
     }
-
-
-
 
     private void checkPermissions() {
         if (ContextCompat.checkSelfPermission(this,
@@ -266,7 +258,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void showOutDialog(){
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-        View mView = getLayoutInflater().inflate(R.layout.dialog_out, null);
+        View mView = getLayoutInflater().inflate(R.layout.activity_maps_dialog_out, null);
         Button btn_out = (Button) mView.findViewById(R.id.btn_out);
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
@@ -284,13 +276,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     private void showQuestionDialog(final Question question){
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-        View mView = getLayoutInflater().inflate(R.layout.dialog_question, null);
+        View mView = getLayoutInflater().inflate(R.layout.activity_maps_dialog_question, null);
         TextView tvQuestion = (TextView) mView.findViewById(R.id.tv_dialog_question);
         Button btnSubmitAnswer = (Button) mView.findViewById(R.id.btn_question_answer);
-        RadioButton rbAnswerA = (RadioButton) mView.findViewById(R.id.rb_answer_a);
-        RadioButton rbAnswerB = (RadioButton) mView.findViewById(R.id.rb_answer_b);
-        RadioButton rbAnswerC = (RadioButton) mView.findViewById(R.id.rb_answer_c);
-        RadioButton rbAnswerD = (RadioButton) mView.findViewById(R.id.rb_answer_d);
+        final RadioButton rbAnswerA = (RadioButton) mView.findViewById(R.id.rb_answer_a);
+        final RadioButton rbAnswerB = (RadioButton) mView.findViewById(R.id.rb_answer_b);
+        final RadioButton rbAnswerC = (RadioButton) mView.findViewById(R.id.rb_answer_c);
+        final RadioButton rbAnswerD = (RadioButton) mView.findViewById(R.id.rb_answer_d);
         tvQuestion.setText(question.getQuestion());
         rbAnswerA.setText(question.getAnswerA());
         rbAnswerB.setText(question.getAnswerB());
@@ -300,6 +292,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         final AlertDialog dialog = mBuilder.create();
         if (!question.isAnswered()){
             dialog.show();
+            question.setIsAnswered(true);
         }
 
         dialog.setCancelable(true);
@@ -307,10 +300,44 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnSubmitAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                //TODO: answer checking mechanism
-                question.setIsAnswered(true);
-                dialog.dismiss();
+                if (rbAnswerA.isChecked()) {
+                    if (question.getCorrectAnswer() == 1) {
+                        Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_LONG).show();
+                        question.setIsAnswered(true);
+                        dialog.dismiss();
+                        return;
+                    }
+                    return;
+                }
+                if (rbAnswerB.isChecked()) {
+                    if (question.getCorrectAnswer() == 2) {
+                        Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_LONG).show();
+                        question.setIsAnswered(true);
+                        dialog.dismiss();
+                        return;
+                    }
+                    return;
+                }
+                if (rbAnswerC.isChecked()) {
+                    if (question.getCorrectAnswer() == 3) {
+                        Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_LONG).show();
+                        question.setIsAnswered(true);
+                        dialog.dismiss();
+                        return;
+                    }
+                    return;
+                }
+                if (rbAnswerD.isChecked()) {
+                    if (question.getCorrectAnswer() == 4) {
+                        Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_LONG).show();
+                        question.setIsAnswered(true);
+                        dialog.dismiss();
+                        return;
+                    }
+                    return;
+                }
             }
         });
     }
+
 }

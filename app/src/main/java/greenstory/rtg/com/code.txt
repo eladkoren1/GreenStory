@@ -152,3 +152,21 @@ ScrollView scrollView;
                 </LinearLayout>
 
             </ScrollView>
+
+
+    @Override
+    public boolean onCreateOptionsMenu(Menu menu) {
+
+        getMenuInflater().inflate(R.menu.menu_main, menu);
+
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.user_preferences_menu_item) {
+            Intent intent = new Intent(this, UserActivity.class);
+            startActivity(intent);
+        }
+        return true;
+    }

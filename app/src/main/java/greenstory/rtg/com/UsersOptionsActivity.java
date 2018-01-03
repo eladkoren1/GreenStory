@@ -24,7 +24,6 @@ public class UsersOptionsActivity extends AppCompatActivity {
 
         ListView listView = (ListView) findViewById(R.id.list_Of_Options_To_Users);
         listView.setAdapter(adapter);
-
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {

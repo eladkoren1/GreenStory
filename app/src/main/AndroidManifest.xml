@@ -54,7 +54,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SiteActivity">
+            android:name=".SitesActivity">
 
         </activity>
 

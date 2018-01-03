@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="greenstory.rtg.com.SiteActivity">
+    tools:context="greenstory.rtg.com.SitesActivity">
 
     <TextView
         android:layout_width="match_parent"

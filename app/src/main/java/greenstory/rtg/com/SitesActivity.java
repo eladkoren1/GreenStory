@@ -3,7 +3,7 @@ package greenstory.rtg.com;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
 
-public class SiteActivity extends AppCompatActivity {
+public class SitesActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {

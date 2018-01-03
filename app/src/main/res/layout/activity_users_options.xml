@@ -16,6 +16,7 @@
             android:text="משפחת קורן"
             android:textSize="@dimen/text_large"
             android:textStyle="bold"
+            android:textAlignment="center"
             android:textColor="@color/rtgGreen">
 
         </TextView>
@@ -32,17 +33,5 @@
             android:text="לחנות הוירטואלית"
             android:textSize="@dimen/text_medium"
             android:textColor="@color/rtgGreen"/>
-
-
-
-
-
-
-
-
-
-
-
-
 
 </LinearLayout>

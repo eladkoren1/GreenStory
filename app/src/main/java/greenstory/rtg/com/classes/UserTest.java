@@ -7,7 +7,7 @@ import java.util.ArrayList;
  * Created by Elad on 17/12/2017.
  */
 
-public class User implements Serializable{
+public class UserTest implements Serializable {
 
     private String uId;
     private String userName;
@@ -17,15 +17,11 @@ public class User implements Serializable{
     private int partnerAge=0;
     private boolean isFamily = false;
     private ArrayList<Child> children;
+
     private int points;
 
-
-    public User() {
-
-    }
-
-    public User(String userName, String familyName, String partnerName,Integer userAge,Integer partnerAge,
-                 Boolean isFamily, int points) {
+    public UserTest(String userName, String familyName, String partnerName, Integer userAge, Integer partnerAge,
+                    Boolean isFamily, Integer points) {
         this.userName = userName;
         this.familyName = familyName;
         this.partnerName = partnerName;
@@ -37,11 +33,10 @@ public class User implements Serializable{
         this.points = points;
     }
 
-    public User(String userName, String familyName, boolean isFamily) {
+    public UserTest(String userName, String familyName, boolean isFamily) {
         this.userName = userName;
         this.familyName = familyName;
         this.isFamily = isFamily;
-
     }
 
     public void addChild(String FirstName, String LastName, Integer Age){
@@ -50,14 +45,6 @@ public class User implements Serializable{
 
     public ArrayList<Child> getChildren(){
         return children;
-    }
-
-    public String getuId() {
-        return uId;
-    }
-
-    public void setuId(String uId) {
-        this.uId = uId;
     }
 
     public String getUserName() {
@@ -104,16 +91,8 @@ public class User implements Serializable{
         return isFamily;
     }
 
-    public void setisFamily(boolean isFamily) {
-        isFamily = isFamily;
-    }
-
-    public int getPoints() {
-        return points;
-    }
-
-    public void setPoints(int points) {
-        this.points = points;
+    public void setFamily(boolean family) {
+        isFamily = family;
     }
 
     public class Child {

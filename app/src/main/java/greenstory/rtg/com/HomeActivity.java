@@ -38,23 +38,24 @@ import greenstory.rtg.com.data.Utils;
 public class HomeActivity extends AppCompatActivity {
 
     private SQLiteDatabase mDb;
-
     public Context context = this;
     ArrayList<String> tracks = new ArrayList<>();
+
     ListView usersListView;
     EditText mUserName;
     EditText mFamilyName;
     CheckBox mIsFamily;
+    User user = new User();
 
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
-    String[] homeScreenOptionsArray = {"משתמש","מסלולים","מפה","משתתפים","אודות","צור קשר","חנות"};
-    String[] usersAndPointsArray =
-            {"אלעד: 8","משה: 20","יוסי: 15","דני: 16", "קרן: 17","אבי:25","הדר: 200","עדי: 1000"};
 
+    String[] homeScreenOptionsArray = {"משתמש", "מסלולים", "מפה", "משתתפים", "אודות", "צור קשר", "חנות"};
+    String[] usersAndPointsArray =
+            {"אלעד: 8", "משה: 20", "יוסי: 15", "דני: 16", "קרן: 17", "אבי:25", "הדר: 200", "עדי: 1000"};
 
 
     @Override
@@ -62,7 +63,7 @@ public class HomeActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        checkPermissions();
+        checkPermissions(user);
 
         //users list
         ArrayAdapter adapter = new ArrayAdapter<String>(this,
@@ -92,11 +93,11 @@ public class HomeActivity extends AppCompatActivity {
         }
     };
 
-    public void initiateDB() {
+    public void initiateDB(final User user) {
         GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this,
                 UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
         mDb = dbHelper.getWritableDatabase();
-        if (!isUserIdExists(mDb)){
+        if (!isUserIdExists(mDb)) {
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
             View mView = getLayoutInflater().inflate(R.layout.activity_home_dialog_login, null);
             Button mLogin = (Button) mView.findViewById(R.id.btnLogin);
@@ -111,24 +112,21 @@ public class HomeActivity extends AppCompatActivity {
             mLogin.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    if(!mUserName.getText().toString().isEmpty() && !mFamilyName.getText().toString().isEmpty()){
-                        Toast.makeText(context,
-                                "ברוך הבא " + mUserName.getText(),
-                                Toast.LENGTH_SHORT).show();
-                        User user = new User(String.valueOf(mUserName.getText()),String.valueOf(mFamilyName.getText()),mIsFamily.isChecked());
-                        new DBUserRegisterTask().execute(user,null,null);
+                    if (!mUserName.getText().toString().isEmpty() && !mFamilyName.getText().toString().isEmpty()) {
+                        Toast.makeText(context, "ברוך הבא " + mUserName.getText(), Toast.LENGTH_SHORT).show();
+                        user.setUserName(String.valueOf(mUserName.getText()));
+                        user.setFamilyName(String.valueOf(mFamilyName.getText()));
+                        user.setisFamily(mIsFamily.isChecked());
+                        user.setPoints(0);
+                        new DBUserRegisterTask().execute(user, null, null);
                         dialog.dismiss();
                     }
-                    else{
-                        Toast.makeText(context,
-                                "השלם שדות חסרים",
-                                Toast.LENGTH_SHORT).show();
+                    else {
+                        Toast.makeText(context, "השלם שדות חסרים", Toast.LENGTH_SHORT).show();
                     }
-
                 }
             });
         }
-
     }
 
     public boolean isUserIdExists(SQLiteDatabase db) {
@@ -141,6 +139,7 @@ public class HomeActivity extends AppCompatActivity {
 
             content = String.valueOf(cursor.getInt(cursor.getColumnIndex("uId")));
             if (content!=null) {
+
                 return true;
             } else {
 
@@ -177,7 +176,7 @@ public class HomeActivity extends AppCompatActivity {
         }
     }
 
-    private void checkPermissions() {
+    private void checkPermissions(User user) {
         // Here, thisActivity is the current activity
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE)
@@ -195,7 +194,7 @@ public class HomeActivity extends AppCompatActivity {
                 // result of the request.
         }
         else {
-            initiateDB();
+            initiateDB(user);
         }
     }
 
@@ -210,7 +209,7 @@ public class HomeActivity extends AppCompatActivity {
 
                     // permission was granted, yay! Do the
                     // contacts-related task you need to do.
-                    initiateDB();
+                    initiateDB(user);
 
                 } else {
                         Toast.makeText(context,"Can't work without permissions :(",Toast.LENGTH_LONG).show();

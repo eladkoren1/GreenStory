@@ -14,7 +14,6 @@ import static greenstory.rtg.com.data.GreenStoryDbHelper.*;
  */
 public class UsersContract {
 
-
     public static final class UserEntry implements BaseColumns {
 
         public static final String TABLE_NAME = "users";
@@ -25,23 +24,18 @@ public class UsersContract {
         public static final String COLUMN_USER_AGE = "userAge";
         public static final String COLUMN_PARTNER_AGE = "partnerAge";
         public static final String COLUMN_IS_FAMILY = "isFamily";
+        public static final String COLUMN_POINTS = "points";
 
         public static final String SQL_CREATE_USERS_TABLE = OP_CREATE_TABLE + TABLE_NAME + OP_OPEN_PARENTHESIS +
-                COLUMN_UID + TYPE_INTEGER_PRIMARY_KEY +
-                COLUMN_NAME + TYPE_TEXT_NOT_NULL +
-                COLUMN_FAMILY_NAME + TYPE_TEXT +
-                COLUMN_PARTNER_NAME + TYPE_TEXT +
-                COLUMN_USER_AGE + TYPE_INTEGER +
-                COLUMN_PARTNER_AGE + TYPE_INTEGER +
-                COLUMN_IS_FAMILY + " INTEGER "+ OP_CLOSE_PARENTHESIS;
-
-
-
-
-
+            COLUMN_UID + TYPE_INTEGER_PRIMARY_KEY +
+            COLUMN_NAME + TYPE_TEXT +
+            COLUMN_FAMILY_NAME + TYPE_TEXT +
+            COLUMN_PARTNER_NAME + TYPE_TEXT +
+            COLUMN_USER_AGE + TYPE_INTEGER +
+            COLUMN_PARTNER_AGE + TYPE_INTEGER +
+            COLUMN_IS_FAMILY + TYPE_INTEGER +
+            COLUMN_POINTS + " INTEGER "+ OP_CLOSE_PARENTHESIS;
     }
-
-
 }
 
 

@@ -6,7 +6,7 @@
 
 
         <TextView
-            android:id="@+id/text1"
+            android:id="@+id/tv_questions_answered"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_centerHorizontal="true"
@@ -15,7 +15,7 @@
             android:textSize="@dimen/text_medium"
             android:textAlignment="center"
             android:textColor="@color/rtgGreen"
-            android:text="מס' שאלות שעניתי: 8" />
+            android:text="מס' שאלות שעניתי: 0" />
 
         <Button
             android:id="@+id/text2"
@@ -34,7 +34,7 @@
             android:name="com.google.android.gms.maps.SupportMapFragment"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_above="@id/text1"
+            android:layout_above="@id/tv_questions_answered"
             android:layout_alignParentLeft="true"
             android:layout_alignParentStart="true" />
 

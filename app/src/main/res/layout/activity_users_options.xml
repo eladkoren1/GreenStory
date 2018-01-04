@@ -10,10 +10,11 @@
 
 
         <TextView
+            android:id="@+id/tv_family_name_display"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:padding="10dip"
-            android:text="משפחת קורן"
+            android:text="שם משפחה"
             android:textSize="@dimen/text_large"
             android:textStyle="bold"
             android:textAlignment="center"

@@ -5,8 +5,11 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.database.sqlite.SQLiteDatabase;
 import android.location.Location;
 import android.location.LocationManager;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -38,37 +41,56 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 
 import greenstory.rtg.com.classes.Question;
+import greenstory.rtg.com.classes.User;
+import greenstory.rtg.com.data.GreenStoryDbHelper;
+import greenstory.rtg.com.data.UsersContract;
+import greenstory.rtg.com.data.Utils;
 
 import static android.location.LocationManager.GPS_PROVIDER;
 
 public class MapsActivity extends FragmentActivity implements OnMapReadyCallback {
 
+    User user = new User();
     private GoogleMap mMap;
+    LatLng currentLatLng;
     KmlLayer siteLayer;
     Context context = this;
     private LocationManager locationManager;
+    private SQLiteDatabase mDb;
+    Cursor cursor;
 
+    TextView questionsAnsweredTV;
     View view;
 
-    LatLng currentLatLng;
     Question question1 = new Question(1,
-            new LatLng(32.0732843,34.7963482),
-            "מהו הרחוב הוותיק ביותר בתל אביב?","רחוב הרצל","שדרות קק''ל","רחוב אלנבי",
-            "שדרות רוטשילד",1,false);
+        new LatLng(32.0732843,34.7963482),
+        "מהו הרחוב הוותיק ביותר בתל אביב?",
+        "רחוב הרצל","שדרות קק''ל","רחוב אלנבי", "שדרות רוטשילד",
+        1,false);
+
     Question question2 = new Question(2,
-            new LatLng(32.0731386,34.7949018),
-            "איזו כתובת מהבאות יוצאת דופ]ן","תשובה א'","תשובה ב'","תשובה ג'",
-            "תשובה ד'",2,false);
+        new LatLng(32.0731386,34.7949018),
+        "איזו כתובת מהבאות יוצאת דופן",
+        "כיכר קדומים 14","הרכב 8","יונה הנביא 6", "דוד חכמי 35",
+        2,false);
+
     Question question3 = new Question(3,
-            new LatLng(32.0721558,34.7957219),
-            "שאלה","תשובה א'","תשובה ב'","תשובה ג'",
-            "תשובה ד'",3,false);
+        new LatLng(32.0721558,34.7957219),
+        "איזו שכונה הייתה מזוהה היסטורית עם מועדון הכדורגל שמשון תל אביב?",
+        "יד אליהו","קריית שלום","כפר התימנים", "כפר שלם",
+        3,false);
+
     Question question4 = new Question(4,
-            new LatLng(32.0723749,34.7973027),
-            "שאלה","תשובה א'","תשובה ב'","תשובה ג'",
-            "תשובה ד'",4,false);
+        new LatLng(32.0723749,34.7973027),
+        "איזו מחנויות הספרים הבאות לא נמצאות באלנבי?",
+        "קדמת עדן","הלפר ספרים","לוטוס", "הנסיך הקטן",
+        4,false);
+
     boolean isCoarseLocationGranted = false;
     boolean isFineLocationGranted = false;
+
+    int questionsAnsweredNum = 0;
+    String questionsAnswered = "מס' שאלות שעניתי: ";
 
     HashMap<LatLng, Integer> tracksPlacemarksHashMap = new HashMap<LatLng, Integer>();
 
@@ -77,6 +99,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
+        questionsAnsweredTV = (TextView) findViewById(R.id.tv_questions_answered);
+
+        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this,
+                UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
+        mDb = dbHelper.getWritableDatabase();
+
+        new DBLoadUserTask().execute(user,null,null);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -154,50 +183,63 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap.setMyLocationEnabled(true);
         mMap.moveCamera(CameraUpdateFactory.newLatLng(new LatLng(32.17939362, 34.91209629)));
         mMap.animateCamera(CameraUpdateFactory.zoomTo(20), 3000,
-                new GoogleMap.CancelableCallback() {
+            new GoogleMap.CancelableCallback() {
+
             @Override
             public void onFinish() {
                 locationManager.requestLocationUpdates(GPS_PROVIDER,5000,3,
-                        new android.location.LocationListener() {
-                            @Override
-                            public void onLocationChanged(Location location) {
-                                //Log.d("location","current: " + String.valueOf(currentLatLng.toString())+
-                                        //", question: " + String.valueOf(question.getLatLng().toString()));
-                                currentLatLng = new LatLng(location.getLatitude(),location.getLongitude());
-                                mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
-                                double delta1Lat = ((Math.abs(currentLatLng.latitude-question1.getLatLng().latitude)));
-                                double delta2Lat = ((Math.abs(currentLatLng.latitude-question2.getLatLng().latitude)));
-                                double delta3Lat = ((Math.abs(currentLatLng.latitude-question3.getLatLng().latitude)));
-                                double delta4Lat = ((Math.abs(currentLatLng.latitude-question4.getLatLng().latitude)));
-                                double delta1Lon = ((Math.abs(currentLatLng.longitude-question1.getLatLng().longitude)));
-                                double delta2Lon = ((Math.abs(currentLatLng.longitude-question2.getLatLng().longitude)));
-                                double delta3Lon = ((Math.abs(currentLatLng.longitude-question3.getLatLng().longitude)));
-                                double delta4Lon = ((Math.abs(currentLatLng.longitude-question4.getLatLng().longitude)));
-                                BigDecimal bigDelta = BigDecimal.valueOf(delta);
-                                String latitudeValue = currentLatLng.toString();
-                                //Log.d("current latlng",latitudeValue);
-                                //Log.d("location delta",bigDelta.toString());
-                                if (delta<0.0001){
-                                    Log.d("location delta", "enough");
-                                    showQuestionDialog(question);
-                                }
+                    new android.location.LocationListener() {
+                        @Override
+                        public void onLocationChanged(Location location) {
+                            //Log.d("location","current: " + String.valueOf(currentLatLng.toString())+
+                                    //", question: " + String.valueOf(question.getLatLng().toString()));
+                            currentLatLng = new LatLng(location.getLatitude(),location.getLongitude());
+                            mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
+                            double delta1Lat = ((Math.abs(currentLatLng.latitude-question1.getLatLng().latitude)));
+                            double delta2Lat = ((Math.abs(currentLatLng.latitude-question2.getLatLng().latitude)));
+                            double delta3Lat = ((Math.abs(currentLatLng.latitude-question3.getLatLng().latitude)));
+                            double delta4Lat = ((Math.abs(currentLatLng.latitude-question4.getLatLng().latitude)));
+                            double delta1Lon = ((Math.abs(currentLatLng.longitude-question1.getLatLng().longitude)));
+                            double delta2Lon = ((Math.abs(currentLatLng.longitude-question2.getLatLng().longitude)));
+                            double delta3Lon = ((Math.abs(currentLatLng.longitude-question3.getLatLng().longitude)));
+                            double delta4Lon = ((Math.abs(currentLatLng.longitude-question4.getLatLng().longitude)));
+                            //BigDecimal bigDelta = BigDecimal.valueOf(delta);
+                            String latitudeValue = currentLatLng.toString();
+                            //Log.d("current latlng",latitudeValue);
+                            //Log.d("location delta",bigDelta.toString());
+                            if ((delta1Lat<0.0001)&&(delta1Lon<0.0001)){
+                                Log.d("location delta", "enough");
+                                showQuestionDialog(question1);
                             }
-
-                            @Override
-                            public void onStatusChanged(String provider, int status, Bundle extras) {
-
+                            if ((delta2Lat<0.0001)&&(delta2Lon<0.0001)){
+                                Log.d("location delta", "enough");
+                                showQuestionDialog(question2);
                             }
-
-                            @Override
-                            public void onProviderEnabled(String provider) {
-
+                            if ((delta3Lat<0.0001)&&(delta3Lon<0.0001)){
+                                Log.d("location delta", "enough");
+                                showQuestionDialog(question3);
                             }
-
-                            @Override
-                            public void onProviderDisabled(String provider) {
-
+                            if ((delta4Lat<0.0001)&&(delta4Lon<0.0001)){
+                                Log.d("location delta", "enough");
+                                showQuestionDialog(question4);
                             }
-                        });
+                        }
+
+                        @Override
+                        public void onStatusChanged(String provider, int status, Bundle extras) {
+
+                        }
+
+                        @Override
+                        public void onProviderEnabled(String provider) {
+
+                        }
+
+                        @Override
+                        public void onProviderDisabled(String provider) {
+
+                        }
+                    });
             }
             @Override
             public void onCancel() {
@@ -318,44 +360,106 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btnSubmitAnswer.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (rbAnswerA.isChecked()) {
-                    if (question.getCorrectAnswer() == 1) {
-                        Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_LONG).show();
-                        question.setIsAnswered(true);
-                        dialog.dismiss();
-                        return;
-                    }
+            if (rbAnswerA.isChecked()) {
+                if (question.getCorrectAnswer() == 1) {
+                    Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_LONG).show();
+                    question.setIsAnswered(true);
+                    dialog.dismiss();
+                    questionsAnsweredNum++;
+                    questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
+                    int newPoints = user.getPoints()+10;
+                    user.setPoints(newPoints);
+                    new MapsActivity.DBUserUpdateTask().execute(user,null,null);
                     return;
                 }
-                if (rbAnswerB.isChecked()) {
-                    if (question.getCorrectAnswer() == 2) {
-                        Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_LONG).show();
-                        question.setIsAnswered(true);
-                        dialog.dismiss();
-                        return;
-                    }
+                return;
+            }
+            if (rbAnswerB.isChecked()) {
+                if (question.getCorrectAnswer() == 2) {
+                    Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_LONG).show();
+                    question.setIsAnswered(true);
+                    dialog.dismiss();
+                    questionsAnsweredNum++;
+                    questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
+                    int newPoints = user.getPoints()+10;
+                    user.setPoints(newPoints);
+                    new MapsActivity.DBUserUpdateTask().execute(user,null,null);
                     return;
                 }
-                if (rbAnswerC.isChecked()) {
-                    if (question.getCorrectAnswer() == 3) {
-                        Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_LONG).show();
-                        question.setIsAnswered(true);
-                        dialog.dismiss();
-                        return;
-                    }
+                return;
+            }
+            if (rbAnswerC.isChecked()) {
+                if (question.getCorrectAnswer() == 3) {
+                    Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_LONG).show();
+                    question.setIsAnswered(true);
+                    dialog.dismiss();
+                    questionsAnsweredNum++;
+                    questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
+                    int newPoints = user.getPoints()+10;
+                    user.setPoints(newPoints);
+                    new MapsActivity.DBUserUpdateTask().execute(user,null,null);
                     return;
                 }
-                if (rbAnswerD.isChecked()) {
-                    if (question.getCorrectAnswer() == 4) {
-                        Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_LONG).show();
-                        question.setIsAnswered(true);
-                        dialog.dismiss();
-                        return;
-                    }
+                return;
+            }
+            if (rbAnswerD.isChecked()) {
+                if (question.getCorrectAnswer() == 4) {
+                    Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_LONG).show();
+                    question.setIsAnswered(true);
+                    dialog.dismiss();
+                    questionsAnsweredNum++;
+                    questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
+                    int newPoints = user.getPoints()+10;
+                    user.setPoints(newPoints);
+                    new MapsActivity.DBUserUpdateTask().execute(user,null,null);
                     return;
                 }
+                return;
+            }
             }
         });
     }
 
+    public class DBUserUpdateTask extends AsyncTask<User, Void, Void> {
+
+        @Override
+        protected Void doInBackground(User... user) {
+
+            try {
+                Utils.UpdateUserInfo(user[0], mDb);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            Toast.makeText(context,
+                    "נקודות הוספו",
+                    Toast.LENGTH_SHORT).show();
+
+        }
+    }
+
+    public class DBLoadUserTask extends AsyncTask<User, Void, Void> {
+
+        @Override
+        protected Void doInBackground(User... userArray) {
+
+            try {
+                 user = Utils.LoadUserFromDB(userArray[0], mDb);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+        }
+    }
 }

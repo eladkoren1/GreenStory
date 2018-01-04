@@ -141,7 +141,7 @@ public class UserEditActivity extends AppCompatActivity {
 
             try {
 
-                Utils.EditUserInfo(user[0], mDb);
+                Utils.UpdateUserInfo(user[0], mDb);
             } catch (Exception e) {
                 e.printStackTrace();
             }

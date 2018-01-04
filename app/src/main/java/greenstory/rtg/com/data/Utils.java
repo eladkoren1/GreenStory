@@ -23,6 +23,7 @@ public class Utils {
         cv.put("name", user.getUserName());
         cv.put("familyName", user.getFamilyName());
         cv.put("isFamily", user.isFamily() ? 1 : 0);
+        cv.put("points",user.getPoints());
 
         try {
             db.beginTransaction();
@@ -38,9 +39,41 @@ public class Utils {
 
     }
 
-    public static void EditUserInfo(User user, SQLiteDatabase db) {
-        ContentValues cv = new ContentValues();
+    public static User LoadUserFromDB(User user, SQLiteDatabase db) {
+        try {
+            Cursor cursor = db.query("users", null, null, null, null, null, null);
+            cursor.moveToFirst();
+            user.setuId(String.valueOf(cursor.getInt(cursor.getColumnIndex("uId"))));
+            user.setUserName(String.valueOf(cursor.getString(cursor.getColumnIndex("name"))));
+            user.setFamilyName(String.valueOf(cursor.getString(cursor.getColumnIndex("familyName"))));
+            user.setPartnerName(String.valueOf(cursor.getString(cursor.getColumnIndex("partnerName"))));
+            user.setUserAge(cursor.getInt(cursor.getColumnIndex("userAge")));
+            user.setPartnerAge(cursor.getInt(cursor.getColumnIndex("partnerAge")));
+            int family = (cursor.getInt(cursor.getColumnIndex("isFamily")));
 
+            if (family == 0) {
+                user.setisFamily(false);
+            }
+            if (family == 1) {
+                user.setisFamily(true);
+            }
+
+            user.setPoints(cursor.getInt(cursor.getColumnIndex("points")));
+
+        }
+
+        catch (Exception e) {
+            Log.e("ERROR", e.toString());
+        }
+        finally{
+            db.endTransaction();
+        }
+
+        return user;
+    }
+
+    public static void UpdateUserInfo(User user, SQLiteDatabase db) {
+        ContentValues cv = new ContentValues();
 
         cv.put("name", user.getUserName());
         cv.put("familyName", user.getFamilyName());
@@ -48,6 +81,7 @@ public class Utils {
         cv.put("userAge",user.getUserAge());
         cv.put("partnerAge",user.getPartnerAge());
         cv.put("isFamily", user.isFamily() ? 1 : 0);
+        cv.put("points",user.getPoints());
 
         try {
             db.beginTransaction();
@@ -65,4 +99,24 @@ public class Utils {
         }
 
     }
+
+    /*public static void editUserInfo(User user, SQLiteDatabase db) {
+        ContentValues cv = new ContentValues();
+
+        //String idFromDate = String.valueOf(java.util.Calendar.getInstance().getTimeInMillis());
+
+
+
+        try {
+            db.beginTransaction();
+            db.update("users",cv,"uId = ?",new String[]{user.getuId()});
+            db.setTransactionSuccessful();
+        }
+        catch (Exception e) {
+            Log.e("ERROR", e.toString());
+        }
+        finally{
+            db.endTransaction();
+        }
+    }*/
 }

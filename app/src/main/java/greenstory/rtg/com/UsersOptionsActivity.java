@@ -31,13 +31,17 @@ public class UsersOptionsActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        setContentView(R.layout.activity_users_options);
+
         GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this,
                 UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
         mDb = dbHelper.getWritableDatabase();
 
         new DBLoadUserTask().execute(user,null,null);
 
-        setContentView(R.layout.activity_users_options);
+    }
+
+    public void updateLayout(){
         String[] mobileArray = {"ניקוד: "+user.getPoints(),
                 "אתרים: יפו, הר ארבל","מיקום בטבלה: 15"};
         TextView familyNameDisplayTV = (TextView) findViewById(R.id.tv_family_name_display);
@@ -79,6 +83,7 @@ public class UsersOptionsActivity extends AppCompatActivity {
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+            updateLayout();
 
         }
     }

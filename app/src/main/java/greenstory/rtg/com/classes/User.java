@@ -104,8 +104,8 @@ public class User implements Serializable{
         return isFamily;
     }
 
-    public void setisFamily(boolean isFamily) {
-        isFamily = isFamily;
+    public void setIsFamily(boolean isFamily) {
+        this.isFamily = isFamily;
     }
 
     public int getPoints() {

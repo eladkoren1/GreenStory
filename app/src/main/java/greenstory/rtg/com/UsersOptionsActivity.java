@@ -41,6 +41,13 @@ public class UsersOptionsActivity extends AppCompatActivity {
 
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        new DBLoadUserTask().execute(user,null,null);
+
+    }
+
     public void updateLayout(){
         String[] mobileArray = {"ניקוד: "+user.getPoints(),
                 "אתרים: יפו, הר ארבל","מיקום בטבלה: 15"};
@@ -63,7 +70,9 @@ public class UsersOptionsActivity extends AppCompatActivity {
 
     public boolean onOptionsItemSelected(MenuItem item) {
         if (item.getItemId() == R.id.edit_menu_item) {
-            startActivity(new Intent(context,UserEditActivity.class));
+            Intent intent = new Intent(context,UserEditActivity.class);
+            intent.putExtra("User",user);
+            startActivity(intent);
         }
         return true;
     }

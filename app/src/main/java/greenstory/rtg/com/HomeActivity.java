@@ -116,7 +116,7 @@ public class HomeActivity extends AppCompatActivity {
                         Toast.makeText(context, "ברוך הבא " + mUserName.getText(), Toast.LENGTH_SHORT).show();
                         user.setUserName(String.valueOf(mUserName.getText()));
                         user.setFamilyName(String.valueOf(mFamilyName.getText()));
-                        user.setisFamily(mIsFamily.isChecked());
+                        user.setIsFamily(mIsFamily.isChecked());
                         user.setPoints(0);
                         new DBUserRegisterTask().execute(user, null, null);
                         dialog.dismiss();

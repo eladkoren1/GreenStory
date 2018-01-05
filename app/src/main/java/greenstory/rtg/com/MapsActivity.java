@@ -362,7 +362,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             public void onClick(View v) {
             if (rbAnswerA.isChecked()) {
                 if (question.getCorrectAnswer() == 1) {
-                    Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "תשובה נכונה! +10 נקודות", Toast.LENGTH_SHORT).show();
                     question.setIsAnswered(true);
                     dialog.dismiss();
                     questionsAnsweredNum++;
@@ -376,7 +376,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             if (rbAnswerB.isChecked()) {
                 if (question.getCorrectAnswer() == 2) {
-                    Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_SHORT).show();
                     question.setIsAnswered(true);
                     dialog.dismiss();
                     questionsAnsweredNum++;
@@ -390,7 +390,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             if (rbAnswerC.isChecked()) {
                 if (question.getCorrectAnswer() == 3) {
-                    Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_SHORT).show();
                     question.setIsAnswered(true);
                     dialog.dismiss();
                     questionsAnsweredNum++;
@@ -404,7 +404,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
             if (rbAnswerD.isChecked()) {
                 if (question.getCorrectAnswer() == 4) {
-                    Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_LONG).show();
+                    Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_SHORT).show();
                     question.setIsAnswered(true);
                     dialog.dismiss();
                     questionsAnsweredNum++;
@@ -436,10 +436,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
-            Toast.makeText(context,
-                    "נקודות הוספו",
-                    Toast.LENGTH_SHORT).show();
-
         }
     }
 

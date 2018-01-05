@@ -40,8 +40,10 @@ public class Utils {
     }
 
     public static User LoadUserFromDB(User user, SQLiteDatabase db) {
+        Cursor cursor;
         try {
-            Cursor cursor = db.query("users", null, null, null, null, null, null);
+            db.beginTransaction();
+            cursor = db.query("users", null, null, null, null, null, null);
             cursor.moveToFirst();
             user.setuId(String.valueOf(cursor.getInt(cursor.getColumnIndex("uId"))));
             user.setUserName(String.valueOf(cursor.getString(cursor.getColumnIndex("name"))));
@@ -52,20 +54,23 @@ public class Utils {
             int family = (cursor.getInt(cursor.getColumnIndex("isFamily")));
 
             if (family == 0) {
-                user.setisFamily(false);
+                user.setIsFamily(false);
             }
             if (family == 1) {
-                user.setisFamily(true);
+                user.setIsFamily(true);
             }
 
             user.setPoints(cursor.getInt(cursor.getColumnIndex("points")));
+            db.setTransactionSuccessful();
+            cursor.close();
+
 
         }
 
         catch (Exception e) {
             Log.e("ERROR", e.toString());
         }
-        finally{
+        finally {
             db.endTransaction();
         }
 
@@ -97,26 +102,5 @@ public class Utils {
         finally{
             db.endTransaction();
         }
-
     }
-
-    /*public static void editUserInfo(User user, SQLiteDatabase db) {
-        ContentValues cv = new ContentValues();
-
-        //String idFromDate = String.valueOf(java.util.Calendar.getInstance().getTimeInMillis());
-
-
-
-        try {
-            db.beginTransaction();
-            db.update("users",cv,"uId = ?",new String[]{user.getuId()});
-            db.setTransactionSuccessful();
-        }
-        catch (Exception e) {
-            Log.e("ERROR", e.toString());
-        }
-        finally{
-            db.endTransaction();
-        }
-    }*/
 }

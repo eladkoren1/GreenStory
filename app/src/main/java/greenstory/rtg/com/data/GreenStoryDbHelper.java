@@ -27,10 +27,10 @@ public class GreenStoryDbHelper extends SQLiteOpenHelper {
     private static final int DATABASE_VERSION = 1;
 
     public GreenStoryDbHelper(Context context, String tableName) {
-        //super(context, Environment.getExternalStorageDirectory()+ File.separator+DATABASE_NAME, null, DATABASE_VERSION);
+        super(context, Environment.getExternalStorageDirectory()+ File.separator+DATABASE_NAME, null, DATABASE_VERSION);
 
         //for emulator only, comment on device testing
-        super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        //super(context, DATABASE_NAME, null, DATABASE_VERSION);
 
         this.tableName = tableName;
     }

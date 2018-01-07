@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2"
+    id="map_name">
+    <Document>
+        <name id="map_name">Kml template</name>
+
+        <!--Styles-->
+        <Style id="icon-1899-0288D1-labelson">
+            <IconStyle>
+                <color>ffd18802</color>
+                <scale>1</scale>
+                <Icon>
+                    <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+                </Icon>
+                <hotSpot x="16" xunits="pixels" y="32" yunits="insetPixels"/>
+            </IconStyle>
+        </Style>
+
+        <Style id="line-FF5252-3325-nodesc-normal">
+            <LineStyle>
+                <color>ff5252ff</color>
+                <width>3.325</width>
+            </LineStyle>
+            <BalloonStyle>
+                <text><![CDATA[<h3>$[name]</h3>]]></text>
+            </BalloonStyle>
+        </Style>
+
+        <StyleMap id="line-FF5252-3325-nodesc">
+            <Pair>
+                <key>normal</key>
+                <styleUrl>#line-FF5252-3325-nodesc-normal</styleUrl>
+            </Pair>
+            <Pair>
+                <key>highlight</key>
+                <styleUrl>#line-FF5252-3325-nodesc-highlight</styleUrl>
+            </Pair>
+        </StyleMap>
+        <!--Styles-->
+        
+
+        <Folder id="main_map">
+            <name>Main Map</name>
+
+
+            <!--Point placemarks-->
+            <Placemark id="point_placemark_1">
+                <name>מכללה אקדמית תל אביב יפו‎</name>
+                <Point>
+                    <extrude>1</extrude>
+                    <altitudeMode>relativeToGround</altitudeMode>
+                    <coordinates> 34.7609729,32.0477291,0 </coordinates>
+                </Point>
+                <ExtendedData>
+                    <Data name="gx_media_links">
+                        <value>https://lh4.googleusercontent.com/mHbN2IGwHVOxOra3CnTtCp7dT_0WquulS8viKG6w36KblhreWAKWL3fEXKNLQazxG5YVJMvOX5swAPqDJPqdIdNvQzlP9h_-roh1UGlXxnYnyDzCVvgwZ4Dl3tJVEfrrB2dunA</value>
+                    </Data>
+                </ExtendedData>
+            </Placemark>
+            <Placemark id="point_placemark_1">
+                <name>הר ארבל‎</name>
+                <Point>
+                    <extrude>1</extrude>
+                    <altitudeMode>relativeToGround</altitudeMode>
+                    <coordinates> 35.4986072,32.824166,1000 </coordinates>
+                </Point>
+                <ExtendedData>
+                    <Data name="gx_media_links">
+                        <value>https://lh6.googleusercontent.com/YWkAlBUWHCSQUZ3L-_3bZrDcmR4ZLXns6-yQP4nfKQi1IBATyfZ-X1O19N7LgpoDDLJVDAbKlMGxEMJAdfXX3aazx6oFVrBKmPhpVkS3M0di_we3XO9v0BGibPEgWqPbbephwA</value>
+                    </Data>
+                </ExtendedData>
+            </Placemark>
+        </Folder>
+    </Document>
+</kml>

@@ -147,12 +147,13 @@ public class UserEditActivity extends AppCompatActivity {
         try {
             mNameValueTV.setText(user.getUserName());
             mFamilyNameValueTV.setText(user.getFamilyName());
-            if (!user.getPartnerName().equals(null)) {
+            if (user.getPartnerName().contentEquals("none")){
+
+            }
+            else {
                 mPartnerNameValueTV.setText(user.getPartnerName());
             }
-            else{
-                mPartnerNameValueTV.setText("");
-            }
+
             if (user.getUserAge() != 0) {
                 mAgeValueTV.setText(String.valueOf(user.getUserAge()));
             }
@@ -178,11 +179,11 @@ public class UserEditActivity extends AppCompatActivity {
         try {
             mNameET.setText(user.getUserName());
             mFamilyNameET.setText(user.getFamilyName());
-            if (!user.getPartnerName().equals(null)) {
-                mPartnerNameET.setText(user.getPartnerName());
+            if (user.getPartnerName().contentEquals("none")){
+
             }
-            else{
-                mPartnerNameET.setText("");
+            else {
+                mPartnerNameET.setText(user.getPartnerName());
             }
             if (user.getUserAge() != 0) {
                 mAgeET.setText(String.valueOf(user.getUserAge()));

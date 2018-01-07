@@ -42,18 +42,6 @@
                     android:layout_weight="0.5"
                     android:orientation="vertical">
 
-
-                    <TextView
-                        android:id="@+id/RTG_info"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:gravity="start"
-                        android:justificationMode="inter_word"
-                        android:padding="10dp"
-                        android:text="מי שמטייל יותר, נהנה יותר וזוכה יותר! בחנות הוירטואלית שלנו תוכלו להשתמש בנקודות ולזכות בפרסים שווים!"
-                        android:textColor="@color/rtgGreen"
-                        android:textSize="@dimen/text_small" />
-
                     <View
                         android:layout_width="match_parent"
                         android:layout_height="1dp"
@@ -76,6 +64,8 @@
 
                 </LinearLayout>
 
+
+
             </LinearLayout>
 
 
@@ -85,6 +75,16 @@
              The drawer is given a fixed width in dp and extends the full height of
              the container. A solid background is used for contrast
              with the content view. -->
+        <TextView
+            android:id="@+id/RTG_info"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="start"
+            android:justificationMode="inter_word"
+            android:padding="10dp"
+            android:text="מי שמטייל יותר, נהנה יותר וזוכה יותר! בחנות הוירטואלית שלנו תוכלו להשתמש בנקודות ולזכות בפרסים שווים!"
+            android:textColor="@color/rtgGreen"
+            android:textSize="@dimen/text_small" />
         <ListView
             android:id="@+id/left_drawer_list"
             android:layout_width="200dp"
@@ -97,6 +97,7 @@
             android:background="#fff"/>
 
     </android.support.v4.widget.DrawerLayout>
+
 
 </LinearLayout>
 

@@ -61,7 +61,7 @@ public class HomeActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_home);
+        setContentView(R.layout.activity_home_two);
 
         checkPermissions(user);
 
@@ -116,6 +116,9 @@ public class HomeActivity extends AppCompatActivity {
                         Toast.makeText(context, "ברוך הבא " + mUserName.getText(), Toast.LENGTH_SHORT).show();
                         user.setUserName(String.valueOf(mUserName.getText()));
                         user.setFamilyName(String.valueOf(mFamilyName.getText()));
+                        user.setPartnerName("none");
+                        user.setUserAge(0);
+                        user.setPartnerAge(0);
                         user.setIsFamily(mIsFamily.isChecked());
                         user.setPoints(0);
                         new DBUserRegisterTask().execute(user, null, null);

@@ -28,13 +28,14 @@ public class UsersContract {
 
         public static final String SQL_CREATE_USERS_TABLE = OP_CREATE_TABLE + TABLE_NAME + OP_OPEN_PARENTHESIS +
             COLUMN_UID + TYPE_INTEGER_PRIMARY_KEY +
-            COLUMN_NAME + TYPE_TEXT +
-            COLUMN_FAMILY_NAME + TYPE_TEXT +
-            COLUMN_PARTNER_NAME + TYPE_TEXT +
+            COLUMN_NAME + TYPE_TEXT_NOT_NULL +
+            COLUMN_FAMILY_NAME + TYPE_TEXT_NOT_NULL +
+            COLUMN_PARTNER_NAME + TYPE_TEXT_NOT_NULL +
             COLUMN_USER_AGE + TYPE_INTEGER +
             COLUMN_PARTNER_AGE + TYPE_INTEGER +
             COLUMN_IS_FAMILY + TYPE_INTEGER +
-            COLUMN_POINTS + " INTEGER "+ OP_CLOSE_PARENTHESIS;
+            COLUMN_POINTS + " INTEGER " +
+                OP_CLOSE_PARENTHESIS;
     }
 }
 

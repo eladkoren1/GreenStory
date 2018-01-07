@@ -22,6 +22,9 @@ public class Utils {
         cv.put("uId", lng.intValue());
         cv.put("name", user.getUserName());
         cv.put("familyName", user.getFamilyName());
+        cv.put("partnerName",user.getPartnerName());
+        cv.put("userAge",user.getUserAge());
+        cv.put("partnerAge",user.getPartnerAge());
         cv.put("isFamily", user.isFamily() ? 1 : 0);
         cv.put("points",user.getPoints());
 

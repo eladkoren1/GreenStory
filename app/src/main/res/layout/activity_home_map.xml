@@ -63,7 +63,7 @@
             android:id="@+id/left_drawer_list"
             android:layout_width="200dp"
             android:layout_height="match_parent"
-            android:layout_gravity="end"
+            android:layout_gravity="left"
             android:choiceMode="singleChoice"
             android:divider="@android:color/transparent"
 

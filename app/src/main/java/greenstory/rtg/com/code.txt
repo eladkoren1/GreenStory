@@ -210,3 +210,62 @@ ScrollView scrollView;
         </LinearLayout>
 
     </LinearLayout>
+
+    /*View.OnClickListener onAreaClickListener = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                switch (v.getId()) {
+                    case R.id.tv_north_area:
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(northAreaLatLng,9.3f));
+                        backClicked=false;
+                        northAreaTextView.setOnClickListener(null);
+                        centerAreaTextView.setOnClickListener(null);
+                        southAreaTextView.setOnClickListener(null);
+                        northAreaTextView.setVisibility(View.GONE);
+                        northAreaTextView.setEnabled(false);
+                        break;
+                    case R.id.tv_center_area:
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(centerAreaLatLng,9.5f));
+                        backClicked=false;
+                        northAreaTextView.setOnClickListener(null);
+                        centerAreaTextView.setOnClickListener(null);
+                        southAreaTextView.setOnClickListener(null);
+                        break;
+                    case R.id.tv_south_area:
+                        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(southAreaLatLng,9.3f));
+                        backClicked=false;
+                        northAreaTextView.setOnClickListener(null);
+                        centerAreaTextView.setOnClickListener(null);
+                        southAreaTextView.setOnClickListener(null);
+                        break;
+                }
+            }
+        };*/
+
+
+        //android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+                //actionBar.setDisplayShowHomeEnabled(true);
+               //actionBar.setDisplayShowTitleEnabled(true);
+                //actionBar.setDisplayShowCustomEnabled(true);
+                //actionBar.setDefaultDisplayHomeAsUpEnabled(true);
+                //actionBar.setHomeButtonEnabled(true);
+                //actionBar.setCustomView(actionBarLayout);
+
+                //final int actionBarColor = getResources().getColor(R.color.action_bar);
+                //actionBar.setBackgroundDrawable(new ColorDrawable(actionBarColor));
+
+                //final Button actionBarTitle = (Button) findViewById(R.id.action_bar_title);
+                //actionBarTitle.setText("b1");
+
+                //final Button actionBarSent = (Button) findViewById(R.id.action_bar_sent);
+                //actionBarSent.setText("b2");
+
+                //final Button actionBarStaff = (Button) findViewById(R.id.action_bar_staff);
+                //actionBarStaff.setText("b3");
+
+                //final Button actionBarLocations = (Button) findViewById(R.id.action_bar_locations);
+                //actionBarLocations.setText("HIPPA Locations");
+
+                //northAreaTextView = (TextView) findViewById(R.id.tv_north_area);
+                //centerAreaTextView = (TextView) findViewById(R.id.tv_center_area);
+                //southAreaTextView = (TextView) findViewById(R.id.tv_south_area);

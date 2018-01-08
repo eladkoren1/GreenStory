@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<kml xmlns="http://www.opengis.net/kml/2.2">
+  <Document>
+    <name>Untitled map</name>
+    <description/>
+    <Style id="icon-1899-0288D1-normal">
+      <IconStyle>
+        <color>ffd18802</color>
+        <scale>1</scale>
+        <Icon>
+          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="16" xunits="pixels" y="32" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>0</scale>
+      </LabelStyle>
+    </Style>
+    <Style id="icon-1899-0288D1-highlight">
+      <IconStyle>
+        <color>ffd18802</color>
+        <scale>1</scale>
+        <Icon>
+          <href>http://www.gstatic.com/mapspro/images/stock/503-wht-blank_maps.png</href>
+        </Icon>
+        <hotSpot x="16" xunits="pixels" y="32" yunits="insetPixels"/>
+      </IconStyle>
+      <LabelStyle>
+        <scale>1</scale>
+      </LabelStyle>
+    </Style>
+    <StyleMap id="icon-1899-0288D1">
+      <Pair>
+        <key>normal</key>
+        <styleUrl>#icon-1899-0288D1-normal</styleUrl>
+      </Pair>
+      <Pair>
+        <key>highlight</key>
+        <styleUrl>#icon-1899-0288D1-highlight</styleUrl>
+      </Pair>
+    </StyleMap>
+    <Folder>
+      <name>Untitled layer</name>
+      <Placemark>
+        <name>מכללה אקדמית תל אביב יפו‎</name>
+        <description><![CDATA[<img src="https://lh4.googleusercontent.com/mHbN2IGwHVOxOra3CnTtCp7dT_0WquulS8viKG6w36KblhreWAKWL3fEXKNLQazxG5YVJMvOX5swAPqDJPqdIdNvQzlP9h_-roh1UGlXxnYnyDzCVvgwZ4Dl3tJVEfrrB2dunA" height="200" width="auto" /><br><br>]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value>https://lh4.googleusercontent.com/mHbN2IGwHVOxOra3CnTtCp7dT_0WquulS8viKG6w36KblhreWAKWL3fEXKNLQazxG5YVJMvOX5swAPqDJPqdIdNvQzlP9h_-roh1UGlXxnYnyDzCVvgwZ4Dl3tJVEfrrB2dunA</value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            34.7609729,32.0477291,0
+          </coordinates>
+        </Point>
+      </Placemark>
+      <Placemark>
+        <name>הר ארבל‎</name>
+        <description><![CDATA[<img src="https://lh6.googleusercontent.com/YWkAlBUWHCSQUZ3L-_3bZrDcmR4ZLXns6-yQP4nfKQi1IBATyfZ-X1O19N7LgpoDDLJVDAbKlMGxEMJAdfXX3aazx6oFVrBKmPhpVkS3M0di_we3XO9v0BGibPEgWqPbbephwA" height="200" width="auto" /><br><br>]]></description>
+        <styleUrl>#icon-1899-0288D1</styleUrl>
+        <ExtendedData>
+          <Data name="gx_media_links">
+            <value>https://lh6.googleusercontent.com/YWkAlBUWHCSQUZ3L-_3bZrDcmR4ZLXns6-yQP4nfKQi1IBATyfZ-X1O19N7LgpoDDLJVDAbKlMGxEMJAdfXX3aazx6oFVrBKmPhpVkS3M0di_we3XO9v0BGibPEgWqPbbephwA</value>
+          </Data>
+        </ExtendedData>
+        <Point>
+          <coordinates>
+            35.4986072,32.824166,0
+          </coordinates>
+        </Point>
+      </Placemark>
+    </Folder>
+  </Document>
+</kml>

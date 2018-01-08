@@ -16,11 +16,12 @@ import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -71,11 +72,11 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
 
-    LatLng centerLatLng = new LatLng(32.110385,35.5004833);
+    LatLng centerLatLng = new LatLng(32.24844,35.1435253);
     LatLng northAreaLatLng = new LatLng(32.852164,35.4706053);
     LatLng centerAreaLatLng = new LatLng(32.110385,35.054833);
     LatLng southAreaLatLng = new LatLng(31.721215,35.0095763);
-    private static float initialZoom = 8f;
+    private static float initialZoom = 8.5f;
 
     String[] homeScreenOptionsArray = {"משתמש", "מסלולים", "מפה", "משתתפים", "אודות", "צור קשר", "חנות"};
 
@@ -88,37 +89,8 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     boolean backClicked=false;
 
 
-    /*View.OnClickListener onAreaClickListener = new View.OnClickListener() {
-        @Override
-        public void onClick(View v) {
-            switch (v.getId()) {
-                case R.id.tv_north_area:
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(northAreaLatLng,9.3f));
-                    backClicked=false;
-                    northAreaTextView.setOnClickListener(null);
-                    centerAreaTextView.setOnClickListener(null);
-                    southAreaTextView.setOnClickListener(null);
-                    northAreaTextView.setVisibility(View.GONE);
-                    northAreaTextView.setEnabled(false);
-                    break;
-                case R.id.tv_center_area:
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(centerAreaLatLng,9.5f));
-                    backClicked=false;
-                    northAreaTextView.setOnClickListener(null);
-                    centerAreaTextView.setOnClickListener(null);
-                    southAreaTextView.setOnClickListener(null);
-                    break;
-                case R.id.tv_south_area:
-                    mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(southAreaLatLng,9.3f));
-                    backClicked=false;
-                    northAreaTextView.setOnClickListener(null);
-                    centerAreaTextView.setOnClickListener(null);
-                    southAreaTextView.setOnClickListener(null);
-                    break;
-            }
-        }
-    };*/
-    HashMap<String,Marker> markerIntegerHashMap = new HashMap<String, Marker>();
+
+    //HashMap<String,Marker> markerIntegerHashMap = new HashMap<String, Marker>();
 
 
     @Override
@@ -126,47 +98,37 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_map);
         checkDataPermissions(user);
-        final ViewGroup actionBarLayout = (ViewGroup) getLayoutInflater().inflate(
-                R.layout.action_bar,
-                null);
 
-
-
-        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
-        actionBar.setDisplayShowHomeEnabled(true);
-        actionBar.setDisplayShowTitleEnabled(true);
-        actionBar.setDisplayShowCustomEnabled(true);
-        //actionBar.setDefaultDisplayHomeAsUpEnabled(true);
-        actionBar.setHomeButtonEnabled(true);
-        actionBar.setCustomView(actionBarLayout);
-
-        final int actionBarColor = getResources().getColor(R.color.action_bar);
-        actionBar.setBackgroundDrawable(new ColorDrawable(actionBarColor));
-
-        final Button actionBarTitle = (Button) findViewById(R.id.action_bar_title);
-        actionBarTitle.setText("b1");
-
-        final Button actionBarSent = (Button) findViewById(R.id.action_bar_sent);
-        actionBarSent.setText("b2");
-
-        final Button actionBarStaff = (Button) findViewById(R.id.action_bar_staff);
-        //actionBarStaff.setText("b3");
-
-        final Button actionBarLocations = (Button) findViewById(R.id.action_bar_locations);
-        //actionBarLocations.setText("HIPPA Locations");
-
-        //northAreaTextView = (TextView) findViewById(R.id.tv_north_area);
-        //centerAreaTextView = (TextView) findViewById(R.id.tv_center_area);
-        //southAreaTextView = (TextView) findViewById(R.id.tv_south_area);
-
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer_white);
+        getSupportActionBar().setTitle("Green Story");
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
+        mDrawerToggle = new android.support.v4.app.ActionBarDrawerToggle (
+                this,                  /* host Activity */
+                mDrawerLayout,         /* DrawerLayout object */
+                R.drawable.ic_drawer_white,  /* nav drawer image to replace 'Up' caret */
+                R.string.drawer_open,  /* "open drawer" description for accessibility */
+                R.string.drawer_close  /* "close drawer" description for accessibility */
+        ) {
+            public void onDrawerClosed(View view) {
+                //getActionBar().setTitle(mTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+
+            public void onDrawerOpened(View drawerView) {
+                //getActionBar().setTitle(mDrawerTitle);
+                invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
+            }
+        };
+        mDrawerLayout.setDrawerListener(mDrawerToggle);
+
         mDrawerList = (ListView) findViewById(R.id.left_drawer_list);
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, homeScreenOptionsArray));
         mDrawerList.setOnItemClickListener(new HomeMapActivity.DrawerItemClickListener());
-
 
         //new DBLoadUserTask().execute(user,null,null);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
@@ -178,11 +140,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     public void onBackPressed() {
         if (!backClicked){
             mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng,initialZoom));
-            //northAreaTextView.setOnClickListener(onAreaClickListener);
-            //centerAreaTextView.setOnClickListener(onAreaClickListener);
-            //southAreaTextView.setOnClickListener(onAreaClickListener);
-           // northAreaTextView.setVisibility(View.VISIBLE);
-            //northAreaTextView.setEnabled(true);
             backClicked=true;
         }
         else{
@@ -197,7 +154,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         checkLocationPermissions(mMap);//Checking for permissions and Initiating map properties
         addSiteLayer();
 
-        LoadTracksMarkers(siteLayer);
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -213,6 +169,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         try {
             siteLayer = new KmlLayer(mMap, R.raw.main_map, getApplicationContext());
             siteLayer.addLayerToMap();
+            //LoadTracksMarkers(siteLayer);
         } catch (XmlPullParserException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -223,31 +180,21 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     public void LoadTracksMarkers(final KmlLayer kmlLayer) {
         Thread thread = new Thread(new Runnable(){
             @Override
-            public void run(){
+            public void run() {
                 String placemarkPointName = null;
                 if (kmlLayer.isLayerOnMap()) {
                     if (kmlLayer.hasContainers()) {
                         Iterable<KmlContainer> layerContainers = kmlLayer.getContainers();
-                        for (KmlContainer layerContainer: layerContainers) {
-                            if (layerContainer.hasContainers()) {
-                                Iterable<KmlContainer> tracksContainers = layerContainer.getContainers();
-                                for (KmlContainer tracksContainer : tracksContainers) {
-                                    Iterable<KmlContainer> trackContainer = tracksContainer.getContainers();
-                                    for (KmlContainer track: trackContainer) {
-                                        if (track.hasPlacemarks()) {
-                                            Iterable<KmlPlacemark> trackPlacemarks = track.getPlacemarks();
-                                            for (KmlPlacemark placemark: trackPlacemarks) {
-                                                if (placemark.hasGeometry()) {
-                                                    if (placemark.getGeometry().toString().contains("Point")) {
-                                                        KmlPoint point = (KmlPoint) placemark.getGeometry();
-                                                        LatLng latLng = new LatLng(point.getGeometryObject().latitude, point.getGeometryObject().longitude);
-                                                        //tracksPlacemarksHashMap.put(latLng, 1);
-                                                        Log.d("latlng", point.toString());
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
+                        for (KmlContainer layerContainer : layerContainers) {
+                            if (layerContainer.hasPlacemarks()) {
+                                Iterable<KmlPlacemark> tracksPlacemarks = layerContainer.getPlacemarks();
+                                for (KmlPlacemark trackPlacemark : tracksPlacemarks) {
+                                    Marker marker = new Marker();
+                                    marker.setPosition(trackPlacemark.getMarkerOptions().getPosition());
+                                    marker.setTitle(trackPlacemark.getProperty("name"));
+                                    //marker.setIcon(BitmapDescriptorFactory.fromResource(trackPlacemark.getProperty("iconRes")));
+                                    //Log.d("marker title",String.valueOf(trackPlacemark.getMarkerOptions()));
+
                                 }
                             }
                         }
@@ -270,11 +217,13 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
+
+                marker.getPosition()
                 Toast.makeText(context,marker.getTitle(),Toast.LENGTH_SHORT).show();
                 return true;
             }
         });
-        map.getUiSettings().setScrollGesturesEnabled(true);
+        map.getUiSettings().setScrollGesturesEnabled(false);
         map.getUiSettings().setZoomGesturesEnabled(true);
 
         //northAreaTextView.setOnClickListener(onAreaClickListener);
@@ -318,7 +267,9 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                     }
                 }
             });
+
         }
+
     }
 
     public boolean isUserIdExists(SQLiteDatabase db) {
@@ -438,12 +389,25 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         }
     }
 
+    @Override
+    public boolean onPrepareOptionsMenu(Menu menu) {
+        // If the nav drawer is open, hide action items related to the content view
+        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        //menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+        return super.onPrepareOptionsMenu(menu);
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
-        return true;
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.main, menu);
+        return super.onCreateOptionsMenu(menu);
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
-        return true;
+        if (mDrawerToggle.onOptionsItemSelected(item)) {
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
     }
 
     private void showOutDialog() {

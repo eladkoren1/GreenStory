@@ -1,0 +1,25 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="wrap_content"
+    android:layout_height="wrap_content"
+    android:enabled="false"
+    android:orientation="horizontal"
+    android:paddingEnd="8dip"
+    android:paddingRight="8dip">
+
+    <Button
+        android:id="@+id/action_bar_title"
+        style="@style/ActionBarButtonWhite" />
+
+    <Button
+        android:id="@+id/action_bar_sent"
+        style="@style/ActionBarButtonOffWhite" />
+
+    <Button
+        android:id="@+id/action_bar_staff"
+        style="@style/ActionBarButtonOffWhite" />
+
+    <Button
+        android:id="@+id/action_bar_locations"
+        style="@style/ActionBarButtonOffWhite" />
+
+</LinearLayout>

@@ -2,11 +2,13 @@ package greenstory.rtg.com;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -16,8 +18,10 @@ import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
+import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -51,7 +55,7 @@ import greenstory.rtg.com.data.GreenStoryDbHelper;
 import greenstory.rtg.com.data.UsersContract;
 import greenstory.rtg.com.data.Utils;
 
-public class HomeMapActivity extends FragmentActivity implements OnMapReadyCallback {
+public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
     EditText mUserName;
     EditText mFamilyName;
@@ -123,6 +127,32 @@ public class HomeMapActivity extends FragmentActivity implements OnMapReadyCallb
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_map);
         checkDataPermissions(user);
+        final ViewGroup actionBarLayout = (ViewGroup) getLayoutInflater().inflate(
+                R.layout.action_bar,
+                null);
+
+        android.support.v7.app.ActionBar actionBar = getSupportActionBar();
+        actionBar.setDisplayShowHomeEnabled(true);
+        actionBar.setDisplayShowTitleEnabled(true);
+        actionBar.setDisplayShowCustomEnabled(true);
+        //actionBar.setDefaultDisplayHomeAsUpEnabled(true);
+        actionBar.setHomeButtonEnabled(true);
+        actionBar.setCustomView(actionBarLayout);
+
+        final int actionBarColor = getResources().getColor(R.color.action_bar);
+        actionBar.setBackgroundDrawable(new ColorDrawable(actionBarColor));
+
+        final Button actionBarTitle = (Button) findViewById(R.id.action_bar_title);
+        actionBarTitle.setText("b1");
+
+        final Button actionBarSent = (Button) findViewById(R.id.action_bar_sent);
+        actionBarSent.setText("b2");
+
+        final Button actionBarStaff = (Button) findViewById(R.id.action_bar_staff);
+        //actionBarStaff.setText("b3");
+
+        final Button actionBarLocations = (Button) findViewById(R.id.action_bar_locations);
+        //actionBarLocations.setText("HIPPA Locations");
 
         //northAreaTextView = (TextView) findViewById(R.id.tv_north_area);
         //centerAreaTextView = (TextView) findViewById(R.id.tv_center_area);

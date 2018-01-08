@@ -21,21 +21,16 @@
 
         <activity
             android:name=".HomeActivity"
-            android:label="@string/title_activity_home">
-
-        </activity>
+            android:label="@string/title_activity_home" />
         <activity
             android:name=".HomeActivityTwo"
-            android:label="@string/title_activity_home">
-
-        </activity>
+            android:label="@string/title_activity_home" />
         <activity
             android:name=".HomeMapActivity"
             android:label="@string/title_activity_home">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
-                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
         <!--
@@ -53,26 +48,23 @@
 
         <activity
             android:name=".UserEditActivity"
-            android:label="@string/title_activity_user" >
-
-        </activity>
+            android:label="@string/title_activity_user" />
         <activity
             android:name=".MapsActivity"
-            android:label="@string/title_activity_maps">
-
-        </activity>
-        <activity
-            android:name=".SitesActivity">
-
-        </activity>
-
+            android:label="@string/title_activity_maps" />
+        <activity android:name=".SitesActivity" />
         <activity
             android:name=".UsersOptionsActivity"
-            android:label="@string/title_activity_users_options">
+            android:label="@string/title_activity_users_options" />
+
+        <activity android:name=".SplashActivity" android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
+
+            </intent-filter>
 
         </activity>
-
-
     </application>
 
 </manifest>

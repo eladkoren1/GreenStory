@@ -20,6 +20,8 @@ import android.support.v7.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
@@ -85,9 +87,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     boolean isFineLocationGranted = false;
     boolean backClicked=false;
 
-    TextView northAreaTextView;
-    TextView centerAreaTextView;
-    TextView southAreaTextView;
 
     /*View.OnClickListener onAreaClickListener = new View.OnClickListener() {
         @Override
@@ -130,6 +129,8 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         final ViewGroup actionBarLayout = (ViewGroup) getLayoutInflater().inflate(
                 R.layout.action_bar,
                 null);
+
+
 
         android.support.v7.app.ActionBar actionBar = getSupportActionBar();
         actionBar.setDisplayShowHomeEnabled(true);
@@ -435,6 +436,14 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 return;
             }
         }
+    }
+
+    public boolean onCreateOptionsMenu(Menu menu) {
+        return true;
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        return true;
     }
 
     private void showOutDialog() {

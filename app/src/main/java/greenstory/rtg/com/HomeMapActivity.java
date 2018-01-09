@@ -54,6 +54,7 @@ import org.xmlpull.v1.XmlPullParserException;
 import java.io.IOException;
 import java.util.HashMap;
 
+import greenstory.rtg.com.classes.Site;
 import greenstory.rtg.com.classes.User;
 import greenstory.rtg.com.data.GreenStoryDbHelper;
 import greenstory.rtg.com.data.UsersContract;
@@ -66,14 +67,14 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     CheckBox mIsFamily;
     User user = new User();
     private GoogleMap mMap;
-
+    private Site trackSite;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
 
-    LatLng centerLatLng = new LatLng(32.7000000,35.1435253);
+    LatLng centerLatLng = new LatLng(32.698123394504464,35.14352526515722);
     LatLngBounds mapBounds = new LatLngBounds(new LatLng(32.0736685,34.7799253),
                                               new LatLng(32.9002805,35.5586083));
     private static float initialZoom = 8.5f;
@@ -90,7 +91,8 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
 
 
 
-    HashMap<String,MarkerOptions> stringMarkerOptionsHashMap = new HashMap<>();
+    HashMap<Integer,MarkerOptions> intMarkerOptionsHashMap = new HashMap<>();
+
 
 
     @Override
@@ -138,12 +140,9 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     @Override
     public void onBackPressed() {
-        if (!backClicked){
-            mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng,initialZoom));
-            backClicked=true;
-            Toast.makeText(context, "הקש שוב כדי לצאת", Toast.LENGTH_SHORT).show();
-        }
-        else{
+        LatLng currentLatLng = mMap.getCameraPosition().target;
+        mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(centerLatLng,initialZoom));
+        if(currentLatLng.equals(centerLatLng)){
             super.onBackPressed();
         }
 
@@ -154,54 +153,33 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         mMap = googleMap;
         checkLocationPermissions(mMap);
         initiateLocation(mMap);//Checking for permissions and Initiating map properties
+        initialiseMarkers();
         addMarkers(mMap);
+    }
+
+
+
+    public void initialiseMarkers(){
+        intMarkerOptionsHashMap.put(0,new MarkerOptions()
+                .position(new LatLng(32.0737617,34.7995856))
+                .title("תוצרת הארץ")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.totzeret_haaretz_72)));
+        intMarkerOptionsHashMap.put(1,new MarkerOptions()
+                .position(new LatLng(32.824166,35.4986072))
+                .title("הר ארבל")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.arbel)));
+        intMarkerOptionsHashMap.put(2,new MarkerOptions()
+                .position(new LatLng(32.0477291,34.7609729))
+                .title("המכללה האקדמית תל אביב יפו")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.mta_72)));
+
     }
 
     public void addMarkers(GoogleMap map) {
 
-        stringMarkerOptionsHashMap.put("mta",new MarkerOptions()
-                .position(new LatLng(32.0477291,34.7609729))
-                .title("המכללה האקדמית תל אביב יפו")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.mta_72)));
-        stringMarkerOptionsHashMap.put("arbel",new MarkerOptions()
-                .position(new LatLng(32.824166,35.4986072))
-                .title("הר ארבל")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.arbel)));
-       map.addMarker(stringMarkerOptionsHashMap.get("arbel"));
-       map.addMarker(stringMarkerOptionsHashMap.get("mta"));
-
-    }
-
-    public void LoadTracksMarkers() {
-        Thread thread = new Thread(new Runnable(){
-            @Override
-            public void run() {
-                try {
-                    siteLayer = new KmlLayer(mMap, R.raw.main_map, getApplicationContext());
-                } catch (XmlPullParserException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                //String placemarkPointName = null;
-                //if (kmlLayer.isLayerOnMap()) {
-                    if (siteLayer.hasContainers()||siteLayer.hasPlacemarks()) {
-                        Iterable<KmlContainer> layerContainers = siteLayer.getContainers();
-                        for (KmlContainer layerContainer : layerContainers) {
-                            if (layerContainer.hasPlacemarks()) {
-                                Iterable<KmlPlacemark> tracksPlacemarks = layerContainer.getPlacemarks();
-                                for (KmlPlacemark trackPlacemark : tracksPlacemarks) {
-                                    mMap.addMarker(trackPlacemark.getMarkerOptions());
-                                    //marker.setIcon(BitmapDescriptorFactory.fromResource(trackPlacemark.getProperty("iconRes")));
-                                    //Log.d("marker title",String.valueOf(trackPlacemark.getMarkerOptions()));
-
-                                }
-                            }
-                        }
-                    }
-                }
-        });
-        thread.start();
+        for (int i=0;i<intMarkerOptionsHashMap.size();i++){
+            map.addMarker(intMarkerOptionsHashMap.get(i));
+        }
     }
 
     @SuppressLint("MissingPermission")
@@ -216,6 +194,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
             @Override
             public boolean onMarkerClick(Marker marker) {
                 Toast.makeText(context,marker.getTitle(),Toast.LENGTH_SHORT).show();
+                showTrackDialog(marker);
                 backClicked=false;
                 return true;
             }
@@ -440,10 +419,11 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         });
     }
 
-    private void showTrackDialog() {
+    private void showTrackDialog(final Marker marker) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
         View mView = getLayoutInflater().inflate(R.layout.activity_home_track_dialog, null);
         Button goToTrackBtn = (Button) mView.findViewById(R.id.btn_go_to_track);
+        TextView siteInfo = (TextView) findViewById(R.id.tv_dialog_track_details);
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
         dialog.show();
@@ -453,7 +433,12 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, MapsActivity.class);
-                //intent.p
+                for (int i=0;i<intMarkerOptionsHashMap.size();i++){
+                    if(marker.getTitle().contentEquals(intMarkerOptionsHashMap.get(i).getTitle())){
+                        intent.putExtra("kmlResource", i);
+                        break;
+                    }
+                }
                 startActivity(intent);
             }
         });

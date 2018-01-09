@@ -269,3 +269,35 @@ ScrollView scrollView;
                 //northAreaTextView = (TextView) findViewById(R.id.tv_north_area);
                 //centerAreaTextView = (TextView) findViewById(R.id.tv_center_area);
                 //southAreaTextView = (TextView) findViewById(R.id.tv_south_area);
+
+                public void LoadTracksMarkers() {
+                        Thread thread = new Thread(new Runnable(){
+                            @Override
+                            public void run() {
+                                try {
+
+                                } catch (XmlPullParserException e) {
+                                    e.printStackTrace();
+                                } catch (IOException e) {
+                                    e.printStackTrace();
+                                }
+                                //String placemarkPointName = null;
+                                //if (kmlLayer.isLayerOnMap()) {
+                                    if (siteLayer.hasContainers()||siteLayer.hasPlacemarks()) {
+                                        Iterable<KmlContainer> layerContainers = siteLayer.getContainers();
+                                        for (KmlContainer layerContainer : layerContainers) {
+                                            if (layerContainer.hasPlacemarks()) {
+                                                Iterable<KmlPlacemark> tracksPlacemarks = layerContainer.getPlacemarks();
+                                                for (KmlPlacemark trackPlacemark : tracksPlacemarks) {
+                                                    mMap.addMarker(trackPlacemark.getMarkerOptions());
+                                                    //marker.setIcon(BitmapDescriptorFactory.fromResource(trackPlacemark.getProperty("iconRes")));
+                                                    //Log.d("marker title",String.valueOf(trackPlacemark.getMarkerOptions()));
+
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                        });
+                        thread.start();
+                    }

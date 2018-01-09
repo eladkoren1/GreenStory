@@ -1,34 +1,37 @@
 package greenstory.rtg.com.classes;
 
+import com.google.maps.android.data.kml.KmlLayer;
+
+import java.io.Serializable;
 import java.util.HashMap;
 
 /**
  * Created by Elad on 23/12/2017.
  */
 
-public class Site {
+public class Site implements Serializable{
 
     private String siteName;
-    private String siteKmlResId;
-    private HashMap<Integer,Track> tracks;
+    private int kmlSource;
+    private String siteData;
+    //private HashMap<Integer,Track> tracks;
 
-    public Site(String siteName, String siteKmlResId,HashMap<Integer,Track> tracks) {
+
+    public Site(String siteName, int kmlSource,String siteData) {
         this.siteName = siteName;
-        this.siteKmlResId = siteKmlResId;
-        this.tracks = tracks;
+        this.kmlSource = kmlSource;
+        this.siteData = siteData;
     }
 
     public String getSiteName() {
-        return siteName;
+        return this.siteName;
     }
 
-    public String getSiteKmlResId() {
-        return siteKmlResId;
+    public int getKmlSource() {
+        return this.kmlSource;
     }
 
-    public HashMap<Integer, Track> getTrack() {
-        return tracks;
-    }
+    public String getSiteData() { return this.siteData;}
 
     @Override
     public String toString() {

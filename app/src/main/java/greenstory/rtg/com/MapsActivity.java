@@ -41,6 +41,7 @@ import java.math.BigDecimal;
 import java.util.HashMap;
 
 import greenstory.rtg.com.classes.Question;
+import greenstory.rtg.com.classes.Site;
 import greenstory.rtg.com.classes.User;
 import greenstory.rtg.com.data.GreenStoryDbHelper;
 import greenstory.rtg.com.data.UsersContract;
@@ -58,9 +59,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private LocationManager locationManager;
     private SQLiteDatabase mDb;
     Cursor cursor;
+    int kmlId;
 
     TextView questionsAnsweredTV;
     View view;
+    HashMap<Integer,Site> intSiteHashMap = new HashMap<>();
+
 
     Question question1 = new Question(1,
         new LatLng(32.0732843,34.7963482),
@@ -100,6 +104,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         questionsAnsweredTV = (TextView) findViewById(R.id.tv_questions_answered);
+        kmlId = getIntent().getIntExtra("kmlResource",-1);
+
 
         GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this,
                 UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
@@ -115,6 +121,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
+        initialiseSiteTracks();
         addSiteLayer();
         LoadTracksMarkers(siteLayer);
         checkPermissions();//Checking for permissions and Initiating map properties
@@ -130,13 +137,22 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void addSiteLayer() {
-        try {
-            siteLayer = new KmlLayer(mMap, R.raw.totzeret_haaretz, getApplicationContext());
-            siteLayer.addLayerToMap();
-        } catch (XmlPullParserException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
-            e.printStackTrace();
+        if (kmlId!=-1) {
+            try {
+                siteLayer = new KmlLayer(mMap, intSiteHashMap.get(kmlId).getKmlSource(), getApplicationContext());
+                siteLayer.addLayerToMap();
+            } catch (XmlPullParserException e) {
+                e.printStackTrace();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            catch (NullPointerException e){
+                Toast.makeText(context,"מסלול בפיתוח",Toast.LENGTH_SHORT);
+                super.onBackPressed();
+            }
+        }
+        else{
+            super.onBackPressed();
         }
     }
 
@@ -246,6 +262,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
+    }
+
+    public void initialiseSiteTracks() {
+
+        intSiteHashMap.put(0,
+                new Site("תוצרת הארץ",
+                        R.raw.totzeret_haaretz,
+                        "data"));
+
     }
 
     private void checkPermissions() {

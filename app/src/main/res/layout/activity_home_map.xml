@@ -32,7 +32,7 @@
 
         </FrameLayout>
 
-        <RelativeLayout
+        <!--<RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="21dp"
             android:orientation="vertical">
@@ -53,11 +53,11 @@
                     android:textColor="@color/rtgGreen"
                     android:textSize="@dimen/text_small" />
 
+        </RelativeLayout>-->
         </RelativeLayout>
 
 
 
-</RelativeLayout>
 
         <ListView
             android:id="@+id/left_drawer_list"

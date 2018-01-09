@@ -3,7 +3,6 @@
     id="map_name">
     <Document>
         <name id="map_name">Kml template</name>
-
             <!--Point placemarks-->
             <Placemark id="point_placemark_1">
                 <name>מכללה אקדמית תל אביב יפו‎</name>
@@ -21,6 +20,8 @@
                     <altitudeMode>relativeToGround</altitudeMode>
                     <coordinates> 35.4986072,32.824166,1000 </coordinates>
                 </Point>
+
             </Placemark>
     </Document>
+
 </kml>

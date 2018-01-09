@@ -2,17 +2,14 @@ package greenstory.rtg.com;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
-import android.graphics.drawable.ColorDrawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
-import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -24,7 +21,6 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
@@ -38,20 +34,12 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptor;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.data.kml.KmlContainer;
 import com.google.maps.android.data.kml.KmlLayer;
-import com.google.maps.android.data.kml.KmlPlacemark;
-import com.google.maps.android.data.kml.KmlPoint;
-
-import org.xmlpull.v1.XmlPullParserException;
-
-import java.io.IOException;
 import java.util.HashMap;
 
 import greenstory.rtg.com.classes.Site;
@@ -79,9 +67,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                                               new LatLng(32.9002805,35.5586083));
     private static float initialZoom = 8.5f;
 
-    String[] homeScreenOptionsArray = {"משתמש", "מסלולים", "מפה", "משתתפים", "אודות", "צור קשר", "חנות"};
-
-    KmlLayer siteLayer;
     Context context = this;
     private SQLiteDatabase mDb;
 
@@ -125,11 +110,10 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
 
         mDrawerList = (ListView) findViewById(R.id.left_drawer_list);
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, homeScreenOptionsArray));
+                R.layout.drawer_list_item, Args.MENU_OPTIONS));
         mDrawerList.setOnItemClickListener(new HomeMapActivity.DrawerItemClickListener());
 
         //new DBLoadUserTask().execute(user,null,null);
@@ -156,8 +140,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         initialiseMarkers();
         addMarkers(mMap);
     }
-
-
 
     public void initialiseMarkers(){
         intMarkerOptionsHashMap.put(0,new MarkerOptions()
@@ -193,7 +175,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         map.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
             @Override
             public boolean onMarkerClick(Marker marker) {
-                Toast.makeText(context,marker.getTitle(),Toast.LENGTH_SHORT).show();
                 showTrackDialog(marker);
                 backClicked=false;
                 return true;
@@ -310,7 +291,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
         }
         else {
-            Toast.makeText(this,"fine location granted already",Toast.LENGTH_SHORT).show();
             isFineLocationGranted=true;
         }
 
@@ -322,7 +302,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         }
 
         else {
-            Toast.makeText(this,"coarse location granted already",Toast.LENGTH_SHORT).show();
             isCoarseLocationGranted=true;
         }
 
@@ -439,6 +418,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                         break;
                     }
                 }
+                dialog.dismiss();
                 startActivity(intent);
             }
         });

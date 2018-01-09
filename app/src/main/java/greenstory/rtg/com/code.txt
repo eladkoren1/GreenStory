@@ -301,3 +301,42 @@ ScrollView scrollView;
                         });
                         thread.start();
                     }
+
+
+ public void LoadTracksMarkers(final KmlLayer kmlLayer) {
+        Thread thread = new Thread(new Runnable(){
+            @Override
+            public void run(){
+                String placemarkPointName = null;
+                if (kmlLayer.isLayerOnMap()) {
+                    if (kmlLayer.hasContainers()) {
+                        Iterable<KmlContainer> layerContainers = kmlLayer.getContainers();
+                        for (KmlContainer layerContainer: layerContainers) {
+                            if (layerContainer.hasContainers()) {
+                                Iterable<KmlContainer> tracksContainers = layerContainer.getContainers();
+                                for (KmlContainer tracksContainer : tracksContainers) {
+                                    Iterable<KmlContainer> trackContainer = tracksContainer.getContainers();
+                                    for (KmlContainer track: trackContainer) {
+                                        if (track.hasPlacemarks()) {
+                                            Iterable<KmlPlacemark> trackPlacemarks = track.getPlacemarks();
+                                            for (KmlPlacemark placemark: trackPlacemarks) {
+                                                if (placemark.hasGeometry()) {
+                                                    if (placemark.getGeometry().toString().contains("Point")) {
+                                                        KmlPoint point = (KmlPoint) placemark.getGeometry();
+                                                        LatLng latLng = new LatLng(point.getGeometryObject().latitude, point.getGeometryObject().longitude);
+                                                        tracksPlacemarksHashMap.put(latLng, 1);
+                                                        Log.d("latlng", point.toString());
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        });
+        thread.start();
+    }

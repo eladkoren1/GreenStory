@@ -123,7 +123,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         mMap = googleMap;
         initialiseSiteTracks();
         addSiteLayer();
-        LoadTracksMarkers(siteLayer);
+        //LoadTracksMarkers(siteLayer);
         checkPermissions();//Checking for permissions and Initiating map properties
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -147,51 +147,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 e.printStackTrace();
             }
             catch (NullPointerException e){
-                Toast.makeText(context,"מסלול בפיתוח",Toast.LENGTH_SHORT);
+                Log.d("reason","developing map");
                 super.onBackPressed();
+
             }
         }
         else{
             super.onBackPressed();
         }
-    }
-
-    public void LoadTracksMarkers(final KmlLayer kmlLayer) {
-        Thread thread = new Thread(new Runnable(){
-            @Override
-            public void run(){
-                String placemarkPointName = null;
-                if (kmlLayer.isLayerOnMap()) {
-                    if (kmlLayer.hasContainers()) {
-                        Iterable<KmlContainer> layerContainers = kmlLayer.getContainers();
-                        for (KmlContainer layerContainer: layerContainers) {
-                            if (layerContainer.hasContainers()) {
-                                Iterable<KmlContainer> tracksContainers = layerContainer.getContainers();
-                                for (KmlContainer tracksContainer : tracksContainers) {
-                                    Iterable<KmlContainer> trackContainer = tracksContainer.getContainers();
-                                    for (KmlContainer track: trackContainer) {
-                                        if (track.hasPlacemarks()) {
-                                            Iterable<KmlPlacemark> trackPlacemarks = track.getPlacemarks();
-                                            for (KmlPlacemark placemark: trackPlacemarks) {
-                                                if (placemark.hasGeometry()) {
-                                                    if (placemark.getGeometry().toString().contains("Point")) {
-                                                        KmlPoint point = (KmlPoint) placemark.getGeometry();
-                                                        LatLng latLng = new LatLng(point.getGeometryObject().latitude, point.getGeometryObject().longitude);
-                                                        tracksPlacemarksHashMap.put(latLng, 1);
-                                                        Log.d("latlng", point.toString());
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        });
-        thread.start();
     }
 
     @SuppressLint("MissingPermission")
@@ -281,7 +244,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     new String[]{Manifest.permission.ACCESS_FINE_LOCATION},1);
         }
         else {
-            Toast.makeText(this,"fine location granted already",Toast.LENGTH_SHORT).show();
+
             isFineLocationGranted=true;
         }
 
@@ -293,7 +256,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
 
         else {
-            Toast.makeText(this,"coarse location granted already",Toast.LENGTH_SHORT).show();
+
             isCoarseLocationGranted=true;
         }
         if(isCoarseLocationGranted&&isFineLocationGranted){

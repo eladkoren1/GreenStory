@@ -8,6 +8,7 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
@@ -42,6 +43,7 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.data.kml.KmlLayer;
 import java.util.HashMap;
+import java.util.List;
 
 import greenstory.rtg.com.classes.Site;
 import greenstory.rtg.com.classes.User;
@@ -59,6 +61,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     private Site trackSite;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
+    ListView siteInfo;
     private ActionBarDrawerToggle mDrawerToggle;
     private CharSequence mDrawerTitle;
     private CharSequence mTitle;
@@ -76,10 +79,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     boolean backClicked=false;
 
 
-
     HashMap<Integer,MarkerOptions> intMarkerOptionsHashMap = new HashMap<>();
-
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -425,6 +425,22 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         });
     }
 
+    private void showAttractionsDialog() {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+        View mView = getLayoutInflater().inflate(R.layout.activity_home_attractions_dialog, null);
+        siteInfo = mView.findViewById(R.id.lv_attractions);
+        Resources res = getResources();
+        siteInfo.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.attractions_list_item, res.getStringArray(R.array.attractions_array)));
+        siteInfo.setOnItemClickListener(new HomeMapActivity.attractionsItemClickListener());
+        mBuilder.setView(mView);
+        AlertDialog dialog = mBuilder.create();
+        dialog.show();
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+    }
+
+
     class DBUserRegisterTask extends AsyncTask<User, Void, Void> {
 
         @Override
@@ -488,9 +504,23 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 startActivity(intent);
             }
             if (position == 2) {
-                Intent intent = new Intent(context, MapsActivity.class);
-                startActivity(intent);
+                showAttractionsDialog();
             }
         }
     }
+
+    class attractionsItemClickListener implements android.widget.AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            String site = String.valueOf(siteInfo.getItemAtPosition(position));
+            String url = "https://www.google.co.il/search?q="+site;
+            Uri uri = Uri.parse(url);
+            Intent intent = new Intent();
+            intent.setData(uri);
+            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+            context.startActivity(intent);
+
+            }
+    }
 }
+

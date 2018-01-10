@@ -23,6 +23,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.Gallery;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -72,6 +73,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     int kmlId;
     Button takePictureBtn;
     Bitmap picture;
+    Uri imageUri;
 
     TextView questionsAnsweredTV;
     View view;
@@ -146,11 +148,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         @Override
                         public void run() {
                             Bitmap photo = (Bitmap) data.getExtras().get("data");
-                            Uri imageUri = getImageUri(getApplicationContext(), photo);
-                            //File finalFile = new File(getRealPathFromURI(imageUri));
-                            //Log.d("URI Path",String.valueOf(finalFile.getPath()));
+                            imageUri = getImageUri(getApplicationContext(), photo);
                             picture = (Bitmap) data.getExtras().get("data");
-                            //showImageDialog();
+                            showImageDialog();
                             tryDialog();
                         }
                     });
@@ -382,7 +382,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context,HomeActivity.class);
+                Intent intent = new Intent(context, GalleryActivity.class);
                 startActivity(intent);
             }
         });
@@ -487,7 +487,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
         return cursor.getString(idx);
     }
-
 
     public class DBUserUpdateTask extends AsyncTask<User, Void, Void> {
 

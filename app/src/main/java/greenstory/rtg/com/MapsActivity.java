@@ -2,6 +2,7 @@ package greenstory.rtg.com;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -149,7 +150,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             //File finalFile = new File(getRealPathFromURI(imageUri));
                             //Log.d("URI Path",String.valueOf(finalFile.getPath()));
                             picture = (Bitmap) data.getExtras().get("data");
-                            showImageDialog();
+                            //showImageDialog();
+                            tryDialog();
                         }
                     });
                     thread.run();
@@ -363,18 +365,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    private void tryDialog(){
+
+    }
     private void showImageDialog(){
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+
+        Dialog dialog=new Dialog(this,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         View mView = getLayoutInflater().inflate(R.layout.activity_maps_dialog_image, null);
         ImageView pictureView = (ImageView) mView.findViewById(R.id.iv_dialog_share);
-        Button btn_out = (Button) mView.findViewById(R.id.btn_share);
-        mBuilder.setView(mView);
-        final AlertDialog dialog = mBuilder.create();
+        Button shareButton = (Button)mView.findViewById(R.id.btn_share);
+        dialog.setContentView(mView);
         pictureView.setImageBitmap(picture);
         dialog.show();
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        btn_out.setOnClickListener(new View.OnClickListener() {
+        dialog.setCancelable(true);
+        dialog.setCanceledOnTouchOutside(true);
+        shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context,HomeActivity.class);

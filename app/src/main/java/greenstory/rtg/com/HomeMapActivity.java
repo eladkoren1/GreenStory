@@ -5,6 +5,7 @@ import android.annotation.SuppressLint;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.os.AsyncTask;
@@ -110,10 +111,10 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
-
+        Resources res = getResources();
         mDrawerList = (ListView) findViewById(R.id.left_drawer_list);
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, Args.MENU_OPTIONS));
+                R.layout.drawer_list_item, res.getStringArray(R.array.options_array)));
         mDrawerList.setOnItemClickListener(new HomeMapActivity.DrawerItemClickListener());
 
         //new DBLoadUserTask().execute(user,null,null);

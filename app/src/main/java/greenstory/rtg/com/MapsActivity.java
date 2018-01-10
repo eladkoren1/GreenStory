@@ -7,10 +7,14 @@ import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Environment;
+import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
 import android.support.v4.content.ContextCompat;
@@ -18,6 +22,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -36,8 +41,12 @@ import com.google.maps.android.data.kml.KmlPoint;
 
 import org.xmlpull.v1.XmlPullParserException;
 
+import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.math.BigDecimal;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 
 import greenstory.rtg.com.classes.Question;
@@ -60,6 +69,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     private SQLiteDatabase mDb;
     Cursor cursor;
     int kmlId;
+    Button takePictureBtn;
+    Bitmap picture;
 
     TextView questionsAnsweredTV;
     View view;
@@ -105,8 +116,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         questionsAnsweredTV = (TextView) findViewById(R.id.tv_questions_answered);
         kmlId = getIntent().getIntExtra("kmlResource",-1);
+        takePictureBtn = (Button)findViewById(R.id.btn_take_picture);
+        takePictureBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent takePictureIntent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                startActivityForResult(takePictureIntent,1);
 
-
+            }
+        });
         GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this,
                 UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
         mDb = dbHelper.getWritableDatabase();
@@ -116,6 +134,29 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, final Intent data) {
+        switch (requestCode) {
+            case 1: {
+                if (resultCode == RESULT_OK) {
+                    Thread thread = new Thread(new Runnable() {
+                        @Override
+                        public void run() {
+                            Bitmap photo = (Bitmap) data.getExtras().get("data");
+                            Uri imageUri = getImageUri(getApplicationContext(), photo);
+                            //File finalFile = new File(getRealPathFromURI(imageUri));
+                            //Log.d("URI Path",String.valueOf(finalFile.getPath()));
+                            picture = (Bitmap) data.getExtras().get("data");
+                            showImageDialog();
+                        }
+                    });
+                    thread.run();
+                }
+                break;
+            }
+        }
     }
 
     @Override
@@ -322,6 +363,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    private void showImageDialog(){
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+        View mView = getLayoutInflater().inflate(R.layout.activity_maps_dialog_image, null);
+        ImageView pictureView = (ImageView) mView.findViewById(R.id.iv_dialog_share);
+        Button btn_out = (Button) mView.findViewById(R.id.btn_share);
+        mBuilder.setView(mView);
+        final AlertDialog dialog = mBuilder.create();
+        pictureView.setImageBitmap(picture);
+        dialog.show();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        btn_out.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(context,HomeActivity.class);
+                startActivity(intent);
+            }
+        });
+    }
+
     private void showQuestionDialog(final Question question){
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
         View mView = getLayoutInflater().inflate(R.layout.activity_maps_dialog_question, null);
@@ -408,6 +469,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
+    public Uri getImageUri(Context inContext, Bitmap inImage) {
+        ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+        inImage.compress(Bitmap.CompressFormat.JPEG, 100, bytes);
+        String path = MediaStore.Images.Media.insertImage(inContext.getContentResolver(), inImage, "Title", null);
+        return Uri.parse(path);
+    }
+
+    public String getRealPathFromURI(Uri uri) {
+        Cursor cursor = getContentResolver().query(uri, null, null, null, null);
+        cursor.moveToFirst();
+        int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
+        return cursor.getString(idx);
+    }
+
+
     public class DBUserUpdateTask extends AsyncTask<User, Void, Void> {
 
         @Override
@@ -447,3 +523,4 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
     }
 }
+

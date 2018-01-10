@@ -2,6 +2,7 @@ package greenstory.rtg.com.classes;
 
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Created by Elad on 17/12/2017.
@@ -18,6 +19,7 @@ public class User implements Serializable{
     private boolean isFamily = false;
     private ArrayList<Child> children;
     private int points;
+    private HashMap<String,Site> stringSiteHashMap = new HashMap<>();
 
 
     public User() {

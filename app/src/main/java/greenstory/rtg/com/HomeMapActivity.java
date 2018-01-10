@@ -514,11 +514,9 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             String site = String.valueOf(siteInfo.getItemAtPosition(position));
             String url = "https://www.google.co.il/search?q="+site;
-            Uri uri = Uri.parse(url);
-            Intent intent = new Intent();
-            intent.setData(uri);
-            intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-            context.startActivity(intent);
+            //Uri uri = Uri.parse(url);
+            Intent intent= new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+            startActivity(intent);
 
             }
     }

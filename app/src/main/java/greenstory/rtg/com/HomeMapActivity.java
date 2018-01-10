@@ -185,7 +185,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
             public void onMapClick(LatLng latLng) {
                 backClicked=false;
                 if((isCoarseLocationGranted==false||isCoarseLocationGranted==false)){
-                    showOutDialog();
+                    //showOutDialog();
                 }
             }
         });

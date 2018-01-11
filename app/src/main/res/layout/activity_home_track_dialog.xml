@@ -23,7 +23,8 @@
             android:id="@+id/tv_dialog_track_details"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="כעגכעגכעגכעגכעגכעגגכעגכעגכעגכעגכעגכעגכעגכעגכ גכעגכעגכ גכעגכעגכע גכעגכעגכע גכעגכע מידע על אתר"
+            android:layout_gravity="center"
+            android:text=""
             android:textSize="@dimen/text_small"
             android:padding="6dp"
             android:textStyle="bold" />

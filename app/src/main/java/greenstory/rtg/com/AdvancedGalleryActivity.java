@@ -24,6 +24,7 @@ import android.widget.BaseAdapter;
 import android.widget.GridView;
 import android.widget.ImageButton;
 import android.widget.ImageView;
+import android.widget.TextView;
 
 import java.io.File;
 import java.io.FileNotFoundException;
@@ -44,6 +45,7 @@ public class AdvancedGalleryActivity extends AppCompatActivity implements Advanc
     Bitmap pictureThumbnail = null;
     boolean isLoadFinished=false;
     Context context = this;
+    private TextView titleTextView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -51,6 +53,10 @@ public class AdvancedGalleryActivity extends AppCompatActivity implements Advanc
         setContentView(R.layout.activity_advanced_gallery);
         dbHelper = new GreenStoryDbHelper(this);
         mDb = dbHelper.getReadableDatabase();
+        getSupportActionBar().setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM);
+        getSupportActionBar().setCustomView(R.layout.custom_action_bar_no_burger);
+        titleTextView = findViewById(R.id.tv_action_title_bar);
+        titleTextView.setText("גלריה");
 
         String intentSite = getIntent().getStringExtra("site");
         imageLoadTask = new DBLoadImagesTask();

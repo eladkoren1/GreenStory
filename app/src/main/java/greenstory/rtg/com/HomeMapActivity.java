@@ -65,7 +65,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     User user = new User();
     private GoogleMap mMap;
-    private Site trackSite;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     ListView siteInfo;
@@ -85,6 +84,9 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     ImageButton closeTrackDialogImageButton;
 
     HashMap<Integer,MarkerOptions> intMarkerOptionsHashMap = new HashMap<>();
+    HashMap<Integer,Site> integerSiteHashMap = new HashMap<>();
+
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -156,6 +158,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         checkLocationPermissions(mMap);
         initiateLocation(mMap);//Checking for permissions and Initiating map properties
         initialiseMarkers();
+        initialiseSites();
         addMarkers(mMap);
     }
 
@@ -170,8 +173,24 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.mta_72)));
         intMarkerOptionsHashMap.put(2,new MarkerOptions()
                 .position(new LatLng(32.824166,35.4986072))
-                .title("הר ארבל")
+                .title("שמורת הר ארבל")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.arbel)));
+
+    }
+
+    public void initialiseSites(){
+        integerSiteHashMap.put(0,
+                new Site("תוצרת הארץ",
+                        1,
+                        "שכונת נחלת יצחק היא שכונה בדרום-מזרח תל אביב שהוקמה בשנת 1925 מזרחית לנחל איילון (ואדי מוסררה, כיום נתיבי איילון), על ידי קבוצת יהודים שבאו מקובנה. השכונה סמוכה לשכונות ביצרון ורמת ישראל"));
+        integerSiteHashMap.put(1,
+                new Site("המכללה האקדמית תל אביב יפו",
+                        2,
+                        "האקדמית תל אביב-יפו הוקמה בשנת 1994 ביוזמה משותפת של אוניברסיטת תל אביב, עיריית תל אביב-יפו והוועדה לתכנון ולתקצוב של המועצה להשכלה גבוהה, כמוסד אקדמי ציבורי להשכלה גבוהה (האקדמית זכתה להכרה כמוסד להשכלה גבוהה ב-1996)"));
+        integerSiteHashMap.put(2,
+                new Site("שמורת הר ארבל",
+                        3,
+                        "הגן הלאומי כולל בתוכו את רוב שטחו של הר הארבל, הר ניתאי, הר סביון, קרני חיטין ורמת ארבל. בשטח הגן הלאומי מסומנים שבילי טיול. השביל המוליך ממגרש החניה קצר ונוח להליכה. הוא עולה בשיפוע מתון עד אל שפת המצוק, המתנשא מעל סביבתו לגובה 400 מטר ומעניק מראות נוף למרחקים"));
 
     }
 
@@ -397,24 +416,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         return super.onOptionsItemSelected(item);
     }
 
-    private void showOutDialog() {
-        AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-        View mView = getLayoutInflater().inflate(R.layout.activity_maps_dialog_out, null);
-        Button btn_out = (Button) mView.findViewById(R.id.btn_out);
-        mBuilder.setView(mView);
-        final AlertDialog dialog = mBuilder.create();
-        dialog.show();
-        dialog.setCancelable(false);
-        dialog.setCanceledOnTouchOutside(false);
-        btn_out.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(context, HomeMapActivity.class);
-                startActivity(intent);
-            }
-        });
-    }
-
     private void showTrackDialog(final Marker marker) {
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
         View mView = getLayoutInflater().inflate(R.layout.activity_home_track_dialog, null);
@@ -430,6 +431,13 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
             }
         });
         dialog.show();
+        for (int i=0;i<integerSiteHashMap.size();i++) {
+            if (marker.getTitle().contentEquals(integerSiteHashMap.get(i).getSiteName())) {
+                siteInfo.setText(integerSiteHashMap.get(i).getSiteData());
+                break;
+            }
+        }
+
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
         goToTrackBtn.setOnClickListener(new View.OnClickListener() {
@@ -512,7 +520,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            nameTitleTextView.setText("ברוך הבא "+user.getUserName());
             super.onPostExecute(aVoid);
 
         }

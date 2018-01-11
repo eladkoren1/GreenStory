@@ -18,15 +18,20 @@
     <RadioGroup
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-        android:layout_gravity="left"
-        android:gravity="start">
+        android:layout_gravity="start"
+        android:textAlignment="center"
+        android:gravity="right">
 
     <RadioButton
         android:id="@+id/rb_answer_a"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+        android:layout_margin="5dp"
         android:text="Answer A"
+        android:button="@null"
+        android:drawableRight="@android:drawable/btn_radio"
+
+
         android:textSize="25sp"
         android:textStyle="bold" />
 
@@ -34,7 +39,10 @@
         android:id="@+id/rb_answer_b"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+
+        android:button="@null"
+        android:drawableRight="@android:drawable/btn_radio"
+        android:layout_margin="5dp"
         android:text="Answer B"
         android:textSize="25sp"
         android:textStyle="bold" />
@@ -43,7 +51,10 @@
         android:id="@+id/rb_answer_c"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
+
+        android:button="@null"
+        android:drawableRight="@android:drawable/btn_radio"
+        android:layout_margin="5dp"
         android:text="Answer C"
         android:textSize="25sp"
         android:textStyle="bold" />
@@ -52,8 +63,11 @@
         android:id="@+id/rb_answer_d"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="5dp"
-        android:text="Answer D"
+
+        android:button="@null"
+        android:drawableRight="@android:drawable/btn_radio"
+        android:layout_margin="5dp"
+        android:text="תשובה ד"
         android:textSize="25sp"
         android:textStyle="bold" />
 
@@ -65,7 +79,8 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="20dp"
         android:background="@color/colorAccent"
-        android:text="submit answer"
+        android:padding="6dp"
+        android:text="שלח תשובה"
         android:layout_gravity="center"
         android:textSize="25sp"
 

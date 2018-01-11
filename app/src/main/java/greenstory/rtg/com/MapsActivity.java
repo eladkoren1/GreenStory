@@ -81,8 +81,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     boolean isCoarseLocationGranted = false;
     boolean isFineLocationGranted = false;
 
-    int questionsAnsweredNum = 0;
-    String questionsAnswered = "מס' שאלות שעניתי: ";
 
     HashMap<LatLng, Integer> tracksPlacemarksHashMap = new HashMap<LatLng, Integer>();
 
@@ -263,6 +261,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 new Site("תוצרת הארץ",
                         R.raw.totzeret_haaretz,
                         "data"));
+        intSiteHashMap.put(1,
+                new Site("המכללה האקדמית תל אביב יפו",
+                        R.raw.academic_tlv,
+                        "data"));
+        intSiteHashMap.put(2,
+                new Site("תוצרת הארץ",
+                        R.raw.academic_tlv,
+                        "data"));
 
     }
 
@@ -433,7 +439,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Toast.makeText(context, "תשובה נכונה! +10 נקודות", Toast.LENGTH_SHORT).show();
                     question.setIsAnswered(true);
                     dialog.dismiss();
-                    questionsAnsweredNum++;
+
                     //questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
@@ -447,7 +453,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_SHORT).show();
                     question.setIsAnswered(true);
                     dialog.dismiss();
-                    questionsAnsweredNum++;
+
                     //questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
@@ -461,7 +467,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_SHORT).show();
                     question.setIsAnswered(true);
                     dialog.dismiss();
-                    questionsAnsweredNum++;
+
                     //questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
@@ -475,7 +481,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_SHORT).show();
                     question.setIsAnswered(true);
                     dialog.dismiss();
-                    questionsAnsweredNum++;
+
                     //questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);

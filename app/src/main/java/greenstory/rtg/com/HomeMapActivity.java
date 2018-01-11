@@ -106,10 +106,10 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
             @Override
             public void onClick(View v) {
                 if (!mDrawerLayout.isDrawerOpen(mDrawerList)){
-                    mDrawerLayout.openDrawer(Gravity.LEFT,true);
+                    mDrawerLayout.openDrawer(Gravity.START,true);
                 }
                 if (mDrawerLayout.isDrawerOpen(mDrawerList)){
-                    mDrawerLayout.closeDrawer(Gravity.LEFT,true);
+                    mDrawerLayout.closeDrawer(Gravity.START,true);
                 }
             }
         });

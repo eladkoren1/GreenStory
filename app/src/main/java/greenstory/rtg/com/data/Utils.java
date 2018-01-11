@@ -147,6 +147,7 @@ public class Utils {
             db.setTransactionSuccessful();
             db.endTransaction();
             cursor.close();
+            db.close();
         }
         return imagesHashMap;
     }

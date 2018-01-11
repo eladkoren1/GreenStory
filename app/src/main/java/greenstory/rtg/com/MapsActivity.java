@@ -6,6 +6,7 @@ import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
+import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -14,7 +15,6 @@ import android.location.LocationManager;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Environment;
 import android.provider.MediaStore;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
@@ -23,7 +23,7 @@ import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
-import android.widget.Gallery;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -33,28 +33,21 @@ import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
 import com.google.android.gms.maps.SupportMapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.MarkerOptions;
-import com.google.maps.android.data.kml.KmlContainer;
 import com.google.maps.android.data.kml.KmlLayer;
-import com.google.maps.android.data.kml.KmlPlacemark;
-import com.google.maps.android.data.kml.KmlPoint;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.ByteArrayOutputStream;
-import java.io.File;
 import java.io.IOException;
-import java.math.BigDecimal;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 
+import greenstory.rtg.com.classes.Image;
 import greenstory.rtg.com.classes.Question;
 import greenstory.rtg.com.classes.Site;
 import greenstory.rtg.com.classes.User;
 import greenstory.rtg.com.data.GreenStoryDbHelper;
+import greenstory.rtg.com.data.ImagesContract;
 import greenstory.rtg.com.data.UsersContract;
 import greenstory.rtg.com.data.Utils;
 
@@ -69,40 +62,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Context context = this;
     private LocationManager locationManager;
     private SQLiteDatabase mDb;
+
     Cursor cursor;
     int kmlId;
-    Button takePictureBtn;
+    ImageButton takePictureBtn;
+    Image image;
     Bitmap picture;
     Uri imageUri;
-
+    String[] sitesArray;
     TextView questionsAnsweredTV;
     View view;
     HashMap<Integer,Site> intSiteHashMap = new HashMap<>();
-
-
-    Question question1 = new Question(1,
-        new LatLng(32.0732843,34.7963482),
-        "מהו הרחוב הוותיק ביותר בתל אביב?",
-        "רחוב הרצל","שדרות קק''ל","רחוב אלנבי", "שדרות רוטשילד",
-        1,false);
-
-    Question question2 = new Question(2,
-        new LatLng(32.0731386,34.7949018),
-        "איזו כתובת מהבאות יוצאת דופן",
-        "כיכר קדומים 14","הרכב 8","יונה הנביא 6", "דוד חכמי 35",
-        2,false);
-
-    Question question3 = new Question(3,
-        new LatLng(32.0721558,34.7957219),
-        "איזו שכונה הייתה מזוהה היסטורית עם מועדון הכדורגל שמשון תל אביב?",
-        "יד אליהו","קריית שלום","כפר התימנים", "כפר שלם",
-        3,false);
-
-    Question question4 = new Question(4,
-        new LatLng(32.0723749,34.7973027),
-        "איזו מחנויות הספרים הבאות לא נמצאות באלנבי?",
-        "קדמת עדן","הלפר ספרים","לוטוס", "הנסיך הקטן",
-        4,false);
+    Question question1;
+    Question question2;
+    Question question3;
+    Question question4;
 
     boolean isCoarseLocationGranted = false;
     boolean isFineLocationGranted = false;
@@ -116,10 +90,15 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
+
+        Resources res = getResources();
+        sitesArray = res.getStringArray(R.array.sites_array);
+        initialiseQuestions(sitesArray);
+
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        questionsAnsweredTV = (TextView) findViewById(R.id.tv_questions_answered);
+        //questionsAnsweredTV = (TextView) findViewById(R.id.tv_questions_answered);
         kmlId = getIntent().getIntExtra("kmlResource",-1);
-        takePictureBtn = (Button)findViewById(R.id.btn_take_picture);
+        takePictureBtn = (ImageButton)findViewById(R.id.btn_take_picture);
         takePictureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -128,8 +107,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             }
         });
-        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this,
-                UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
+
+        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this);
         mDb = dbHelper.getWritableDatabase();
 
         new DBLoadUserTask().execute(user,null,null);
@@ -147,11 +126,19 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Thread thread = new Thread(new Runnable() {
                         @Override
                         public void run() {
-                            Bitmap photo = (Bitmap) data.getExtras().get("data");
-                            imageUri = getImageUri(getApplicationContext(), photo);
-                            picture = (Bitmap) data.getExtras().get("data");
+
+
+                            //Bitmap photo = (Bitmap) data.getExtras().get("data");
+                            //imageUri = getImageUri(getApplicationContext(), photo);
+                            try {
+                               picture = MediaStore.Images.Media.getBitmap(context.getContentResolver(), data.getData());
+                            } catch (IOException e) {
+                                e.printStackTrace();
+                            }
+                            image = new Image(sitesArray[kmlId],data.getData().toString());
+                            new DBinsertImageDataToDbTask().execute(image,null,null);
                             showImageDialog();
-                            tryDialog();
+
                         }
                     });
                     thread.run();
@@ -279,6 +266,32 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
+    public void initialiseQuestions(String[] sitesArray){
+        question1 = new Question(1,sitesArray[kmlId],
+                new LatLng(32.0732843,34.7963482),
+                "מהו הרחוב הוותיק ביותר בתל אביב?",
+                "רחוב הרצל","שדרות קק''ל","רחוב אלנבי", "שדרות רוטשילד",
+                1,false);
+
+        question2 = new Question(2,sitesArray[kmlId],
+                new LatLng(32.0731386,34.7949018),
+                "איזו כתובת מהבאות יוצאת דופן",
+                "כיכר קדומים 14","הרכב 8","יונה הנביא 6", "דוד חכמי 35",
+                2,false);
+
+        question3 = new Question(3,sitesArray[kmlId],
+                new LatLng(32.0721558,34.7957219),
+                "איזו שכונה הייתה מזוהה היסטורית עם מועדון הכדורגל שמשון תל אביב?",
+                "יד אליהו","קריית שלום","כפר התימנים", "כפר שלם",
+                3,false);
+
+        question4 = new Question(4,sitesArray[kmlId],
+                new LatLng(32.0723749,34.7973027),
+                "איזו מחנויות הספרים הבאות לא נמצאות באלנבי?",
+                "קדמת עדן","הלפר ספרים","לוטוס", "הנסיך הקטן",
+                4,false);
+    }
+
     private void checkPermissions() {
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
@@ -359,21 +372,18 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btn_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context,HomeActivity.class);
+                Intent intent = new Intent(context,HomeMapActivity.class);
                 startActivity(intent);
             }
         });
     }
 
-    private void tryDialog(){
-
-    }
     private void showImageDialog(){
 
         Dialog dialog=new Dialog(this,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         View mView = getLayoutInflater().inflate(R.layout.activity_maps_dialog_image, null);
         ImageView pictureView = (ImageView) mView.findViewById(R.id.iv_dialog_share);
-        Button shareButton = (Button)mView.findViewById(R.id.btn_share);
+        ImageButton shareButton = mView.findViewById(R.id.btn_share);
         dialog.setContentView(mView);
         pictureView.setImageBitmap(picture);
         dialog.show();
@@ -382,8 +392,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, GalleryActivity.class);
-                startActivity(intent);
+                Intent share = new Intent(Intent.ACTION_SEND);
+                String bitmapPath = MediaStore.Images.Media.insertImage(getContentResolver(), picture,null, null);
+                Uri bitmapUri = Uri.parse(bitmapPath);
+                share.setType("image/jpg");
+                share.putExtra(Intent.EXTRA_STREAM, bitmapUri );
+                startActivity(Intent.createChooser(share, "Share using"));
             }
         });
     }
@@ -420,7 +434,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     question.setIsAnswered(true);
                     dialog.dismiss();
                     questionsAnsweredNum++;
-                    questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
+                    //questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
                     new MapsActivity.DBUserUpdateTask().execute(user,null,null);
@@ -434,7 +448,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     question.setIsAnswered(true);
                     dialog.dismiss();
                     questionsAnsweredNum++;
-                    questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
+                    //questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
                     new MapsActivity.DBUserUpdateTask().execute(user,null,null);
@@ -448,7 +462,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     question.setIsAnswered(true);
                     dialog.dismiss();
                     questionsAnsweredNum++;
-                    questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
+                    //questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
                     new MapsActivity.DBUserUpdateTask().execute(user,null,null);
@@ -462,7 +476,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     question.setIsAnswered(true);
                     dialog.dismiss();
                     questionsAnsweredNum++;
-                    questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
+                    //questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
                     new MapsActivity.DBUserUpdateTask().execute(user,null,null);
@@ -514,6 +528,26 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
             try {
                  user = Utils.LoadUserFromDB(userArray[0], mDb);
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
+        }
+    }
+
+    public class DBinsertImageDataToDbTask extends AsyncTask<Image, Void, Void> {
+
+        @Override
+        protected Void doInBackground(Image... imagesArray) {
+
+            try {
+                Utils.insertImageDataToDb(imagesArray[0], mDb);
             } catch (Exception e) {
                 e.printStackTrace();
             }

@@ -24,15 +24,12 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/AppTheme">
-        <uses-library android:name="com.google.android.maps" />
+        android:theme="@style/AppTheme"
+        android:largeHeap="true"
+        android:configChanges="orientation|screenSize">
+        <uses-library android:name="com.google.android.maps"
+            />
 
-        <activity
-            android:name=".HomeActivity"
-            android:label="@string/title_activity_home" />
-        <activity
-            android:name=".HomeActivityTwo"
-            android:label="@string/title_activity_home" />
         <activity
             android:name=".HomeMapActivity"
             android:label="@string/title_activity_home">
@@ -70,14 +67,6 @@
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity>
-        <activity
-            android:name=".DrawerActivity"
-            android:label="@string/title_activity_drawer"
-            android:theme="@style/AppTheme.NoActionBar">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
             </intent-filter>
         </activity>
         <activity android:name=".GalleryActivity"></activity>

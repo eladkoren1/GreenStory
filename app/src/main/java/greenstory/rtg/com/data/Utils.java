@@ -5,6 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.util.Log;
 
+import java.util.HashMap;
+
+import greenstory.rtg.com.classes.Image;
 import greenstory.rtg.com.classes.User;
 
 /**
@@ -97,6 +100,63 @@ public class Utils {
             cursor.moveToFirst();
             String args[] = new String[]{String.valueOf(cursor.getInt(cursor.getColumnIndex("uId")))};
             db.update(UsersContract.UserEntry.TABLE_NAME,cv,"uId=?",args);
+            db.setTransactionSuccessful();
+        }
+        catch (Exception e) {
+            Log.e("ERROR", e.toString());
+        }
+        finally{
+            db.endTransaction();
+        }
+    }
+
+    public static void insertImageDataToDb(Image image, SQLiteDatabase db) {
+        ContentValues cv = new ContentValues();
+
+        cv.put("image_uri", image.getUri());
+        cv.put("site_name", image.getSiteName());
+
+        try {
+            db.beginTransaction();
+            db.insert("images", null,cv);
+            db.setTransactionSuccessful();
+        }
+        catch (Exception e) {
+            Log.e("ERROR", e.toString());
+        }
+        finally{
+            db.endTransaction();
+        }
+    }
+
+    public static HashMap<Integer,String> LoadImagesFromDB(String site, SQLiteDatabase db) {
+        int i=0;
+        String[] args = {site};
+        HashMap<Integer, String> imagesHashMap = new HashMap<>();
+        Cursor cursor = null;
+        db.beginTransaction();
+        try {
+            cursor = db.query("images", null, "site_name=?", args, null, null, null);
+            while (cursor.moveToNext()) {
+                imagesHashMap.put(i, cursor.getString(cursor.getColumnIndex("image_uri")));
+                i++;
+            }
+        } catch (Exception e) {
+
+        } finally {
+            db.setTransactionSuccessful();
+            db.endTransaction();
+            cursor.close();
+        }
+        return imagesHashMap;
+    }
+
+    public static void removeImageDataFromDb(String uri, SQLiteDatabase db) {
+        String[] args = {uri};
+
+        try {
+            db.beginTransaction();
+            db.delete("images", "image_uri=?",args);
             db.setTransactionSuccessful();
         }
         catch (Exception e) {

@@ -14,8 +14,7 @@
         <FrameLayout
 
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginBottom="21dp">
+            android:layout_height="match_parent">
 
 
                 <fragment
@@ -23,37 +22,15 @@
                     android:name="com.google.android.gms.maps.SupportMapFragment"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_above="@id/tv_questions_answered"
                     android:layout_alignParentLeft="true"
                     android:layout_alignParentStart="true"
-                    android:layout_marginBottom="21dp"/>
+                    />
 
 
 
         </FrameLayout>
 
-        <!--<RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="21dp"
-            android:orientation="vertical">
 
-                <TextView
-                    android:id="@+id/RTG_info"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentBottom="true"
-                    android:ellipsize="marquee"
-                    android:fadingEdge="horizontal"
-                    android:gravity="start"
-                    android:marqueeRepeatLimit="marquee_forever"
-                    android:padding="6dp"
-                    android:scrollHorizontally="true"
-                    android:singleLine="true"
-                    android:text="מי שמטייל יותר, נהנה יותר וזוכה יותר! בחנות הוירטואלית שלנו תוכלו להשתמש בנקודות ולזכות בפרסים שווים!"
-                    android:textColor="@color/rtgGreen"
-                    android:textSize="@dimen/text_small" />
-
-        </RelativeLayout>-->
         </RelativeLayout>
 
 
@@ -71,41 +48,3 @@
 
 </android.support.v4.widget.DrawerLayout>
 
-<!-- <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:orientation="vertical"
-                    android:weightSum="3">
-
-                        <TextView
-                            android:id="@+id/tv_north_area"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:textSize="60dp"
-                            android:textAlignment="center"
-                            android:textColor="@color/rtgGreen"
-                            android:layout_weight="1"/>
-
-                        <TextView
-                            android:id="@+id/tv_center_area"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:textAlignment="center"
-                            android:textSize="60dp"
-                            android:textColor="@color/rtgGreen"
-                            android:layout_weight="1"/>
-
-                        <TextView
-                            android:id="@+id/tv_south_area"
-                            android:layout_width="match_parent"
-                            android:layout_height="match_parent"
-                            android:layout_alignBottom="@+id/RTG_info"
-                            android:layout_alignParentLeft="true"
-                            android:layout_alignParentStart="true"
-                            android:layout_marginBottom="17dp"
-                            android:layout_weight="1"
-                            android:textAlignment="center"
-                            android:textColor="@color/rtgGreen"
-                            android:textSize="60dp" />
-
-                </LinearLayout> -->

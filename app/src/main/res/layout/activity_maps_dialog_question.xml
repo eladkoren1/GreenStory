@@ -17,13 +17,14 @@
 
     <RadioGroup
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+        android:layout_gravity="left"
+        android:gravity="start">
 
     <RadioButton
         android:id="@+id/rb_answer_a"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginTop="5dp"
         android:text="Answer A"
         android:textSize="25sp"
@@ -33,7 +34,6 @@
         android:id="@+id/rb_answer_b"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginTop="5dp"
         android:text="Answer B"
         android:textSize="25sp"
@@ -43,7 +43,6 @@
         android:id="@+id/rb_answer_c"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginTop="5dp"
         android:text="Answer C"
         android:textSize="25sp"
@@ -53,7 +52,6 @@
         android:id="@+id/rb_answer_d"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_gravity="center"
         android:layout_marginTop="5dp"
         android:text="Answer D"
         android:textSize="25sp"
@@ -63,12 +61,14 @@
 
     <Button
         android:id="@+id/btn_question_answer"
-        android:layout_width="match_parent"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="20dp"
         android:background="@color/colorAccent"
         android:text="submit answer"
+        android:layout_gravity="center"
         android:textSize="25sp"
+
         android:textColor="@android:color/white" />
 
 </LinearLayout>

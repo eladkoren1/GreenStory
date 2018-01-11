@@ -33,8 +33,7 @@ public class UsersOptionsActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_users_options);
 
-        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this,
-                UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
+        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this);
         mDb = dbHelper.getWritableDatabase();
 
         new DBLoadUserTask().execute(user,null,null);
@@ -81,11 +80,7 @@ public class UsersOptionsActivity extends AppCompatActivity {
         @Override
         protected Void doInBackground(User... userArray) {
 
-            try {
-                user = Utils.LoadUserFromDB(userArray[0], mDb);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+            user = Utils.LoadUserFromDB(userArray[0], mDb);
             return null;
         }
 

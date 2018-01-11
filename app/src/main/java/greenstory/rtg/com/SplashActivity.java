@@ -18,12 +18,10 @@ public class SplashActivity extends AppCompatActivity {
         new Handler().postDelayed(new Runnable(){
             @Override
             public void run() {
-                /* Create an Intent that will start the Menu-Activity. */
-                //Intent Intent = new Intent(getBaseContext(),HomeMapActivity.class);
                 Intent Intent = new Intent(getBaseContext(),HomeMapActivity.class);
                 startActivity(Intent);
                 finish();
             }
-        }, 1000);
+        }, 2000);
     }
 }

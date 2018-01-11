@@ -20,6 +20,7 @@ public class QuestionsContract {
     public static final class QuestionEntry implements BaseColumns {
 
         public static final String TABLE_NAME = "questions";
+        public static final String COLUMN_SITE = "site";
         public static final String COLUMN_QUESTION = "question";
         public static final String COLUMN_ANS1 = "answer_a";
         public static final String COLUMN_ANS2 = "answer_b";
@@ -28,8 +29,9 @@ public class QuestionsContract {
         public static final String COLUMN_CORRENT_ANS = "correct_answer";
 
 
-        public static final String SQL_CREATE_USERS_TABLE = OP_CREATE_TABLE + TABLE_NAME + OP_OPEN_PARENTHESIS +
+        public static final String SQL_CREATE_QUESTIONS_TABLE = OP_CREATE_TABLE + TABLE_NAME + OP_OPEN_PARENTHESIS +
                 BaseColumns._ID + TYPE_INTEGER_PRIMARY_KEY_AUTOINCREMENT +
+                COLUMN_SITE + TYPE_TEXT_NOT_NULL +
                 COLUMN_QUESTION + TYPE_TEXT +
                 COLUMN_ANS1 + TYPE_TEXT +
                 COLUMN_ANS2 + TYPE_TEXT +

@@ -9,7 +9,7 @@ import java.util.HashMap;
  * Created by Elad on 23/12/2017.
  */
 
-public class Site implements Serializable{
+public class Site implements Serializable {
 
     private String siteName;
     private int kmlSource;

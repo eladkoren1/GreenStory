@@ -14,10 +14,12 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
+import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -62,9 +64,8 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     ListView siteInfo;
+    String[] sitesArray;
     private ActionBarDrawerToggle mDrawerToggle;
-    private CharSequence mDrawerTitle;
-    private CharSequence mTitle;
 
     LatLng centerLatLng = new LatLng(32.698123394504464,35.14352526515722);
     LatLngBounds mapBounds = new LatLngBounds(new LatLng(32.0736685,34.7799253),
@@ -80,12 +81,15 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
 
 
     HashMap<Integer,MarkerOptions> intMarkerOptionsHashMap = new HashMap<>();
+    private ShareActionProvider mShareActionProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_map);
         checkDataPermissions(user);
+        Resources res = getResources();
+        sitesArray = res.getStringArray(R.array.sites_array);
 
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -111,7 +115,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
-        Resources res = getResources();
         mDrawerList = (ListView) findViewById(R.id.left_drawer_list);
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, res.getStringArray(R.array.options_array)));
@@ -148,13 +151,13 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 .title("תוצרת הארץ")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.totzeret_haaretz_72)));
         intMarkerOptionsHashMap.put(1,new MarkerOptions()
-                .position(new LatLng(32.824166,35.4986072))
-                .title("הר ארבל")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.arbel)));
-        intMarkerOptionsHashMap.put(2,new MarkerOptions()
                 .position(new LatLng(32.0477291,34.7609729))
                 .title("המכללה האקדמית תל אביב יפו")
                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.mta_72)));
+        intMarkerOptionsHashMap.put(2,new MarkerOptions()
+                .position(new LatLng(32.824166,35.4986072))
+                .title("הר ארבל")
+                .icon(BitmapDescriptorFactory.fromResource(R.drawable.arbel)));
 
     }
 
@@ -205,8 +208,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     }
 
     public void initiateDB(final User user) {
-        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this,
-                UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
+        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this);
         mDb = dbHelper.getWritableDatabase();
         if (!isUserIdExists(mDb)) {
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
@@ -372,6 +374,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.main, menu);
         return super.onCreateOptionsMenu(menu);
+
     }
 
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -393,7 +396,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         btn_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context, HomeActivity.class);
+                Intent intent = new Intent(context, HomeMapActivity.class);
                 startActivity(intent);
             }
         });
@@ -439,7 +442,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
     }
-
 
     class DBUserRegisterTask extends AsyncTask<User, Void, Void> {
 
@@ -505,6 +507,18 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
             }
             if (position == 2) {
                 showAttractionsDialog();
+            }
+
+            if (position == 3) {
+                Thread thread = new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        Intent intent = new Intent(context,GalleryActivity.class);
+                        intent.putExtra("site","תוצרת הארץ");
+                        startActivity(intent);
+                    }
+                });
+                thread.run();
             }
         }
     }

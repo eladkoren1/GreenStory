@@ -86,7 +86,7 @@ public class UserEditActivity extends AppCompatActivity {
 
         mSetFieldsBtn = (Button) findViewById(R.id.btn_edit_fields);
         mSetFieldsBtn.setOnClickListener(listener);
-        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this, UsersContract.UserEntry.SQL_CREATE_USERS_TABLE);
+        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this);
         mDb = dbHelper.getWritableDatabase();
         updateTextViewValueFields(user);
     }

@@ -7,19 +7,38 @@
 
 
     <ImageView
-        android:id="@+id/iv_dialog_share"
+        android:id="@+id/iv_dialog_show_image"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginTop="5dp" />
 
-    <ImageButton
-        android:id="@+id/btn_share"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:orientation="horizontal"
         android:layout_gravity="bottom|right"
+        android:padding="20dp">
+
+
+
+    <ImageButton
+        android:id="@+id/btn_share_gallery"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_margin="20dp"
         android:background="@null"
         android:layoutDirection="rtl"
         android:src="@drawable/share_white_36" />
+
+    <ImageButton
+        android:id="@+id/btn_delete"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="20dp"
+        android:background="@null"
+        android:layoutDirection="rtl"
+        android:src="@drawable/delete_36" />
+
+    </LinearLayout>
 
 </FrameLayout>

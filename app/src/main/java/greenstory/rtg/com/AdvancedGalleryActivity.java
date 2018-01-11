@@ -75,9 +75,10 @@ public class AdvancedGalleryActivity extends AppCompatActivity implements Advanc
     private void showImageDialog(Integer position){
 
         Dialog dialog=new Dialog(this,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
-        View mView = getLayoutInflater().inflate(R.layout.activity_maps_dialog_image, null);
-        ImageView pictureView = (ImageView) mView.findViewById(R.id.iv_dialog_share);
-        ImageButton shareButton = mView.findViewById(R.id.btn_share);
+        View mView = getLayoutInflater().inflate(R.layout.activity_gallery_dialog_image, null);
+        ImageView pictureView = mView.findViewById(R.id.iv_dialog_show_image);
+        ImageButton shareButton = mView.findViewById(R.id.btn_share_gallery);
+        ImageButton deleteButton = mView.findViewById(R.id.btn_delete);
         dialog.setContentView(mView);
         Uri uri = Uri.parse(imagesHashMap.get(position));
         Bitmap dialogPicture=null;
@@ -87,20 +88,27 @@ public class AdvancedGalleryActivity extends AppCompatActivity implements Advanc
             e.printStackTrace();
         }
         pictureView.setImageBitmap(dialogPicture);
-        dialogPicture=null;
         System.gc();
         dialog.show();
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
+        final Bitmap finalDialogPicture = dialogPicture;
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent share = new Intent(Intent.ACTION_SEND);
-                //String bitmapPath = MediaStore.Images.Media.insertImage(getContentResolver(), picture,null, null);
-                //Uri bitmapUri = Uri.parse(bitmapPath);
+                String bitmapPath = MediaStore.Images.Media.insertImage(getContentResolver(), finalDialogPicture,null, null);
+                Uri bitmapUri = Uri.parse(bitmapPath);
                 share.setType("image/jpg");
-                //share.putExtra(Intent.EXTRA_STREAM, bitmapUri );
+                share.putExtra(Intent.EXTRA_STREAM, bitmapUri );
                 startActivity(Intent.createChooser(share, "Share using"));
+
+            }
+        });
+        deleteButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
     }

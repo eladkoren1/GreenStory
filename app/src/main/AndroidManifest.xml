@@ -70,6 +70,7 @@
             </intent-filter>
         </activity>
         <activity android:name=".GalleryActivity"></activity>
+        <activity android:name=".AdvancedGalleryActivity"></activity>
     </application>
 
 </manifest>

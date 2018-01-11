@@ -153,11 +153,11 @@ public class GalleryActivity extends AppCompatActivity {
         });
     }
 
-    class DBLoadImagesTask extends AsyncTask<String, Void, Void> {
+    static class DBLoadImagesTask extends AsyncTask<String, Void, Void> {
 
         @Override
         protected Void doInBackground(String... stringArray) {
-            imagesHashMap = Utils.LoadImagesFromDB(stringArray[0], mDb);
+            //imagesHashMap = Utils.LoadImagesFromDB(stringArray[0], mDb);
             return null;
         }
         @Override

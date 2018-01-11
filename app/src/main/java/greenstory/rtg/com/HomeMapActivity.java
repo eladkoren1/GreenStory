@@ -513,7 +513,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 Thread thread = new Thread(new Runnable() {
                     @Override
                     public void run() {
-                        Intent intent = new Intent(context,GalleryActivity.class);
+                        Intent intent = new Intent(context,AdvancedGalleryActivity.class);
                         intent.putExtra("site","תוצרת הארץ");
                         startActivity(intent);
                     }

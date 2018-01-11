@@ -22,6 +22,7 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
+import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -31,6 +32,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -59,6 +61,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     EditText mUserName;
     EditText mFamilyName;
     CheckBox mIsFamily;
+
     User user = new User();
     private GoogleMap mMap;
     private Site trackSite;
@@ -67,7 +70,8 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     ListView siteInfo;
     String[] sitesArray;
     private ActionBarDrawerToggle mDrawerToggle;
-
+    TextView nameTitleTextView;
+    ImageButton drawerImageButton;
     LatLng centerLatLng = new LatLng(32.698123394504464,35.14352526515722);
     LatLngBounds mapBounds = new LatLngBounds(new LatLng(32.0736685,34.7799253),
                                               new LatLng(32.9002805,35.5586083));
@@ -88,17 +92,27 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_map);
-        checkDataPermissions(user);
         Resources res = getResources();
         sitesArray = res.getStringArray(R.array.sites_array);
-
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer_white);
         getSupportActionBar().setTitle("Green Story");
         getSupportActionBar().setDisplayOptions(ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.custom_action_bar);
-
+        nameTitleTextView = findViewById(R.id.tv_action_title_bar);
+        drawerImageButton = (ImageButton)findViewById(R.id.ib_open_drawer);
+        drawerImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (!mDrawerLayout.isDrawerOpen(mDrawerList)){
+                    mDrawerLayout.openDrawer(Gravity.LEFT,true);
+                }
+                if (mDrawerLayout.isDrawerOpen(mDrawerList)){
+                    mDrawerLayout.closeDrawer(Gravity.LEFT,true);
+                }
+            }
+        });
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         mDrawerToggle = new android.support.v4.app.ActionBarDrawerToggle (
@@ -122,8 +136,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
                 R.layout.drawer_list_item, res.getStringArray(R.array.options_array)));
         mDrawerList.setOnItemClickListener(new HomeMapActivity.DrawerItemClickListener());
-
-        //new DBLoadUserTask().execute(user,null,null);
+        checkDataPermissions(user);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
@@ -213,6 +226,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     public void initiateDB(final User user) {
         GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this);
         mDb = dbHelper.getWritableDatabase();
+        new DBLoadUserTask().execute(user,null,null);
         if (!isUserIdExists(mDb)) {
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
             View mView = getLayoutInflater().inflate(R.layout.activity_home_dialog_login, null);
@@ -239,15 +253,14 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                         user.setPoints(0);
                         new DBUserRegisterTask().execute(user, null, null);
                         dialog.dismiss();
+                        nameTitleTextView.setText("ברוך הבא "+user.getUserName());
                     }
                     else {
                         Toast.makeText(context, "השלם שדות חסרים", Toast.LENGTH_SHORT).show();
                     }
                 }
             });
-
         }
-
     }
 
     public boolean isUserIdExists(SQLiteDatabase db) {
@@ -495,6 +508,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
 
         @Override
         protected void onPostExecute(Void aVoid) {
+            nameTitleTextView.setText("ברוך הבא "+user.getUserName());
             super.onPostExecute(aVoid);
 
         }

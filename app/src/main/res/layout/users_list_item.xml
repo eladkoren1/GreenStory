@@ -4,6 +4,6 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:padding="10dip"
-        android:textSize="@dimen/text_small"
+        android:textSize="12sp"
         android:textColor="@color/rtgGreen"
         android:textStyle="bold"/>

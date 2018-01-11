@@ -45,6 +45,7 @@ public class UsersOptionsActivity extends AppCompatActivity {
     TextView titleTextView;
     ImageButton drawerImageButton;
     Button editUserButton;
+    ImageButton closeTrackDialogImageButton;
 
 
     @Override

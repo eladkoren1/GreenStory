@@ -33,15 +33,6 @@
         android:hint="שם משפחה"
         android:inputType="text" />
 
-
-    <CheckBox
-        android:id="@+id/cbIsFamily"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:checked="false"
-        android:hint="עוד בני משפחה"
-        android:text="עוד בני משפחה" />
-
     <Button
         android:id="@+id/btnLogin"
         android:layout_width="wrap_content"

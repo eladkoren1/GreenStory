@@ -2,6 +2,7 @@ package greenstory.rtg.com;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
+import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -60,7 +61,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     EditText mUserName;
     EditText mFamilyName;
-    CheckBox mIsFamily;
+
 
     User user = new User();
     private GoogleMap mMap;
@@ -74,19 +75,16 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     ImageButton drawerImageButton;
     LatLng centerLatLng = new LatLng(32.698123394504464,35.14352526515722);
     LatLngBounds mapBounds = new LatLngBounds(new LatLng(32.0736685,34.7799253),
-                                              new LatLng(32.9002805,35.5586083));
+                            new LatLng(32.9002805,35.5586083));
     private static float initialZoom = 8.5f;
-
     Context context = this;
     private SQLiteDatabase mDb;
-
     boolean isCoarseLocationGranted = false;
     boolean isFineLocationGranted = false;
     boolean backClicked=false;
-
+    ImageButton closeTrackDialogImageButton;
 
     HashMap<Integer,MarkerOptions> intMarkerOptionsHashMap = new HashMap<>();
-    private ShareActionProvider mShareActionProvider;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -233,7 +231,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
             Button mLogin = (Button) mView.findViewById(R.id.btnLogin);
             mUserName = mView.findViewById(R.id.etUserName);
             mFamilyName = mView.findViewById(R.id.etFamilyName);
-            mIsFamily = mView.findViewById(R.id.cbIsFamily);
             mBuilder.setView(mView);
             final AlertDialog dialog = mBuilder.create();
             dialog.show();
@@ -249,7 +246,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                         user.setPartnerName("none");
                         user.setUserAge(0);
                         user.setPartnerAge(0);
-                        user.setIsFamily(mIsFamily.isChecked());
+                        user.setIsFamily(false);
                         user.setPoints(0);
                         new DBUserRegisterTask().execute(user, null, null);
                         dialog.dismiss();
@@ -422,9 +419,16 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
         View mView = getLayoutInflater().inflate(R.layout.activity_home_track_dialog, null);
         Button goToTrackBtn = (Button) mView.findViewById(R.id.btn_go_to_track);
-        TextView siteInfo = (TextView) findViewById(R.id.tv_dialog_track_details);
+        TextView siteInfo = (TextView) mView.findViewById(R.id.tv_dialog_track_details);
+        closeTrackDialogImageButton = (ImageButton) mView.findViewById(R.id.btn_close_track_dialog);
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
+        closeTrackDialogImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
         dialog.show();
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);

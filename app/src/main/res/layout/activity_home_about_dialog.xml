@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:padding="5dp">
+
+
+    <LinearLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center">
+
+
+        <TextView
+            android:id="@+id/tv_dialog_about"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="מערכת זו פותחה על ידי שי שוורץ ואלעד קורן מהמסלול למערכות מידע במכללה האקדמית תל אביב יפו בשיתוף עם רשות הטבע והגנים. המערכת בפיתוח תמידי, ומסלולים יתווספו למערכת בהמשך. צרו קשר במייל eladko@mta.ac.il"
+            android:textSize="@dimen/text_small"
+            android:padding="6dp"/>
+
+    </LinearLayout>
+
+
+
+
+</LinearLayout>

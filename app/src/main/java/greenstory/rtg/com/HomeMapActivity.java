@@ -62,12 +62,17 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     EditText mUserName;
     EditText mFamilyName;
 
-
+    AlertDialog sitesDialog;
+    AlertDialog attractionsDialog;
+    AlertDialog galleryDialog;
+    AlertDialog aboutDialog;
     User user = new User();
     private GoogleMap mMap;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     ListView siteInfo;
+    ListView sites;
+    ListView gallery;
     String[] sitesArray;
     private ActionBarDrawerToggle mDrawerToggle;
     TextView nameTitleTextView;
@@ -85,7 +90,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     HashMap<Integer,MarkerOptions> intMarkerOptionsHashMap = new HashMap<>();
     HashMap<Integer,Site> integerSiteHashMap = new HashMap<>();
-
+    private TextView siteName;
 
 
     @Override
@@ -139,6 +144,12 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         checkDataPermissions(user);
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
+        if (!user.equals(null)){
+            nameTitleTextView.setText("ברוך הבא "+user.getUserName());
+        }
+
+
+
 
     }
 
@@ -221,9 +232,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
             @Override
             public void onMapClick(LatLng latLng) {
                 backClicked=false;
-                if((isCoarseLocationGranted==false||isCoarseLocationGranted==false)){
-                    //showOutDialog();
-                }
             }
         });
         map.setOnCameraMoveListener(new GoogleMap.OnCameraMoveListener() {
@@ -269,7 +277,10 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                         user.setPoints(0);
                         new DBUserRegisterTask().execute(user, null, null);
                         dialog.dismiss();
-                        nameTitleTextView.setText("ברוך הבא "+user.getUserName());
+                        if (!user.equals(null)){
+                            nameTitleTextView.setText("ברוך הבא "+user.getUserName());
+                        }
+
                     }
                     else {
                         Toast.makeText(context, "השלם שדות חסרים", Toast.LENGTH_SHORT).show();
@@ -465,11 +476,53 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 R.layout.attractions_list_item, res.getStringArray(R.array.attractions_array)));
         siteInfo.setOnItemClickListener(new HomeMapActivity.attractionsItemClickListener());
         mBuilder.setView(mView);
-        AlertDialog dialog = mBuilder.create();
-        dialog.show();
-        dialog.setCancelable(true);
-        dialog.setCanceledOnTouchOutside(true);
+        attractionsDialog = mBuilder.create();
+        attractionsDialog.show();
+        attractionsDialog.setCancelable(true);
+        attractionsDialog.setCanceledOnTouchOutside(true);
     }
+
+    private void showSitesDialog() {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+        View mView = getLayoutInflater().inflate(R.layout.activity_home_sites_dialog, null);
+        sites = mView.findViewById(R.id.lv_sites);
+        Resources res = getResources();
+        sites.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.sites_list_item, res.getStringArray(R.array.sites_array)));
+        sites.setOnItemClickListener(new HomeMapActivity.sitesItemClickListener());
+        mBuilder.setView(mView);
+        sitesDialog = mBuilder.create();
+        sitesDialog.show();
+        sitesDialog.setCancelable(true);
+        sitesDialog.setCanceledOnTouchOutside(true);
+    }
+
+    private void showGalleryDialog() {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+        View mView = getLayoutInflater().inflate(R.layout.activity_home_gallery_dialog, null);
+        gallery = mView.findViewById(R.id.lv_gallery);
+        Resources res = getResources();
+        gallery.setAdapter(new ArrayAdapter<String>(this,
+                R.layout.sites_list_item, res.getStringArray(R.array.sites_array)));
+        gallery.setOnItemClickListener(new HomeMapActivity.galleryItemClickListener());
+        mBuilder.setView(mView);
+        galleryDialog = mBuilder.create();
+        galleryDialog.show();
+        galleryDialog.setCancelable(true);
+        galleryDialog.setCanceledOnTouchOutside(true);
+    }
+
+    private void showAboutDialog() {
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+        View mView = getLayoutInflater().inflate(R.layout.activity_home_about_dialog, null);
+        TextView about = (TextView) mView.findViewById(R.id.tv_dialog_about);
+        mBuilder.setView(mView);
+        aboutDialog = mBuilder.create();
+        aboutDialog.show();
+        aboutDialog.setCancelable(true);
+        aboutDialog.setCanceledOnTouchOutside(true);
+        }
+
 
     class DBUserRegisterTask extends AsyncTask<User, Void, Void> {
 
@@ -531,22 +584,23 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
             mDrawerList.setItemChecked(position, true);
             if (position == 0) {
                 Intent intent = new Intent(context, UsersOptionsActivity.class);
+                mDrawerLayout.closeDrawer(Gravity.START,true);
                 startActivity(intent);
+            }
+            if (position == 1) {
+               showSitesDialog();
             }
             if (position == 2) {
                 showAttractionsDialog();
             }
 
             if (position == 3) {
-                Thread thread = new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        Intent intent = new Intent(context,AdvancedGalleryActivity.class);
-                        intent.putExtra("site","תוצרת הארץ");
-                        startActivity(intent);
-                    }
-                });
-                thread.run();
+
+                showGalleryDialog();
+            }
+            if (position == 4) {
+
+                showAboutDialog();
             }
         }
     }
@@ -558,9 +612,37 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
             String url = "https://www.google.co.il/search?q="+site;
             //Uri uri = Uri.parse(url);
             Intent intent= new Intent(Intent.ACTION_VIEW,Uri.parse(url));
+            mDrawerLayout.closeDrawer(Gravity.START,true);
+            attractionsDialog.dismiss();
             startActivity(intent);
 
             }
     }
+
+    class sitesItemClickListener implements android.widget.AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            String site = String.valueOf(sites.getItemAtPosition(position));
+            Intent intent = new Intent(context, MapsActivity.class);
+            intent.putExtra("kmlResource", position);
+            sitesDialog.dismiss();
+            mDrawerLayout.closeDrawer(Gravity.START,true);
+            startActivity(intent);
+        }
+    }
+
+    class galleryItemClickListener implements android.widget.AdapterView.OnItemClickListener {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            String site = String.valueOf(gallery.getItemAtPosition(position));
+            Intent intent = new Intent(context, AdvancedGalleryActivity.class);
+            intent.putExtra("site",sitesArray[position]);
+            galleryDialog.dismiss();
+            mDrawerLayout.closeDrawer(Gravity.START,true);
+            startActivity(intent);
+        }
+    }
 }
+
+
 

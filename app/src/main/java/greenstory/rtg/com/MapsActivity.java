@@ -174,11 +174,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            catch (NullPointerException e){
-                Log.d("reason","developing map");
+            catch (Exception e){
+                Toast.makeText(context, "מסלול לא זמין - מפה בפיתוח", Toast.LENGTH_LONG).show();
                 super.onBackPressed();
-
             }
+
         }
         else{
             super.onBackPressed();
@@ -266,8 +266,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                         R.raw.academic_tlv,
                         "data"));
         intSiteHashMap.put(2,
-                new Site("תוצרת הארץ",
-                        R.raw.academic_tlv,
+                new Site("שמורת הר ארבל",
+                        0,
                         "data"));
 
     }

@@ -14,6 +14,7 @@ import android.os.Bundle;
 import android.provider.MediaStore;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.GridLayoutManager;
+import android.view.WindowManager;
 import android.widget.GridLayout;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -46,19 +47,24 @@ public class AdvancedGalleryActivity extends AppCompatActivity implements Advanc
     boolean isLoadFinished=false;
     Context context = this;
     private TextView titleTextView;
+    String bitmapPath;
+    String intentSite;
+    Bitmap dialogPicture;
+    RecyclerView recyclerView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        recyclerView = findViewById(R.id.rvNumbers);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_advanced_gallery);
         dbHelper = new GreenStoryDbHelper(this);
-        mDb = dbHelper.getReadableDatabase();
+        mDb = dbHelper.getWritableDatabase();
         getSupportActionBar().setDisplayOptions(android.support.v7.app.ActionBar.DISPLAY_SHOW_CUSTOM);
         getSupportActionBar().setCustomView(R.layout.custom_action_bar_no_burger);
         titleTextView = findViewById(R.id.tv_action_title_bar);
         titleTextView.setText("גלריה");
 
-        String intentSite = getIntent().getStringExtra("site");
+        intentSite = getIntent().getStringExtra("site");
         imageLoadTask = new DBLoadImagesTask();
         imageLoadTask.execute(intentSite,null,null);
 
@@ -78,18 +84,19 @@ public class AdvancedGalleryActivity extends AppCompatActivity implements Advanc
     }
 
 
-    private void showImageDialog(Integer position){
+    private void showImageDialog(final Integer position){
 
-        Dialog dialog=new Dialog(this,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
+        final Dialog dialog=new Dialog(this,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         View mView = getLayoutInflater().inflate(R.layout.activity_gallery_dialog_image, null);
         ImageView pictureView = mView.findViewById(R.id.iv_dialog_show_image);
         ImageButton shareButton = mView.findViewById(R.id.btn_share_gallery);
         ImageButton deleteButton = mView.findViewById(R.id.btn_delete);
         dialog.setContentView(mView);
         Uri uri = Uri.parse(imagesHashMap.get(position));
-        Bitmap dialogPicture=null;
+        dialogPicture=null;
         try {
             dialogPicture = MediaStore.Images.Media.getBitmap(context.getContentResolver(),uri);
+
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -99,11 +106,11 @@ public class AdvancedGalleryActivity extends AppCompatActivity implements Advanc
         dialog.setCancelable(true);
         dialog.setCanceledOnTouchOutside(true);
         final Bitmap finalDialogPicture = dialogPicture;
+        bitmapPath = MediaStore.Images.Media.insertImage(getContentResolver(), finalDialogPicture,null, null);
         shareButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent share = new Intent(Intent.ACTION_SEND);
-                String bitmapPath = MediaStore.Images.Media.insertImage(getContentResolver(), finalDialogPicture,null, null);
                 Uri bitmapUri = Uri.parse(bitmapPath);
                 share.setType("image/jpg");
                 share.putExtra(Intent.EXTRA_STREAM, bitmapUri );
@@ -114,9 +121,12 @@ public class AdvancedGalleryActivity extends AppCompatActivity implements Advanc
         deleteButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                new DBDeleteImagesTask().execute(imagesHashMap.get(position));
+                recyclerView.invalidate();
+                dialog.dismiss();
             }
         });
+       doKeepDialog(dialog);
     }
 
     class DBLoadImagesTask extends AsyncTask<String, Void, Void> {
@@ -131,10 +141,10 @@ public class AdvancedGalleryActivity extends AppCompatActivity implements Advanc
             Thread thread = new Thread(new Runnable() {
                 @Override
                 public void run() {
+                    integerBitmapHashMap = new HashMap<>();
                     for (int i=0;i<imagesHashMap.size();i++) {
 
                         try {
-                            System.gc();
                             Uri uri = Uri.parse(imagesHashMap.get(i));
                             //picture = MediaStore.Images.Media.getBitmap(context.getContentResolver(), uri);
                             //int thumbnailHeight = 100;
@@ -153,16 +163,35 @@ public class AdvancedGalleryActivity extends AppCompatActivity implements Advanc
 
                     }
                     Log.d("HashMap Size", String.valueOf(integerBitmapHashMap.size()));
-                    RecyclerView recyclerView = (RecyclerView) findViewById(R.id.rvNumbers);
+                    recyclerView = findViewById(R.id.rvNumbers);
                     int numberOfColumns = 2;
-                    recyclerView.setLayoutManager(new GridLayoutManager(context, numberOfColumns));
                     adapter = new AdvancedGalleryRecyclerViewAdapter(context, integerBitmapHashMap);
                     adapter.setClickListener((AdvancedGalleryRecyclerViewAdapter.ItemClickListener) context);
                     recyclerView.setAdapter(adapter);
+                    recyclerView.setLayoutManager(new GridLayoutManager(context, numberOfColumns));
+
                 }
             });
             thread.run();
 
+            super.onPostExecute(aVoid);
+        }
+    }
+
+    class DBDeleteImagesTask extends AsyncTask<String, Void, Void> {
+
+        @Override
+        protected Void doInBackground(String... stringArray) {
+            dbHelper = new GreenStoryDbHelper(context);
+            mDb = dbHelper.getWritableDatabase();
+            Utils.removeImageDataFromDb(stringArray[0], mDb);
+            return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            dbHelper = new GreenStoryDbHelper(context);
+            mDb = dbHelper.getWritableDatabase();
+            new DBLoadImagesTask().execute(intentSite);
             super.onPostExecute(aVoid);
         }
     }
@@ -172,6 +201,14 @@ public class AdvancedGalleryActivity extends AppCompatActivity implements Advanc
         cursor.moveToFirst();
         int idx = cursor.getColumnIndex(MediaStore.Images.ImageColumns.DATA);
         return cursor.getString(idx);
+    }
+
+    private static void doKeepDialog(Dialog dialog){
+        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
+        lp.copyFrom(dialog.getWindow().getAttributes());
+        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
+        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
+        dialog.getWindow().setAttributes(lp);
     }
 
 }

@@ -32,6 +32,7 @@ public class AdvancedGalleryRecyclerViewAdapter extends RecyclerView.Adapter<Adv
     AdvancedGalleryRecyclerViewAdapter(Context context, HashMap<Integer,Bitmap> integerBitmapHashMap) {
         this.mInflater = LayoutInflater.from(context);
         this.integerBitmapHashMap = integerBitmapHashMap;
+
     }
 
     // inflates the cell layout from xml when needed
@@ -41,7 +42,7 @@ public class AdvancedGalleryRecyclerViewAdapter extends RecyclerView.Adapter<Adv
         return new ViewHolder(view);
     }
 
-    // binds the data to the textview in each cell
+    // binds the data to the imageview in each cell
     @Override
     public void onBindViewHolder(ViewHolder holder, int position) {
         imageToLoad = integerBitmapHashMap.get(position);

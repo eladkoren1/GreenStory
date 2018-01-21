@@ -145,7 +145,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
         if (!user.equals(null)){
-            nameTitleTextView.setText("ברוך הבא "+user.getUserName());
+            //nameTitleTextView.setText("ברוך הבא "+user.getUserName());
         }
 
 
@@ -255,7 +255,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         if (!isUserIdExists(mDb)) {
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
             View mView = getLayoutInflater().inflate(R.layout.activity_home_dialog_login, null);
-            Button mLogin = (Button) mView.findViewById(R.id.btnLogin);
+            Button mLogin = mView.findViewById(R.id.btnLogin);
             mUserName = mView.findViewById(R.id.etUserName);
             mFamilyName = mView.findViewById(R.id.etFamilyName);
             mBuilder.setView(mView);
@@ -278,7 +278,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                         new DBUserRegisterTask().execute(user, null, null);
                         dialog.dismiss();
                         if (!user.equals(null)){
-                            nameTitleTextView.setText("ברוך הבא "+user.getUserName());
+                            //nameTitleTextView.setText("ברוך הבא "+user.getUserName());
                         }
 
                     }

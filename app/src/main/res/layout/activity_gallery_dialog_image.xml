@@ -3,7 +3,8 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:padding="5dp">
+    android:padding="5dp"
+    android:id="@+id/main_layout">
 
 
     <ImageView
@@ -37,7 +38,7 @@
         android:layout_margin="20dp"
         android:background="@null"
         android:layoutDirection="rtl"
-        android:src="@drawable/delete_36" />
+        android:src="@drawable/delete_white_36" />
 
     </LinearLayout>
 

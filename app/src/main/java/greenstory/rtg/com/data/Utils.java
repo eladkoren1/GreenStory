@@ -158,13 +158,14 @@ public class Utils {
         try {
             db.beginTransaction();
             db.delete("images", "image_uri=?",args);
-            db.setTransactionSuccessful();
         }
         catch (Exception e) {
             Log.e("ERROR", e.toString());
         }
         finally{
+            db.setTransactionSuccessful();
             db.endTransaction();
+            db.close();
         }
     }
 }

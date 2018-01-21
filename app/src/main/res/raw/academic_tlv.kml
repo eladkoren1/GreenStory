@@ -134,5 +134,41 @@
         </coordinates>
       </Point>
     </Placemark>
+    <Placemark>
+      <name>מסגד נוזהה</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          34.76005,32.04764,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>נמל יפו</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          34.75951,32.04733,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>בית הדואר ביפו</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          34.75945,32.04688,0
+        </coordinates>
+      </Point>
+    </Placemark>
+    <Placemark>
+      <name>המכללה האקדמית תל אביב יפו</name>
+      <styleUrl>#icon-1899-0288D1-nodesc</styleUrl>
+      <Point>
+        <coordinates>
+          34.76,32.04661,0
+        </coordinates>
+      </Point>
+    </Placemark>
   </Document>
 </kml>

@@ -22,9 +22,7 @@ import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
-import android.view.WindowManager;
 import android.widget.Button;
-import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.TextView;
@@ -41,7 +39,6 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
 import java.util.HashMap;
 
 import greenstory.rtg.com.classes.Image;
@@ -67,7 +64,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     Cursor cursor;
     int kmlId;
-    ImageButton takePictureBtn;
+    Button takePictureBtn;
     Image image;
     Bitmap picture;
     Uri imageUri;
@@ -79,14 +76,12 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Question question2;
     Question question3;
     Question question4;
-    Question question5;
-    Question question6;
-    Question question7;
-    Question question8;
 
     boolean isCoarseLocationGranted = false;
     boolean isFineLocationGranted = false;
 
+    int questionsAnsweredNum = 0;
+    String questionsAnswered = "מס' שאלות שעניתי: ";
 
     HashMap<LatLng, Integer> tracksPlacemarksHashMap = new HashMap<LatLng, Integer>();
 
@@ -100,9 +95,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         initialiseQuestions(sitesArray);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-        //questionsAnsweredTV = (TextView) findViewById(R.id.tv_questions_answered);
+        questionsAnsweredTV = (TextView) findViewById(R.id.tv_questions_answered);
         kmlId = getIntent().getIntExtra("kmlResource",-1);
-        takePictureBtn = (ImageButton)findViewById(R.id.btn_take_picture);
+        takePictureBtn = (Button)findViewById(R.id.btn_take_picture);
         takePictureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -180,11 +175,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            catch (Exception e){
-                Toast.makeText(context, "מסלול לא זמין - מפה בפיתוח", Toast.LENGTH_LONG).show();
+            catch (NullPointerException e){
+                Log.d("reason","developing map");
                 super.onBackPressed();
-            }
 
+            }
         }
         else{
             super.onBackPressed();
@@ -216,17 +211,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             double delta2Lon = ((Math.abs(currentLatLng.longitude-question2.getLatLng().longitude)));
                             double delta3Lon = ((Math.abs(currentLatLng.longitude-question3.getLatLng().longitude)));
                             double delta4Lon = ((Math.abs(currentLatLng.longitude-question4.getLatLng().longitude)));
-                            double delta5Lat = ((Math.abs(currentLatLng.latitude-question5.getLatLng().latitude)));
-                            double delta6Lat = ((Math.abs(currentLatLng.latitude-question6.getLatLng().latitude)));
-                            double delta7Lat = ((Math.abs(currentLatLng.latitude-question7.getLatLng().latitude)));
-                            double delta8Lat = ((Math.abs(currentLatLng.latitude-question8.getLatLng().latitude)));
-                            double delta5Lon = ((Math.abs(currentLatLng.longitude-question5.getLatLng().longitude)));
-                            double delta6Lon = ((Math.abs(currentLatLng.longitude-question6.getLatLng().longitude)));
-                            double delta7Lon = ((Math.abs(currentLatLng.longitude-question7.getLatLng().longitude)));
-                            double delta8Lon = ((Math.abs(currentLatLng.longitude-question8.getLatLng().longitude)));
                             //BigDecimal bigDelta = BigDecimal.valueOf(delta);
                             String latitudeValue = currentLatLng.toString();
-                            Log.d("current latlng",latitudeValue);
+                            //Log.d("current latlng",latitudeValue);
                             //Log.d("location delta",bigDelta.toString());
                             if ((delta1Lat<0.0001)&&(delta1Lon<0.0001)){
                                 Log.d("location delta", "enough");
@@ -243,22 +230,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             if ((delta4Lat<0.0001)&&(delta4Lon<0.0001)){
                                 Log.d("location delta", "enough");
                                 showQuestionDialog(question4);
-                            }
-                            if ((delta5Lat<0.0001)&&(delta5Lon<0.0001)){
-                                Log.d("location delta", "enough");
-                                showQuestionDialog(question5);
-                            }
-                            if ((delta6Lat<0.0001)&&(delta6Lon<0.0001)){
-                                Log.d("location delta", "enough");
-                                showQuestionDialog(question6);
-                            }
-                            if ((delta7Lat<0.0001)&&(delta7Lon<0.0001)){
-                                Log.d("location delta", "enough");
-                                showQuestionDialog(question7);
-                            }
-                            if ((delta8Lat<0.0001)&&(delta8Lon<0.0001)){
-                                Log.d("location delta", "enough");
-                                showQuestionDialog(question8);
                             }
                         }
 
@@ -291,14 +262,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 new Site("תוצרת הארץ",
                         R.raw.totzeret_haaretz,
                         "data"));
-        intSiteHashMap.put(1,
-                new Site("המכללה האקדמית תל אביב יפו",
-                        R.raw.academic_tlv,
-                        "data"));
-        intSiteHashMap.put(2,
-                new Site("שמורת הר ארבל",
-                        0,
-                        "data"));
 
     }
 
@@ -326,26 +289,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 "איזו מחנויות הספרים הבאות לא נמצאות באלנבי?",
                 "קדמת עדן","הלפר ספרים","לוטוס", "הנסיך הקטן",
                 4,false);
-        question5 = new Question(5,sitesArray[kmlId],
-                new LatLng(32.04764, 34.76005),
-                "באיזו שנה הוקם מסגד נוזהה בשדרות ירושלים?",
-                "1933","1901","1940", "1970",
-                1,false);
-        question6 = new Question(6,sitesArray[kmlId],
-                new LatLng(32.04733, 34.75951),
-                "מה היה אחד השימושים העיקריים בנמל יפו בשנות החמישים?",
-                "נמל דיג","נמל לחיל הים","ייצוא פרי הדר", "ייבוא בגדים",
-                3,false);
-        question7 = new Question(7,sitesArray[kmlId],
-                new LatLng(32.04688, 34.75945),
-                "מי היה האדריכל האחראי על הקמת בית הדואר ביפו?",
-                "נעמי יודקובסקי","יצחק רפופורט","אליעזר ילין", "ויטוריו קורינלדי",
-                2,false);
-        question8 = new Question(8,sitesArray[kmlId],
-                new LatLng(32.04661, 34.76),
-                "באיזו שנה הוקמה המכללה האקדמית תל אביב יפו",
-                "2004","1999","1994", "2000",
-                3,false);
     }
 
     private void checkPermissions() {
@@ -428,18 +371,21 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         btn_out.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(context,HomeMapActivity.class);
+                Intent intent = new Intent(context,HomeActivity.class);
                 startActivity(intent);
             }
         });
     }
 
+    private void tryDialog(){
+
+    }
     private void showImageDialog(){
 
         Dialog dialog=new Dialog(this,android.R.style.Theme_Black_NoTitleBar_Fullscreen);
         View mView = getLayoutInflater().inflate(R.layout.activity_maps_dialog_image, null);
         ImageView pictureView = (ImageView) mView.findViewById(R.id.iv_dialog_share);
-        ImageButton shareButton = mView.findViewById(R.id.btn_share);
+        Button shareButton = (Button)mView.findViewById(R.id.btn_share);
         dialog.setContentView(mView);
         pictureView.setImageBitmap(picture);
         dialog.show();
@@ -456,7 +402,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                 startActivity(Intent.createChooser(share, "Share using"));
             }
         });
-        doKeepDialog(dialog);
     }
 
     private void showQuestionDialog(final Question question){
@@ -490,8 +435,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Toast.makeText(context, "תשובה נכונה! +10 נקודות", Toast.LENGTH_SHORT).show();
                     question.setIsAnswered(true);
                     dialog.dismiss();
-
-                    //questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
+                    questionsAnsweredNum++;
+                    questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
                     new MapsActivity.DBUserUpdateTask().execute(user,null,null);
@@ -504,8 +449,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_SHORT).show();
                     question.setIsAnswered(true);
                     dialog.dismiss();
-
-                    //questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
+                    questionsAnsweredNum++;
+                    questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
                     new MapsActivity.DBUserUpdateTask().execute(user,null,null);
@@ -518,8 +463,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_SHORT).show();
                     question.setIsAnswered(true);
                     dialog.dismiss();
-
-                    //questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
+                    questionsAnsweredNum++;
+                    questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
                     new MapsActivity.DBUserUpdateTask().execute(user,null,null);
@@ -532,8 +477,8 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_SHORT).show();
                     question.setIsAnswered(true);
                     dialog.dismiss();
-
-                    //questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
+                    questionsAnsweredNum++;
+                    questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
                     new MapsActivity.DBUserUpdateTask().execute(user,null,null);
@@ -616,14 +561,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             super.onPostExecute(aVoid);
 
         }
-    }
-
-    private static void doKeepDialog(Dialog dialog){
-        WindowManager.LayoutParams lp = new WindowManager.LayoutParams();
-        lp.copyFrom(dialog.getWindow().getAttributes());
-        lp.width = WindowManager.LayoutParams.WRAP_CONTENT;
-        lp.height = WindowManager.LayoutParams.WRAP_CONTENT;
-        dialog.getWindow().setAttributes(lp);
     }
 }
 

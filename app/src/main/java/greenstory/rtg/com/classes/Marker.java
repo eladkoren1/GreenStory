@@ -10,13 +10,13 @@ public class Marker {
 
     private int id;
     private String markerName=null;
-    private LatLng latLng;
     private Question question;
 
     public Marker(int id, String markerName, LatLng latLng) {
         this.id = id;
         this.markerName = markerName;
-        this.latLng=latLng;
+
+
     }
 
     public int getId() {
@@ -27,9 +27,6 @@ public class Marker {
         return markerName;
     }
 
-    public LatLng getLatLng() {
-        return latLng;
-    }
 
     public Question getQuestion() {
         return question;
@@ -44,7 +41,6 @@ public class Marker {
         return "Marker{" +
                 "id=" + id +
                 ", markerName='" + markerName + '\'' +
-                ", LatLng" + latLng +
                 ",Question=" + question +
                 '}';
     }

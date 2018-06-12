@@ -184,7 +184,7 @@ public class AdvancedGalleryActivity extends AppCompatActivity implements Advanc
         protected Void doInBackground(String... stringArray) {
             dbHelper = new GreenStoryDbHelper(context);
             mDb = dbHelper.getWritableDatabase();
-            Utils.removeImageDataFromDb(stringArray[0], mDb);
+           // TODO: Utils.removeImageDataFromDb(stringArray[0], mDb);
             return null;
         }
         @Override

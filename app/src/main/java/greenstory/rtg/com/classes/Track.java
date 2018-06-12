@@ -16,32 +16,46 @@ import java.util.ListIterator;
 public class Track {
 
     private String trackName;
-    private String trackArea;
+    private String trackDescription;
+    private int kmlSource;
     private HashMap<Integer,Question> questionsHashMap = new HashMap<Integer, Question>();
 
 
-    public Track(String trackName, String trackArea, HashMap<Integer,Question> questionsHashMap) {
+    public Track(String trackName, String trackDescription, int kmlSource) {
         this.trackName = trackName;
-        this.trackArea = trackArea;
-        this.questionsHashMap = questionsHashMap;
-
+        this.trackDescription = trackDescription;
+        this.kmlSource = kmlSource;
     }
 
     public String getTrackName() {
         return trackName;
     }
 
-    public String getTrackArea() { return trackArea; }
+    public void setTrackName(String trackName) {
+        this.trackName = trackName;
+    }
 
-    public HashMap<Integer,Question> getQuestionsHashMap() {
-        return questionsHashMap;
+    public String trackDescription() {
+        return trackDescription;
+    }
+
+    public void setTrackArea(String trackDescription) {
+        this.trackDescription = trackDescription;
+    }
+
+    public int getKmlSource() {
+        return kmlSource;
+    }
+
+    public void setKmlSource(int kmlSource) {
+        this.kmlSource = kmlSource;
     }
 
     @Override
     public String toString() {
         return "Track{" +
                 "trackName='" + trackName + '\'' +
-                ", trackArea='" + trackArea + '\'' +
+                ", trackDescription='" + trackDescription + '\'' +
                 '}';
     }
 }

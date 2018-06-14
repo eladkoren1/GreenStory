@@ -1,10 +1,13 @@
 package greenstory.rtg.com.classes;
 
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.google.maps.android.data.kml.KmlLayer;
 
 import java.io.Serializable;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 
 /**
  * Created by Elad on 23/12/2017.
@@ -15,27 +18,28 @@ public class Site implements Serializable {
     private String siteName;
     private String siteDescription;
     private LatLng latLng;
-    private HashMap<Integer,Track> tracks;
+    ArrayList<Track> tracks = null;
+    private MarkerOptions siteHomeMarker;
 
     public Site(String siteName,String siteDescription) {
         this.siteName = siteName;
         this.siteDescription = siteDescription;
-        }
+        tracks = new ArrayList<Track>();
+    }
 
     public Site(String siteName,String siteDescription, LatLng latLng) {
         this.siteName = siteName;
         this.siteDescription = siteDescription;
         this.latLng = latLng;
+        tracks = new ArrayList<Track>();
     }
 
-    @Override
-    public String toString() {
-        return "Site{" +
-                "siteName='" + siteName + '\'' +
-                ", latLng=" + latLng +
-                ", siteData='" + siteDescription + '\'' +
-                ", tracks=" + tracks +
-                '}';
+    public Site(String siteName, String siteDescription, LatLng latLng, MarkerOptions siteHomeMarkerOptions) {
+        this.siteName = siteName;
+        this.siteDescription = siteDescription;
+        this.latLng = latLng;
+        this.siteHomeMarker = siteHomeMarkerOptions;
+        tracks = new ArrayList<Track>();
     }
 
     public String getSiteName() {
@@ -46,6 +50,14 @@ public class Site implements Serializable {
         this.siteName = siteName;
     }
 
+    public String getSiteDescription() {
+        return siteDescription;
+    }
+
+    public void setSiteDescription(String siteDescription) {
+        this.siteDescription = siteDescription;
+    }
+
     public LatLng getLatLng() {
         return latLng;
     }
@@ -54,19 +66,28 @@ public class Site implements Serializable {
         this.latLng = latLng;
     }
 
-    public String getSiteData() {
-        return siteDescription;
+    public ArrayList<Track> getTracks() {
+        return (ArrayList<Track>) tracks;
     }
 
-    public void setSiteData(String siteData) {
-        this.siteDescription = siteData;
-    }
-
-    public HashMap<Integer, Track> getTracks() {
-        return tracks;
-    }
-
-    public void setTracks(HashMap<Integer, Track> tracks) {
+    public void setTracks(ArrayList<Track> tracks) {
         this.tracks = tracks;
+    }
+
+    public MarkerOptions getSiteHomeMarker() {
+        return siteHomeMarker;
+    }
+
+    private void setSiteHomeMarker(MarkerOptions siteHomeMarker) {
+        this.siteHomeMarker = siteHomeMarker;
+    }
+
+    @Override
+    public String toString() {
+        return "Site{" +
+                "siteName='" + siteName + '\'' +
+                ", siteDescription='" + siteDescription + '\'' +
+                ", latLng=" + latLng +
+                '}';
     }
 }

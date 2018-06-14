@@ -147,7 +147,25 @@ public class Utils {
             db.setTransactionSuccessful();
             db.endTransaction();
             cursor.close();
+            db.close();
         }
         return imagesHashMap;
+    }
+
+    public static void removeImageDataFromDb(String uri, SQLiteDatabase db) {
+        String[] args = {uri};
+
+        try {
+            db.beginTransaction();
+            db.delete("images", "image_uri=?",args);
+        }
+        catch (Exception e) {
+            Log.e("ERROR", e.toString());
+        }
+        finally{
+            db.setTransactionSuccessful();
+            db.endTransaction();
+            db.close();
+        }
     }
 }

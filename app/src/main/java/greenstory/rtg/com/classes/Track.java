@@ -2,6 +2,7 @@ package greenstory.rtg.com.classes;
 
 import android.support.annotation.NonNull;
 
+import java.io.Serializable;
 import java.lang.reflect.Array;
 import java.util.Collection;
 import java.util.HashMap;

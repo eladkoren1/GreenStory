@@ -288,7 +288,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     public void initialiseSiteTracks() {
 
         integerSiteHashMap.put(0,
-                new Site("תוצרת הארץ",
+                new Site(1,"תוצרת הארץ",
                         "שכונת נחלת יצחק היא שכונה בדרום-מזרח תל אביב שהוקמה בשנת 1925 מזרחית לנחל איילון (ואדי מוסררה, כיום נתיבי איילון), על ידי קבוצת יהודים שבאו מקובנה. השכונה סמוכה לשכונות ביצרון ורמת ישראל",
                         new LatLng(32.0737617,34.7995856),
                         new MarkerOptions()
@@ -296,7 +296,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 .title("תוצרת הארץ")
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.totzeret_haaretz_72))));
         integerSiteHashMap.put(1,
-                new Site("המכללה האקדמית תל אביב יפו",
+                new Site(2,"המכללה האקדמית תל אביב יפו",
                         "האקדמית תל אביב-יפו הוקמה בשנת 1994 ביוזמה משותפת של אוניברסיטת תל אביב, עיריית תל אביב-יפו והוועדה לתכנון ולתקצוב של המועצה להשכלה גבוהה, כמוסד אקדמי ציבורי להשכלה גבוהה (האקדמית זכתה להכרה כמוסד להשכלה גבוהה ב-1996)",
                         new LatLng(32.0477291,34.7609729),
                         new MarkerOptions()
@@ -304,7 +304,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                                 .title("המכללה האקדמית תל אביב יפו")
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.mta_72))));
         integerSiteHashMap.put(2,
-                new Site("שמורת הר ארבל",
+                new Site(3,"שמורת הר ארבל",
                         "הגן הלאומי כולל בתוכו את רוב שטחו של הר הארבל, הר ניתאי, הר סביון, קרני חיטין ורמת ארבל. בשטח הגן הלאומי מסומנים שבילי טיול. השביל המוליך ממגרש החניה קצר ונוח להליכה. הוא עולה בשיפוע מתון עד אל שפת המצוק, המתנשא מעל סביבתו לגובה 400 מטר ומעניק מראות נוף למרחקים",
                         new LatLng(32.824166, 35.4986072),
                         new MarkerOptions()

@@ -15,6 +15,7 @@ import java.util.List;
 
 public class Site implements Serializable {
 
+    private int siteId;
     private String siteName;
     private String siteDescription;
     private LatLng latLng;
@@ -34,7 +35,8 @@ public class Site implements Serializable {
         tracks = new ArrayList<Track>();
     }
 
-    public Site(String siteName, String siteDescription, LatLng latLng, MarkerOptions siteHomeMarkerOptions) {
+    public Site(int siteId, String siteName, String siteDescription, LatLng latLng, MarkerOptions siteHomeMarkerOptions) {
+        this.siteId = siteId;
         this.siteName = siteName;
         this.siteDescription = siteDescription;
         this.latLng = latLng;

@@ -9,6 +9,8 @@ import android.content.pm.PackageManager;
 import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -47,10 +49,20 @@ import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.data.kml.KmlLayer;
 
+import java.io.File;
+import java.io.IOException;
+import java.net.MalformedURLException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 
 import greenstory.rtg.com.classes.Site;
@@ -61,47 +73,45 @@ import greenstory.rtg.com.data.UsersContract;
 import greenstory.rtg.com.data.Utils;
 
 public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCallback {
+
     boolean isMapFragmentCalled=false;
+    boolean backClicked=false;
+    private static float initialZoom = 8.5f;
+
     private EditText mUserName;
     private EditText mFamilyName;
+    private ImageButton closeTrackDialogImageButton;
     private AlertDialog sitesDialog;
     private AlertDialog attractionsDialog;
     private AlertDialog galleryDialog;
     private AlertDialog aboutDialog;
-    private User user = new User();
-    private GoogleMap mMap;
     private DrawerLayout mDrawerLayout;
     private ListView mDrawerList;
     private ListView siteInfo;
     private ListView sites;
     private ListView gallery;
-    private String[] sitesArray;
     private ActionBarDrawerToggle mDrawerToggle;
     private TextView nameTitleTextView;
     private ImageButton drawerImageButton;
+    private TextView siteName;
+
     private LatLng centerLatLng = new LatLng(32.698123394504464,35.14352526515722);
     private LatLngBounds mapBounds = new LatLngBounds(new LatLng(32.0736685,34.7799253),
-                            new LatLng(32.9002805,35.5586083));
-    private static float initialZoom = 8.5f;
+                                                      new LatLng(32.9002805,35.5586083));
     private Context context = this;
     private SQLiteDatabase mDb;
-    boolean backClicked=false;
-    private ImageButton closeTrackDialogImageButton;
-
-    private HashMap<Integer,MarkerOptions> intMarkerOptionsHashMap = new HashMap<>();
+    private User user = new User();
+    private GoogleMap mMap;
     private HashMap<Integer,Site> integerSiteHashMap = new HashMap<>();
     ArrayList<Track> tracks = new ArrayList<Track>();
-    private TextView siteName;
-    Track track = null;
+    private Track track = null;
+    FirebaseDatabase greenStoryFirebaseDB = FirebaseDatabase.getInstance();
+    DatabaseReference sitesReference = greenStoryFirebaseDB.getReference("sites");
 
-
-    @Override
+g    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_map);
-        Resources res = getResources();// TODO: use data from firebase
-        sitesArray = res.getStringArray(R.array.sites_array);
-
         checkPermissions();
         track = new Track("רחוב תוצרת הארץ","",R.raw.totzeret_haaretz);
         //Custom action bar settings
@@ -245,61 +255,65 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        //initialiseMarkers();
-        initialiseSites();
-        addMarkers(mMap);
         setupMap(mMap);
-    }
+        final HashMap<Integer, String> markerIconUrlHashMap = new HashMap<>();
+        sitesReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot siteKey : dataSnapshot.getChildren()) {
+                    markerIconUrlHashMap.put((Integer.parseInt(siteKey.getKey())),
+                            siteKey.child("markerIconUrl").getValue().toString());
+                }
+                new FetchIconsTask().execute(markerIconUrlHashMap, null, null);
+            }
 
-    public void initialiseMarkers(){
-        intMarkerOptionsHashMap.put(0,new MarkerOptions()
-                .position(new LatLng(32.0737617,34.7995856))
-                .title("תוצרת הארץ")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.totzeret_haaretz_72)));
-        intMarkerOptionsHashMap.put(1,new MarkerOptions()
-                .position(new LatLng(32.0477291,34.7609729))
-                .title("המכללה האקדמית תל אביב יפו")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.mta_72)));
-        intMarkerOptionsHashMap.put(2,new MarkerOptions()
-                .position(new LatLng(32.824166,35.4986072))
-                .title("שמורת הר ארבל")
-                .icon(BitmapDescriptorFactory.fromResource(R.drawable.arbel)));
-
-    }
-
-    public void initialiseSites(){
-
-        integerSiteHashMap.put(0,
-                        new Site("תוצרת הארץ",
-                        "שכונת נחלת יצחק היא שכונה בדרום-מזרח תל אביב שהוקמה בשנת 1925 מזרחית לנחל איילון (ואדי מוסררה, כיום נתיבי איילון), על ידי קבוצת יהודים שבאו מקובנה. השכונה סמוכה לשכונות ביצרון ורמת ישראל",
-                        new LatLng(32.0737617,34.7995856),
-                        new MarkerOptions()
-                            .position(new LatLng(32.0737617,34.7995856))
-                            .title("תוצרת הארץ")
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.totzeret_haaretz_72))));
-        integerSiteHashMap.put(1,
-                new Site("המכללה האקדמית תל אביב יפו",
-                        "האקדמית תל אביב-יפו הוקמה בשנת 1994 ביוזמה משותפת של אוניברסיטת תל אביב, עיריית תל אביב-יפו והוועדה לתכנון ולתקצוב של המועצה להשכלה גבוהה, כמוסד אקדמי ציבורי להשכלה גבוהה (האקדמית זכתה להכרה כמוסד להשכלה גבוהה ב-1996)",
-                        new LatLng(32.0477291,34.7609729),
-                        new MarkerOptions()
-                            .position(new LatLng(32.0477291,34.7609729))
-                            .title("המכללה האקדמית תל אביב יפו")
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.mta_72))));
-        integerSiteHashMap.put(2,
-                new Site("שמורת הר ארבל",
-                        "הגן הלאומי כולל בתוכו את רוב שטחו של הר הארבל, הר ניתאי, הר סביון, קרני חיטין ורמת ארבל. בשטח הגן הלאומי מסומנים שבילי טיול. השביל המוליך ממגרש החניה קצר ונוח להליכה. הוא עולה בשיפוע מתון עד אל שפת המצוק, המתנשא מעל סביבתו לגובה 400 מטר ומעניק מראות נוף למרחקים",
-                        new LatLng(32.824166, 35.4986072),
-                        new MarkerOptions()
-                            .position(new LatLng(32.824166, 35.4986072))
-                            .title("שמורת הר ארבל")
-                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.arbel))));
-        integerSiteHashMap.get(0).getTracks().add(track);
-        integerSiteHashMap.get(1).getTracks().add(new Track("מקיף מכללה","",R.raw.academic_tlv));
-        integerSiteHashMap.get(2).getTracks().add(new Track("סובב הר ארבל","",-1));
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+            }
+        });
 
     }
 
-    public void addMarkers(GoogleMap map) {
+    public void initialiseSites(final HashMap<Integer,Bitmap> markerIconHashMap){
+        sitesReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                // This method is called once with the initial value and again
+                // whenever data at this location is updated.
+                //String value = dataSnapshot.child("names").child("1").getValue(String.class);
+                int i=0;
+                for (DataSnapshot siteKey : dataSnapshot.getChildren()) {
+
+                    double lat = (Double) siteKey.child("coordinates").child("latitude").getValue();
+                    double lon = Double.parseDouble(siteKey.child("coordinates").child("longitude").getValue().toString());
+                    String absPath = Uri.parse("android.resource://com.rtg.greenstory/drawable/mta_72").getPath();
+                    Site site = new Site((Integer.parseInt(siteKey.getKey())),
+                            siteKey.child("siteName").getValue().toString(),
+                            siteKey.child("siteDescription").getValue().toString(),
+                            new LatLng(lat,lon),
+                            new MarkerOptions().position(new LatLng(lat,lon))
+                                               .title(siteKey.child("siteName").getValue().toString())
+                                               .icon(BitmapDescriptorFactory.fromBitmap(markerIconHashMap.get((Integer.parseInt(siteKey.getKey()))))));
+                    integerSiteHashMap.put(i,site);
+                    i++;
+                }
+                addMarkers(mMap,integerSiteHashMap);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+                // Failed to read value
+            }
+        });
+
+        //integerSiteHashMap.get(0).getTracks().add(track);
+        //integerSiteHashMap.get(1).getTracks().add(new Track("מקיף מכללה","",R.raw.academic_tlv));
+        //integerSiteHashMap.get(2).getTracks().add(new Track("סובב הר ארבל","",-1));*/
+
+    }
+
+    public void addMarkers(GoogleMap map,HashMap<Integer,Site> integerSiteHashMap) {
 
         for (int i=0;i<integerSiteHashMap.size();i++){
             map.addMarker(integerSiteHashMap.get(i).getSiteHomeMarker());
@@ -527,6 +541,34 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         }
 
 
+    class FetchIconsTask extends AsyncTask< HashMap<Integer,String>, Void, Void> {
+        HashMap<Integer,Bitmap> integerBitmapHashMap = new HashMap<>();
+
+        @Override
+        protected Void doInBackground(HashMap<Integer, String>... hashMaps) {
+
+            Bitmap markerIcon = null;
+            for (HashMap.Entry<Integer,String> entry : hashMaps[0].entrySet()){
+                URL url = null;
+                try {
+                    url = new URL(entry.getValue());
+                    markerIcon = BitmapFactory.decodeStream(url.openConnection().getInputStream());
+                } catch(IOException e) {
+                    e.printStackTrace();
+                }
+                integerBitmapHashMap.put(entry.getKey(),markerIcon);
+            }
+
+            return null;
+        }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            initialiseSites(integerBitmapHashMap);
+        }
+    }
+
     class DBUserRegisterTask extends AsyncTask<User, Void, Void> {
 
         @Override
@@ -538,6 +580,11 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 e.printStackTrace();
             }
             return null;
+        }
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+
         }
 
     }
@@ -564,20 +611,14 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     class DBLoadUserTask extends AsyncTask<User, Void, Void> {
 
         @Override
-        protected Void doInBackground(User... userArray) {
+        protected Void doInBackground(User... user) {
 
             try {
-                user = Utils.LoadUserFromDB(userArray[0], mDb);
+                Utils.UpdateInitialScreenUser(user[0], mDb);
             } catch (Exception e) {
                 e.printStackTrace();
             }
             return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
         }
     }
 

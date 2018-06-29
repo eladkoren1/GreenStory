@@ -340,3 +340,20 @@ ScrollView scrollView;
         });
         thread.start();
     }
+
+
+    public void initialiseMarkers(){
+            intMarkerOptionsHashMap.put(0,new MarkerOptions()
+                    .position(new LatLng(32.0737617,34.7995856))
+                    .title("תוצרת הארץ")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.totzeret_haaretz_72)));
+            intMarkerOptionsHashMap.put(1,new MarkerOptions()
+                    .position(new LatLng(32.0477291,34.7609729))
+                    .title("המכללה האקדמית תל אביב יפו")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.mta_72)));
+            intMarkerOptionsHashMap.put(2,new MarkerOptions()
+                    .position(new LatLng(32.824166,35.4986072))
+                    .title("שמורת הר ארבל")
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.arbel)));
+
+        }

@@ -108,7 +108,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     FirebaseDatabase greenStoryFirebaseDB = FirebaseDatabase.getInstance();
     DatabaseReference sitesReference = greenStoryFirebaseDB.getReference("sites");
 
-g    @Override
+    @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_map);

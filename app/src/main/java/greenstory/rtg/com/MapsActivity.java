@@ -97,7 +97,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         setContentView(R.layout.activity_maps);
 
         Resources res = getResources();
-        sitesArray = res.getStringArray(R.array.sites_array);
+        //sitesArray = res.getStringArray(R.array.sites_array);
         initialiseQuestions(sitesArray);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);

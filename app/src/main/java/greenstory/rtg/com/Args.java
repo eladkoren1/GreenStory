@@ -12,7 +12,7 @@ import java.util.HashMap;
 public class Args extends AppCompatActivity {
 
     Resources res = getResources();
-    public final String[] SITES = res.getStringArray(R.array.sites_array);
+    //public final String[] SITES = res.getStringArray(R.array.sites_array);
     public static final String[]  MENU_OPTIONS = {"משתמש","מסלולים","מפה","משתתפים","אודות","צור קשר","חנות"};
 
 }

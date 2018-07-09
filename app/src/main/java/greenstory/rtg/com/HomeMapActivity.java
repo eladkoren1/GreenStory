@@ -61,6 +61,7 @@ import java.io.IOException;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -100,11 +101,14 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                                                       new LatLng(32.9002805,35.5586083));
     private Context context = this;
     private SQLiteDatabase mDb;
-    private User user = new User();
+
     private GoogleMap mMap;
     private HashMap<Integer,Site> integerSiteHashMap = new HashMap<>();
     ArrayList<Track> tracks = new ArrayList<Track>();
+    HashMap<String,HashMap<Integer,String>> dataLists = new HashMap<>();
     private Track track = null;
+    private User user = new User();
+
     FirebaseDatabase greenStoryFirebaseDB = FirebaseDatabase.getInstance();
     DatabaseReference sitesReference = greenStoryFirebaseDB.getReference("sites");
 
@@ -113,6 +117,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_map);
         checkPermissions();
+        initDataLists(dataLists);
         track = new Track("רחוב תוצרת הארץ","",R.raw.totzeret_haaretz);
         //Custom action bar settings
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -157,7 +162,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         };
         mDrawerList = (ListView) findViewById(R.id.left_drawer_list);
         mDrawerList.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.drawer_list_item, res.getStringArray(R.array.options_array)));
+                R.layout.drawer_list_item, getResources().getStringArray(R.array.options_array)));
         mDrawerList.setOnItemClickListener(new HomeMapActivity.DrawerItemClickListener());
     }
 
@@ -321,7 +326,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     }
 
     @SuppressLint("MissingPermission")
-    void setupMap(GoogleMap map) {
+    private void setupMap(GoogleMap map) {
         map.setMyLocationEnabled(true);
         map.setLatLngBoundsForCameraTarget(mapBounds);
         map.setMinZoomPreference(7f);
@@ -356,7 +361,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         map.getUiSettings().setZoomControlsEnabled(true);
     }
 
-    public void initiateDB(final User user) {
+    private void initiateDB(final User user) {
         GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this);
         mDb = dbHelper.getWritableDatabase();
         new DBLoadUserTask().execute(user,null,null);
@@ -398,7 +403,44 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         }
     }
 
-    public boolean isUserIdExists(SQLiteDatabase db) {
+    private void initDataLists(final HashMap<String, HashMap<Integer, String>> dataLists) {
+        greenStoryFirebaseDB.getReference("lists").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot list  :  dataSnapshot.getChildren()){
+                    dataLists.put(String.valueOf(list.getKey()),new HashMap<Integer, String>());
+                    for (DataSnapshot listData : list.getChildren()){
+                        Log.d("","");
+                        dataLists.get(list.getKey()).put(Integer.parseInt(listData.getKey()),String.valueOf(listData.getValue()));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        greenStoryFirebaseDB.getReference("lists").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot list  :  dataSnapshot.getChildren()){
+                    HashMap<Integer,String> newHashMap = new HashMap<>();
+                    for (DataSnapshot listData : list.getChildren()){
+                        //dataLists.put(String.valueOf(list.getKey(), newHashMap.put(Integer.parseInt(listData.getKey()), String.valueOf(listData.getValue()));
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
+    private boolean isUserIdExists(SQLiteDatabase db) {
         String[] columns = new String[1];
         columns[0] = "uId";
         Cursor cursor = db.query("users", null, null, null, null, null, null);
@@ -504,8 +546,8 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         View mView = getLayoutInflater().inflate(R.layout.activity_home_sites_dialog, null);
         sites = mView.findViewById(R.id.lv_sites);
         Resources res = getResources();
-        sites.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.sites_list_item, res.getStringArray(R.array.sites_array)));
+        //sites.setAdapter(new ArrayAdapter<String>(this,
+              //  R.layout.sites_list_item, res.getStringArray(R.array.sites_array)));
         sites.setOnItemClickListener(new HomeMapActivity.sitesItemClickListener());
         mBuilder.setView(mView);
         sitesDialog = mBuilder.create();
@@ -519,8 +561,8 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         View mView = getLayoutInflater().inflate(R.layout.activity_home_gallery_dialog, null);
         gallery = mView.findViewById(R.id.lv_gallery);
         Resources res = getResources();
-        gallery.setAdapter(new ArrayAdapter<String>(this,
-                R.layout.sites_list_item, res.getStringArray(R.array.sites_array)));
+       // gallery.setAdapter(new ArrayAdapter<String>(this,
+           //     R.layout.sites_list_item, res.getStringArray(R.array.sites_array)));
         gallery.setOnItemClickListener(new HomeMapActivity.galleryItemClickListener());
         mBuilder.setView(mView);
         galleryDialog = mBuilder.create();
@@ -680,7 +722,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             String site = String.valueOf(gallery.getItemAtPosition(position));
             Intent intent = new Intent(context, AdvancedGalleryActivity.class);
-            intent.putExtra("site",sitesArray[position]);
+           // intent.putExtra("site",sitesArray[position]);
             galleryDialog.dismiss();
             mDrawerLayout.closeDrawer(Gravity.START,true);
             startActivity(intent);

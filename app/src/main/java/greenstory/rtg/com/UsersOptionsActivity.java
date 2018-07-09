@@ -67,7 +67,7 @@ public class UsersOptionsActivity extends AppCompatActivity {
             }
         });
         Resources res = getResources();
-        sitesArray = res.getStringArray(R.array.sites_array);
+        //sitesArray = res.getStringArray(R.array.sites_array);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer_white);

@@ -107,7 +107,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     ArrayList<Track> tracks = new ArrayList<Track>();
     HashMap<String,HashMap<Integer,String>> dataLists = new HashMap<>();
     private Track track = null;
-    private User user = new User();
+    private User user = null;
 
     FirebaseDatabase greenStoryFirebaseDB = FirebaseDatabase.getInstance();
     DatabaseReference sitesReference = greenStoryFirebaseDB.getReference("sites");
@@ -120,6 +120,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         initDataLists(dataLists);
         track = new Track("רחוב תוצרת הארץ","",R.raw.totzeret_haaretz);
         //Custom action bar settings
+        //TODO: personalize by region/language/rtl or ltr
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
         getSupportActionBar().setHomeAsUpIndicator(R.drawable.ic_drawer_white);
@@ -517,6 +518,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 for (int i=0;i<integerSiteHashMap.size();i++){
                     if(siteMarker.getTitle().contentEquals(integerSiteHashMap.get(i).getSiteName())){
                         intent.putExtra("kmlResource", i);
+                        intent.putExtra("siteName",integerSiteHashMap.get(i).getSiteName());
                         break;
                     }
                 }

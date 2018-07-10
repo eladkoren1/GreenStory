@@ -75,7 +75,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Image image;
     Bitmap picture;
     Uri imageUri;
-    String[] sitesArray;
+    String siteName = null;
     TextView questionsAnsweredTV;
     View view;
     HashMap<Integer,Site> integerSiteHashMap = new HashMap<>();
@@ -95,15 +95,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-
-        Resources res = getResources();
-        //sitesArray = res.getStringArray(R.array.sites_array);
-        initialiseQuestions(sitesArray);
+        kmlId = getIntent().getIntExtra("kmlResource",-1);
+        siteName = getIntent().getStringExtra("siteName");
+        if (siteName.equals(null)) siteName = "";
+        initialiseQuestions(siteName);
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         //questionsAnsweredTV = (TextView) findViewById(R.id.tv_questions_answered);
-        kmlId = getIntent().getIntExtra("kmlResource",-1);
-        takePictureBtn = (ImageButton)findViewById(R.id.btn_take_picture);
+         takePictureBtn = (ImageButton)findViewById(R.id.btn_take_picture);
         takePictureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -140,7 +139,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            image = new Image(sitesArray[kmlId],data.getData().toString());
+                            image = new Image(siteName,data.getData().toString());
                             new DBinsertImageDataToDbTask().execute(image,null,null);
                             showImageDialog();
 
@@ -317,46 +316,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void initialiseQuestions(String[] sitesArray){
-        question1 = new Question(1,sitesArray[kmlId],
+    public void initialiseQuestions(String siteName){
+        question1 = new Question(1,siteName,
                 new LatLng(32.0732843,34.7963482),
                 "מהו הרחוב הוותיק ביותר בתל אביב?",
                 "רחוב הרצל","שדרות קק''ל","רחוב אלנבי", "שדרות רוטשילד",
                 1,false);
 
-        question2 = new Question(2,sitesArray[kmlId],
+        question2 = new Question(2,siteName,
                 new LatLng(32.0731386,34.7949018),
                 "איזו כתובת מהבאות יוצאת דופן",
                 "כיכר קדומים 14","הרכב 8","יונה הנביא 6", "דוד חכמי 35",
                 2,false);
 
-        question3 = new Question(3,sitesArray[kmlId],
+        question3 = new Question(3,siteName,
                 new LatLng(32.0721558,34.7957219),
                 "איזו שכונה הייתה מזוהה היסטורית עם מועדון הכדורגל שמשון תל אביב?",
                 "יד אליהו","קריית שלום","כפר התימנים", "כפר שלם",
                 3,false);
 
-        question4 = new Question(4,sitesArray[kmlId],
+        question4 = new Question(4,siteName,
                 new LatLng(32.0723749,34.7973027),
                 "איזו מחנויות הספרים הבאות לא נמצאות באלנבי?",
                 "קדמת עדן","הלפר ספרים","לוטוס", "הנסיך הקטן",
                 4,false);
-        question5 = new Question(5,sitesArray[kmlId],
+        question5 = new Question(5,siteName,
                 new LatLng(32.04764, 34.76005),
                 "באיזו שנה הוקם מסגד נוזהה בשדרות ירושלים?",
                 "1933","1901","1940", "1970",
                 1,false);
-        question6 = new Question(6,sitesArray[kmlId],
+        question6 = new Question(6,siteName,
                 new LatLng(32.04733, 34.75951),
                 "מה היה אחד השימושים העיקריים בנמל יפו בשנות החמישים?",
                 "נמל דיג","נמל לחיל הים","ייצוא פרי הדר", "ייבוא בגדים",
                 3,false);
-        question7 = new Question(7,sitesArray[kmlId],
+        question7 = new Question(7,siteName,
                 new LatLng(32.04688, 34.75945),
                 "מי היה האדריכל האחראי על הקמת בית הדואר ביפו?",
                 "נעמי יודקובסקי","יצחק רפופורט","אליעזר ילין", "ויטוריו קורינלדי",
                 2,false);
-        question8 = new Question(8,sitesArray[kmlId],
+        question8 = new Question(8,siteName,
                 new LatLng(32.04661, 34.76),
                 "באיזו שנה הוקמה המכללה האקדמית תל אביב יפו",
                 "2004","1999","1994", "2000",

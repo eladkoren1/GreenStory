@@ -107,7 +107,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     ArrayList<Track> tracks = new ArrayList<Track>();
     HashMap<String,HashMap<Integer,String>> dataLists = new HashMap<>();
     private Track track = null;
-    private User user = null;
+
 
     FirebaseDatabase greenStoryFirebaseDB = FirebaseDatabase.getInstance();
     DatabaseReference sitesReference = greenStoryFirebaseDB.getReference("sites");
@@ -187,7 +187,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         //If write permission is already granted, start DB method
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-            initiateDB(user);
+            initiateDB();
         }
 
         //If location permission is already granted, get google map
@@ -217,7 +217,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         // If request is cancelled, the result arrays are empty.
         //Write DB permission result check
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            initiateDB(user);
+            initiateDB();
         }
         else {
             Toast.makeText(this,"write permissions is really important...",Toast.LENGTH_LONG).show();
@@ -362,9 +362,10 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         map.getUiSettings().setZoomControlsEnabled(true);
     }
 
-    private void initiateDB(final User user) {
+    private void initiateDB() {
         GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this);
         mDb = dbHelper.getWritableDatabase();
+        final User user = null;
         new DBLoadUserTask().execute(user,null,null);
         if (!isUserIdExists(mDb)) {
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);

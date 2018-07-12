@@ -168,4 +168,28 @@ public class Utils {
             db.close();
         }
     }
+
+    public static private boolean isUserIdExists(SQLiteDatabase db) {
+        String[] columns = new String[1];
+        columns[0] = "uId";
+        Cursor cursor = db.query("users", null, null, null, null, null, null);
+        cursor.moveToFirst();
+        String content = null;
+        try {
+
+            content = String.valueOf(cursor.getInt(cursor.getColumnIndex("uId")));
+            if (content!=null) {
+
+                return true;
+            } else {
+
+                return false;
+            }
+
+        } catch (Exception e) {
+            Log.e("Error",e.getMessage());
+
+        }
+        return false;
+    }
 }

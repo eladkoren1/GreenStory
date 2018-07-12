@@ -187,7 +187,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         //If write permission is already granted, start DB method
         if (ContextCompat.checkSelfPermission(this,
                 Manifest.permission.WRITE_EXTERNAL_STORAGE) == PackageManager.PERMISSION_GRANTED){
-            initiateDB();
+            initialiseUser();
         }
 
         //If location permission is already granted, get google map
@@ -217,7 +217,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         // If request is cancelled, the result arrays are empty.
         //Write DB permission result check
         if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-            initiateDB();
+            initialiseUser();
         }
         else {
             Toast.makeText(this,"write permissions is really important...",Toast.LENGTH_LONG).show();
@@ -362,12 +362,27 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         map.getUiSettings().setZoomControlsEnabled(true);
     }
 
-    private void initiateDB() {
-        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this);
-        mDb = dbHelper.getWritableDatabase();
-        final User user = null;
-        new DBLoadUserTask().execute(user,null,null);
-        if (!isUserIdExists(mDb)) {
+    private void initialiseUser() {
+        final boolean[] isUserExits = {false};
+        final DatabaseReference usersReference = greenStoryFirebaseDB.getReference("users");
+        usersReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                isUserExits[0] = dataSnapshot.hasChildren();
+
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+        //GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this);
+        //mDb = dbHelper.getWritableDatabase();
+        final User user = new User();
+        //new DBLoadUserTask().execute(user,null,null);
+        if (!isUserExits[0]) {
             AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
             View mView = getLayoutInflater().inflate(R.layout.activity_home_dialog_login, null);
             Button mLogin = mView.findViewById(R.id.btnLogin);
@@ -390,7 +405,18 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                         user.setPartnerAge(0);
                         user.setIsFamily(false);
                         user.setPoints(0);
-                        new DBUserRegisterTask().execute(user, null, null);
+                        usersReference.addValueEventListener(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(DataSnapshot dataSnapshot) {
+
+                            }
+
+                            @Override
+                            public void onCancelled(DatabaseError databaseError) {
+
+                            }
+                        });
+                        //new DBUserRegisterTask().execute(user, null, null);
                         dialog.dismiss();
                         if (!user.equals(null)){
                             //nameTitleTextView.setText("ברוך הבא "+user.getUserName());
@@ -442,29 +468,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         });
     }
 
-    private boolean isUserIdExists(SQLiteDatabase db) {
-        String[] columns = new String[1];
-        columns[0] = "uId";
-        Cursor cursor = db.query("users", null, null, null, null, null, null);
-        cursor.moveToFirst();
-        String content = null;
-        try {
 
-            content = String.valueOf(cursor.getInt(cursor.getColumnIndex("uId")));
-            if (content!=null) {
-
-                return true;
-            } else {
-
-                return false;
-            }
-
-        } catch (Exception e) {
-            Log.e("Error",e.getMessage());
-
-        }
-        return false;
-    }
 
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
@@ -659,7 +663,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         protected Void doInBackground(User... user) {
 
             try {
-                Utils.UpdateInitialScreenUser(user[0], mDb);
+                Utils.LoadUserFromDB(user[0], mDb);
             } catch (Exception e) {
                 e.printStackTrace();
             }

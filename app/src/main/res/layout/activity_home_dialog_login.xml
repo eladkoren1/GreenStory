@@ -10,10 +10,38 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_gravity="center"
-        android:layout_marginTop="5dp"
-        android:text="הרשמה"
+        android:text="כניסה למערכת"
         android:textSize="25sp"
-        android:textStyle="bold" />
+        android:textStyle="bold"
+        android:layout_marginTop="25dp"
+        android:layout_marginBottom="35dp"/>
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_horizontal">
+
+        <Button
+            android:id="@+id/btnLoginAsGuest"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="20dp"
+            android:background="@color/colorAccent"
+            android:text="היכנס כאורח"
+            android:textColor="@android:color/white" />
+
+        <Button
+            android:id="@+id/btnRegisterLogin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="10dp"
+            android:layout_marginHorizontal="20dp"
+            android:background="@color/colorAccent"
+            android:text="הרשמה"
+            android:textColor="@android:color/white" />
+
+    </LinearLayout>
 
     <EditText
         android:id="@+id/etUserName"
@@ -22,7 +50,8 @@
         android:layout_marginTop="10dp"
         android:ems="10"
         android:hint="שם פרטי"
-        android:inputType="text" />
+        android:inputType="text"
+        android:visibility="gone"/>
 
     <EditText
         android:id="@+id/etFamilyName"
@@ -31,15 +60,45 @@
         android:layout_marginTop="5dp"
         android:ems="10"
         android:hint="שם משפחה"
-        android:inputType="text" />
+        android:inputType="text"
+        android:visibility="gone"/>
 
-    <Button
-        android:id="@+id/btnLogin"
+    <LinearLayout
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
-        android:background="@color/colorAccent"
-        android:layout_gravity="center"
-        android:text="להרשמה"
-        android:textColor="@android:color/white" />
+        android:orientation="horizontal"
+        android:layout_marginVertical="40dp"
+        android:layout_gravity="center_horizontal">
+
+
+        <Button
+            android:id="@+id/btnRegisterUserBack"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginHorizontal="20dp"
+            android:background="@color/colorAccent"
+            android:layout_gravity="center_horizontal"
+            android:text="חזרה"
+            android:textColor="@android:color/white"
+            android:visibility="gone"/>
+
+        <Button
+            android:id="@+id/btnRegisterUser"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="30dp"
+            android:layout_marginHorizontal="20dp"
+            android:background="@color/colorAccent"
+            android:layout_gravity="center_horizontal"
+            android:text="הירשם"
+            android:textColor="@android:color/white"
+            android:visibility="gone"/>
+
+
+
+    </LinearLayout>
+
+
+
 </LinearLayout>

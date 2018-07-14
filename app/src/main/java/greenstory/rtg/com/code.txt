@@ -357,3 +357,61 @@ ScrollView scrollView;
                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.arbel)));
 
         }
+
+                //GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this);
+                //mDb = dbHelper.getWritableDatabase();
+                //new DBLoadUserTask().execute(user,null,null);
+
+                /*class DBUserRegisterTask extends AsyncTask<User, Void, Void> {
+
+                        @Override
+                        protected Void doInBackground(User... user) {
+
+                            try {
+                                Utils.UpdateInitialScreenUser(user[0], mDb);
+                            } catch (Exception e) {
+                                e.printStackTrace();
+                            }
+                            return null;
+                        }
+                        @Override
+                        protected void onPostExecute(Void aVoid) {
+                            super.onPostExecute(aVoid);
+
+                        }
+
+                    }*/
+
+
+                    class DBLoadUserTask extends AsyncTask<User, Void, Void> {
+
+                            @Override
+                            protected Void doInBackground(User... user) {
+
+                                try {
+                                    Utils.LoadUserFromDB(user[0], mDb);
+                                } catch (Exception e) {
+                                    e.printStackTrace();
+                                }
+                                return null;
+                            }
+                        }
+
+                        class DBUserUpdateTask extends AsyncTask<User, Void, Void> {
+
+                                @Override
+                                protected Void doInBackground(User... user) {
+
+                                    try {
+                                        Utils.UpdateUserInfo(user[0], mDb);
+                                    } catch (Exception e) {
+                                        e.printStackTrace();
+                                    }
+                                    return null;
+                                }
+
+                                @Override
+                                protected void onPostExecute(Void aVoid) {
+                                    super.onPostExecute(aVoid);
+                                }
+                            }

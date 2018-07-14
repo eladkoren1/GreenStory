@@ -51,7 +51,6 @@ public class Utils {
             db.beginTransaction();
             cursor = db.query("users", null, null, null, null, null, null);
             cursor.moveToFirst();
-            user.setuId(String.valueOf(cursor.getInt(cursor.getColumnIndex("uId"))));
             user.setUserName(String.valueOf(cursor.getString(cursor.getColumnIndex("name"))));
             user.setFamilyName(String.valueOf(cursor.getString(cursor.getColumnIndex("familyName"))));
             user.setPartnerName(String.valueOf(cursor.getString(cursor.getColumnIndex("partnerName"))));
@@ -169,7 +168,7 @@ public class Utils {
         }
     }
 
-    public static private boolean isUserIdExists(SQLiteDatabase db) {
+    public static boolean isUserIdExists(SQLiteDatabase db) {
         String[] columns = new String[1];
         columns[0] = "uId";
         Cursor cursor = db.query("users", null, null, null, null, null, null);

@@ -10,7 +10,6 @@ import java.util.HashMap;
 
 public class User implements Serializable{
 
-    private String uId;
     private String userName;
     private String familyName;
     private String partnerName;
@@ -35,7 +34,6 @@ public class User implements Serializable{
         this.partnerAge = partnerAge;
         this.isFamily = isFamily;
         children = new ArrayList<Child>(1);
-        uId = String.valueOf(java.util.Calendar.getInstance().getTimeInMillis());
         this.points = points;
     }
 
@@ -52,14 +50,6 @@ public class User implements Serializable{
 
     public ArrayList<Child> getChildren(){
         return children;
-    }
-
-    public String getuId() {
-        return uId;
-    }
-
-    public void setuId(String uId) {
-        this.uId = uId;
     }
 
     public String getUserName() {

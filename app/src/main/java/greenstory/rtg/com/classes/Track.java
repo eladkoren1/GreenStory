@@ -2,8 +2,11 @@ package greenstory.rtg.com.classes;
 
 import android.support.annotation.NonNull;
 
+import com.google.maps.android.data.kml.KmlLayer;
+
 import java.io.Serializable;
 import java.lang.reflect.Array;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -14,15 +17,15 @@ import java.util.ListIterator;
  * Created by Elad on 23/12/2017.
  */
 
-public class Track {
+public class Track implements Serializable{
 
     private String trackName;
     private String trackDescription;
-    private int kmlSource;
-    private HashMap<Integer,Question> questionsHashMap = new HashMap<Integer, Question>();
+    private String kmlSource;
+    private ArrayList<Question> questionArrayList = new ArrayList<>();
 
 
-    public Track(String trackName, String trackDescription, int kmlSource) {
+    public Track(String trackName, String trackDescription, String kmlSource) {
         this.trackName = trackName;
         this.trackDescription = trackDescription;
         this.kmlSource = kmlSource;
@@ -36,6 +39,14 @@ public class Track {
         this.trackName = trackName;
     }
 
+    public String getKmlUrl() {
+        return kmlSource;
+    }
+
+    public void setKmlUrl(String kmlUrl) {
+        this.kmlSource = kmlUrl;
+    }
+
     public String trackDescription() {
         return trackDescription;
     }
@@ -44,12 +55,8 @@ public class Track {
         this.trackDescription = trackDescription;
     }
 
-    public int getKmlSource() {
-        return kmlSource;
-    }
-
-    public void setKmlSource(int kmlSource) {
-        this.kmlSource = kmlSource;
+    public void addQuestion(Question question){
+        questionArrayList.add(question);
     }
 
     @Override

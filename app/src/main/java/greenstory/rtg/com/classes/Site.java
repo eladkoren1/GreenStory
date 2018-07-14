@@ -15,7 +15,6 @@ import java.util.List;
 
 public class Site implements Serializable {
 
-    private int siteId;
     private String siteName;
     private String siteDescription;
     private LatLng latLng;
@@ -35,8 +34,7 @@ public class Site implements Serializable {
         tracks = new ArrayList<Track>();
     }
 
-    public Site(int siteId, String siteName, String siteDescription, LatLng latLng, MarkerOptions siteHomeMarkerOptions) {
-        this.siteId = siteId;
+    public Site(String siteName, String siteDescription, LatLng latLng, MarkerOptions siteHomeMarkerOptions) {
         this.siteName = siteName;
         this.siteDescription = siteDescription;
         this.latLng = latLng;
@@ -60,20 +58,12 @@ public class Site implements Serializable {
         this.siteDescription = siteDescription;
     }
 
-    public LatLng getLatLng() {
-        return latLng;
-    }
-
-    public void setLatLng(LatLng latLng) {
-        this.latLng = latLng;
-    }
-
     public ArrayList<Track> getTracks() {
         return (ArrayList<Track>) tracks;
     }
 
-    public void setTracks(ArrayList<Track> tracks) {
-        this.tracks = tracks;
+    public void addTrack(Track track) {
+        tracks.add(track);
     }
 
     public MarkerOptions getSiteHomeMarker() {
@@ -84,12 +74,11 @@ public class Site implements Serializable {
         this.siteHomeMarker = siteHomeMarker;
     }
 
-    @Override
-    public String toString() {
-        return "Site{" +
-                "siteName='" + siteName + '\'' +
-                ", siteDescription='" + siteDescription + '\'' +
-                ", latLng=" + latLng +
-                '}';
+    public LatLng getLatLng() {
+        return latLng;
+    }
+
+    public void setLatLng(LatLng latLng) {
+        this.latLng = latLng;
     }
 }

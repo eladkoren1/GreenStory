@@ -9,7 +9,6 @@ import com.google.android.gms.maps.model.LatLng;
 public class Question {
 
     private int questionID;
-    private String site;
     private LatLng latLng;
     private String question;
     private String answerA;
@@ -19,16 +18,7 @@ public class Question {
     private int correctAnswer;
     private boolean isAnswered = false;
 
-    public String getSite() {
-        return site;
-    }
-
-    public void setSite(String site) {
-        this.site = site;
-    }
-
     public Question(int questionID,
-                    String site,
                     LatLng latLng,
                     String question,
                     String answerA,
@@ -38,8 +28,6 @@ public class Question {
                     int correctAnswer, boolean isAnswered) {
 
         this.questionID = questionID;
-        this.site = site;
-
         this.latLng = latLng;
         this.question = question;
         this.answerA = answerA;

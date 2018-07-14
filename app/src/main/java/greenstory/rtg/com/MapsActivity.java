@@ -1,12 +1,9 @@
 package greenstory.rtg.com;
 
-import android.Manifest;
 import android.annotation.SuppressLint;
 import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.content.res.Resources;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
@@ -16,9 +13,7 @@ import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.provider.MediaStore;
-import android.support.v4.app.ActivityCompat;
 import android.support.v4.app.FragmentActivity;
-import android.support.v4.content.ContextCompat;
 import android.support.v7.app.AlertDialog;
 import android.util.Log;
 import android.view.View;
@@ -43,7 +38,7 @@ import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
-import java.math.BigDecimal;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
 
@@ -53,8 +48,6 @@ import greenstory.rtg.com.classes.Site;
 import greenstory.rtg.com.classes.Track;
 import greenstory.rtg.com.classes.User;
 import greenstory.rtg.com.data.GreenStoryDbHelper;
-import greenstory.rtg.com.data.ImagesContract;
-import greenstory.rtg.com.data.UsersContract;
 import greenstory.rtg.com.data.Utils;
 
 import static android.location.LocationManager.GPS_PROVIDER;
@@ -64,22 +57,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     User user = new User();
     private GoogleMap mMap;
     LatLng currentLatLng;
-    KmlLayer siteLayer;
     Context context = this;
     private LocationManager locationManager;
-    private SQLiteDatabase mDb;
-
-    Cursor cursor;
-    int kmlId;
     ImageButton takePictureBtn;
     Image image;
     Bitmap picture;
-    Uri imageUri;
     String siteName = null;
-    TextView questionsAnsweredTV;
     View view;
-    HashMap<Integer,Site> integerSiteHashMap = new HashMap<>();
-    ArrayList<Track> tracks = new ArrayList<Track>();
+    ArrayList<Track> tracks = new ArrayList<>();
     Question question1;
     Question question2;
     Question question3;
@@ -89,20 +74,17 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Question question7;
     Question question8;
 
-    HashMap<LatLng, Integer> tracksPlacemarksHashMap = new HashMap<LatLng, Integer>();
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
-        kmlId = getIntent().getIntExtra("kmlResource",-1);
-        siteName = getIntent().getStringExtra("siteName");
-        if (siteName.equals(null)) siteName = "";
-        initialiseQuestions(siteName);
+        tracks = (ArrayList<Track>) getIntent().getSerializableExtra("tracks");
+        siteName = "";
+        initialiseQuestions();
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
         //questionsAnsweredTV = (TextView) findViewById(R.id.tv_questions_answered);
-         takePictureBtn = (ImageButton)findViewById(R.id.btn_take_picture);
+        takePictureBtn = (ImageButton)findViewById(R.id.btn_take_picture);
         takePictureBtn.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -112,10 +94,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             }
         });
 
-        GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this);
-        mDb = dbHelper.getWritableDatabase();
+        //GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this);
+        //mDb = dbHelper.getWritableDatabase();
 
-        new DBLoadUserTask().execute(user,null,null);
+        //new DBLoadUserTask().execute(user,null,null);
 
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager().findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
@@ -155,8 +137,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     @Override
     public void onMapReady(GoogleMap googleMap) {
         mMap = googleMap;
-        initialiseSiteTracks();
-        addSiteLayer();
+        //initialiseSiteTracks();
+
+        for (Track track : tracks){
+            new GetKmlTask().execute(track.getKmlUrl(),null,null);
+        }
         initiateLocation();
         //LoadTracksMarkers(siteLayer);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
@@ -168,10 +153,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
 
     }
 
-    public void addSiteLayer() {
-        if (kmlId!=-1) {
+    public void addSiteLayer(KmlLayer layer) throws IOException, XmlPullParserException {
+        layer.addLayerToMap();
+        /*if (kmlId!=-1) {
             try {
-                siteLayer = new KmlLayer(mMap, integerSiteHashMap.get(kmlId).getTracks().get(0).getKmlSource(), getApplicationContext());
+                siteLayer = new KmlLayer(mMap, 1, getApplicationContext());
                 siteLayer.addLayerToMap();
             } catch (XmlPullParserException e) {
                 e.printStackTrace();
@@ -187,7 +173,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         }
         else{
             super.onBackPressed();
-        }
+        }*/
     }
 
     @SuppressLint("MissingPermission")
@@ -203,8 +189,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     new android.location.LocationListener() {
                         @Override
                         public void onLocationChanged(Location location) {
-                            //Log.d("location","current: " + String.valueOf(currentLatLng.toString())+
-                                    //", question: " + String.valueOf(question.getLatLng().toString()));
                             currentLatLng = new LatLng(location.getLatitude(),location.getLongitude());
                             mMap.animateCamera(CameraUpdateFactory.newLatLng(currentLatLng));
                             double delta1Lat = ((Math.abs(currentLatLng.latitude-question1.getLatLng().latitude)));
@@ -284,78 +268,46 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         });
     }
 
-    public void initialiseSiteTracks() {
-
-        integerSiteHashMap.put(0,
-                new Site(1,"תוצרת הארץ",
-                        "שכונת נחלת יצחק היא שכונה בדרום-מזרח תל אביב שהוקמה בשנת 1925 מזרחית לנחל איילון (ואדי מוסררה, כיום נתיבי איילון), על ידי קבוצת יהודים שבאו מקובנה. השכונה סמוכה לשכונות ביצרון ורמת ישראל",
-                        new LatLng(32.0737617,34.7995856),
-                        new MarkerOptions()
-                                .position(new LatLng(32.0737617,34.7995856))
-                                .title("תוצרת הארץ")
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.totzeret_haaretz_72))));
-        integerSiteHashMap.put(1,
-                new Site(2,"המכללה האקדמית תל אביב יפו",
-                        "האקדמית תל אביב-יפו הוקמה בשנת 1994 ביוזמה משותפת של אוניברסיטת תל אביב, עיריית תל אביב-יפו והוועדה לתכנון ולתקצוב של המועצה להשכלה גבוהה, כמוסד אקדמי ציבורי להשכלה גבוהה (האקדמית זכתה להכרה כמוסד להשכלה גבוהה ב-1996)",
-                        new LatLng(32.0477291,34.7609729),
-                        new MarkerOptions()
-                                .position(new LatLng(32.0477291,34.7609729))
-                                .title("המכללה האקדמית תל אביב יפו")
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.mta_72))));
-        integerSiteHashMap.put(2,
-                new Site(3,"שמורת הר ארבל",
-                        "הגן הלאומי כולל בתוכו את רוב שטחו של הר הארבל, הר ניתאי, הר סביון, קרני חיטין ורמת ארבל. בשטח הגן הלאומי מסומנים שבילי טיול. השביל המוליך ממגרש החניה קצר ונוח להליכה. הוא עולה בשיפוע מתון עד אל שפת המצוק, המתנשא מעל סביבתו לגובה 400 מטר ומעניק מראות נוף למרחקים",
-                        new LatLng(32.824166, 35.4986072),
-                        new MarkerOptions()
-                                .position(new LatLng(32.824166, 35.4986072))
-                                .title("שמורת הר ארבל")
-                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.arbel))));
-        integerSiteHashMap.get(0).getTracks().add(new Track("רחוב תוצרת הארץ","",R.raw.totzeret_haaretz));
-        integerSiteHashMap.get(1).getTracks().add(new Track("מקיף מכללה","",R.raw.academic_tlv));
-        integerSiteHashMap.get(2).getTracks().add(new Track("סובב הר ארבל","",-1));
-
-    }
-
-    public void initialiseQuestions(String siteName){
-        question1 = new Question(1,siteName,
+    public void initialiseQuestions(){
+        question1 = new Question(1,
                 new LatLng(32.0732843,34.7963482),
                 "מהו הרחוב הוותיק ביותר בתל אביב?",
                 "רחוב הרצל","שדרות קק''ל","רחוב אלנבי", "שדרות רוטשילד",
                 1,false);
 
-        question2 = new Question(2,siteName,
+        question2 = new Question(2,
                 new LatLng(32.0731386,34.7949018),
                 "איזו כתובת מהבאות יוצאת דופן",
                 "כיכר קדומים 14","הרכב 8","יונה הנביא 6", "דוד חכמי 35",
                 2,false);
 
-        question3 = new Question(3,siteName,
+        question3 = new Question(3,
                 new LatLng(32.0721558,34.7957219),
                 "איזו שכונה הייתה מזוהה היסטורית עם מועדון הכדורגל שמשון תל אביב?",
                 "יד אליהו","קריית שלום","כפר התימנים", "כפר שלם",
                 3,false);
 
-        question4 = new Question(4,siteName,
+        question4 = new Question(4,
                 new LatLng(32.0723749,34.7973027),
                 "איזו מחנויות הספרים הבאות לא נמצאות באלנבי?",
                 "קדמת עדן","הלפר ספרים","לוטוס", "הנסיך הקטן",
                 4,false);
-        question5 = new Question(5,siteName,
+        question5 = new Question(5,
                 new LatLng(32.04764, 34.76005),
                 "באיזו שנה הוקם מסגד נוזהה בשדרות ירושלים?",
                 "1933","1901","1940", "1970",
                 1,false);
-        question6 = new Question(6,siteName,
+        question6 = new Question(6,
                 new LatLng(32.04733, 34.75951),
                 "מה היה אחד השימושים העיקריים בנמל יפו בשנות החמישים?",
                 "נמל דיג","נמל לחיל הים","ייצוא פרי הדר", "ייבוא בגדים",
                 3,false);
-        question7 = new Question(7,siteName,
+        question7 = new Question(7,
                 new LatLng(32.04688, 34.75945),
                 "מי היה האדריכל האחראי על הקמת בית הדואר ביפו?",
                 "נעמי יודקובסקי","יצחק רפופורט","אליעזר ילין", "ויטוריו קורינלדי",
                 2,false);
-        question8 = new Question(8,siteName,
+        question8 = new Question(8,
                 new LatLng(32.04661, 34.76),
                 "באיזו שנה הוקמה המכללה האקדמית תל אביב יפו",
                 "2004","1999","1994", "2000",
@@ -440,7 +392,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
-                    new MapsActivity.DBUserUpdateTask().execute(user,null,null);
                     return;
                 }
                 return;
@@ -454,7 +405,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
-                    new MapsActivity.DBUserUpdateTask().execute(user,null,null);
                     return;
                 }
                 return;
@@ -468,7 +418,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
-                    new MapsActivity.DBUserUpdateTask().execute(user,null,null);
                     return;
                 }
                 return;
@@ -482,7 +431,6 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     //questionsAnsweredTV.setText(questionsAnswered+String.valueOf(questionsAnsweredNum));
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
-                    new MapsActivity.DBUserUpdateTask().execute(user,null,null);
                     return;
                 }
                 return;
@@ -505,52 +453,13 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         return cursor.getString(idx);
     }
 
-    public class DBUserUpdateTask extends AsyncTask<User, Void, Void> {
-
-        @Override
-        protected Void doInBackground(User... user) {
-
-            try {
-                Utils.UpdateUserInfo(user[0], mDb);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-    }
-
-    public class DBLoadUserTask extends AsyncTask<User, Void, Void> {
-
-        @Override
-        protected Void doInBackground(User... userArray) {
-
-            try {
-                 user = Utils.LoadUserFromDB(userArray[0], mDb);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-        }
-    }
-
     public class DBinsertImageDataToDbTask extends AsyncTask<Image, Void, Void> {
 
         @Override
         protected Void doInBackground(Image... imagesArray) {
-
+            //TODO: HANDLE IMAGES LOGIC WITHOUT SQLITE
             try {
-                Utils.insertImageDataToDb(imagesArray[0], mDb);
+                //Utils.insertImageDataToDb(imagesArray[0], mDb);
             } catch (Exception e) {
                 e.printStackTrace();
             }
@@ -560,6 +469,38 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         @Override
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
+
+        }
+    }
+
+    public class GetKmlTask extends AsyncTask<String, Void, Void> {
+        KmlLayer layer = null;
+        @Override
+        protected Void doInBackground(String... kmlSource) {
+                URL url;
+
+                try {
+                    url = new URL(kmlSource[0]);
+                    layer = new KmlLayer(mMap,url.openConnection().getInputStream(),getApplicationContext());
+
+                } catch(IOException e) {
+                    e.printStackTrace();
+                } catch (XmlPullParserException e) {
+                    e.printStackTrace();
+                }
+            return null;
+            }
+
+        @Override
+        protected void onPostExecute(Void aVoid) {
+            super.onPostExecute(aVoid);
+            try {
+                addSiteLayer(layer);
+            } catch (IOException e) {
+                e.printStackTrace();
+            } catch (XmlPullParserException e) {
+                e.printStackTrace();
+            }
 
         }
     }

@@ -2,12 +2,10 @@ package greenstory.rtg.com;
 
 import android.Manifest;
 import android.annotation.SuppressLint;
-import android.app.Dialog;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.content.res.Resources;
-import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -17,13 +15,11 @@ import android.os.Bundle;
 import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v4.app.ActionBarDrawerToggle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatActivity;
-import android.support.v7.widget.ShareActionProvider;
 import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
@@ -33,7 +29,6 @@ import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
-import android.widget.CheckBox;
 import android.widget.EditText;
 import android.widget.ImageButton;
 import android.widget.ListView;
@@ -54,24 +49,15 @@ import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
-import com.google.maps.android.data.kml.KmlLayer;
 
-import java.io.File;
 import java.io.IOException;
-import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.List;
 
 import greenstory.rtg.com.classes.Site;
 import greenstory.rtg.com.classes.Track;
 import greenstory.rtg.com.classes.User;
-import greenstory.rtg.com.data.GreenStoryDbHelper;
-import greenstory.rtg.com.data.UsersContract;
-import greenstory.rtg.com.data.Utils;
 
 public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCallback {
 
@@ -94,32 +80,28 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
     private ActionBarDrawerToggle mDrawerToggle;
     private TextView nameTitleTextView;
     private ImageButton drawerImageButton;
-    private TextView siteName;
+    private View loginDialogView;
 
     private LatLng centerLatLng = new LatLng(32.698123394504464,35.14352526515722);
     private LatLngBounds mapBounds = new LatLngBounds(new LatLng(32.0736685,34.7799253),
                                                       new LatLng(32.9002805,35.5586083));
     private Context context = this;
-    private SQLiteDatabase mDb;
 
     private GoogleMap mMap;
     private HashMap<Integer,Site> integerSiteHashMap = new HashMap<>();
-    ArrayList<Track> tracks = new ArrayList<Track>();
     HashMap<String,HashMap<Integer,String>> dataLists = new HashMap<>();
-    private Track track = null;
-
 
     FirebaseDatabase greenStoryFirebaseDB = FirebaseDatabase.getInstance();
-    DatabaseReference sitesReference = greenStoryFirebaseDB.getReference("sites");
+    DatabaseReference greenStorySitesReference = greenStoryFirebaseDB.getReference("sites");
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home_map);
+        loginDialogView = getLayoutInflater().inflate(R.layout.activity_home_dialog_login, null);
         checkPermissions();
         initDataLists(dataLists);
-        track = new Track("רחוב תוצרת הארץ","",R.raw.totzeret_haaretz);
-        //Custom action bar settings
+
         //TODO: personalize by region/language/rtl or ltr
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
@@ -130,7 +112,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         nameTitleTextView = findViewById(R.id.tv_action_title_bar);
 
         //Drawer initialization and settings
-        drawerImageButton = (ImageButton)findViewById(R.id.ib_open_drawer);
+        drawerImageButton = findViewById(R.id.ib_open_drawer);
         drawerImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -142,7 +124,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 }
             }
         });
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        mDrawerLayout = findViewById(R.id.drawer_layout);
         mDrawerLayout.setDrawerShadow(R.drawable.drawer_shadow, GravityCompat.START);
         mDrawerToggle = new android.support.v4.app.ActionBarDrawerToggle (
                 this,                  /* host Activity */
@@ -248,6 +230,105 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         }
     }
 
+    public void initialiseSites(final HashMap<Integer,Bitmap> markerIconHashMap){
+        greenStorySitesReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                int i=0;
+                for (DataSnapshot siteKey : dataSnapshot.getChildren()) {
+
+                    double lat = (Double) siteKey.child("coordinates").child("latitude").getValue();
+                    double lon = (Double) siteKey.child("coordinates").child("longitude").getValue();
+                    Site site = new Site(
+                            siteKey.child("siteName").getValue().toString(),
+                            siteKey.child("siteDescription").getValue().toString(),
+                            new LatLng(lat,lon),
+                            new MarkerOptions().position(new LatLng(lat,lon))
+                                    .title(siteKey.child("siteName").getValue().toString())
+                                    .icon(BitmapDescriptorFactory.fromBitmap(markerIconHashMap.get((Integer.parseInt(siteKey.getKey()))))));
+                    for (DataSnapshot trackKey : siteKey.child("tracks").getChildren()) {
+
+                        site.addTrack(new Track(
+                                (String) trackKey.child("name").getValue(),
+                                "",
+                                (String) trackKey.child("kmlSource").getValue()));
+                    }
+
+                    integerSiteHashMap.put(i,site);
+                    i++;
+                }
+                addMarkers(mMap,integerSiteHashMap);
+            }
+
+            @Override
+            public void onCancelled(DatabaseError error) {
+            }
+        });
+    }
+
+    private void initialiseUser() {
+
+        DatabaseReference greenStoryUsersReference = greenStoryFirebaseDB.getReference("users");
+        greenStoryUsersReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                if (!dataSnapshot.hasChildren()) {
+                    showLoginDialog();
+                }
+                else {
+                    for (DataSnapshot user : dataSnapshot.getChildren()) {
+                        String userName = String.valueOf(user.child("userName").getValue());
+                        Toast.makeText(context, "ברוך הבא " + userName, Toast.LENGTH_LONG).show();
+                    }
+                }
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+
+    }
+
+    private void initDataLists(final HashMap<String, HashMap<Integer, String>> dataLists) {
+        greenStoryFirebaseDB.getReference("lists").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot list  :  dataSnapshot.getChildren()){
+                    dataLists.put(String.valueOf(list.getKey()),new HashMap<Integer, String>());
+                    for (DataSnapshot listData : list.getChildren()){
+                        Log.d("","");
+                        dataLists.get(list.getKey()).put(Integer.parseInt(listData.getKey()),String.valueOf(listData.getValue()));
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        greenStoryFirebaseDB.getReference("lists").addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot list  :  dataSnapshot.getChildren()){
+                    HashMap<Integer,String> newHashMap = new HashMap<>();
+                    for (DataSnapshot listData : list.getChildren()){
+                        //dataLists.put(String.valueOf(list.getKey(), newHashMap.put(Integer.parseInt(listData.getKey()), String.valueOf(listData.getValue()));
+
+                    }
+                }
+            }
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+    }
+
     @Override
     public void onBackPressed() {
         LatLng currentLatLng = mMap.getCameraPosition().target;
@@ -256,6 +337,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
             super.onBackPressed();
         }
 
+
     }
 
     @Override
@@ -263,7 +345,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         mMap = googleMap;
         setupMap(mMap);
         final HashMap<Integer, String> markerIconUrlHashMap = new HashMap<>();
-        sitesReference.addValueEventListener(new ValueEventListener() {
+        greenStorySitesReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
                 for (DataSnapshot siteKey : dataSnapshot.getChildren()) {
@@ -278,44 +360,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 // Failed to read value
             }
         });
-
-    }
-
-    public void initialiseSites(final HashMap<Integer,Bitmap> markerIconHashMap){
-        sitesReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                // This method is called once with the initial value and again
-                // whenever data at this location is updated.
-                //String value = dataSnapshot.child("names").child("1").getValue(String.class);
-                int i=0;
-                for (DataSnapshot siteKey : dataSnapshot.getChildren()) {
-
-                    double lat = (Double) siteKey.child("coordinates").child("latitude").getValue();
-                    double lon = Double.parseDouble(siteKey.child("coordinates").child("longitude").getValue().toString());
-                    String absPath = Uri.parse("android.resource://com.rtg.greenstory/drawable/mta_72").getPath();
-                    Site site = new Site((Integer.parseInt(siteKey.getKey())),
-                            siteKey.child("siteName").getValue().toString(),
-                            siteKey.child("siteDescription").getValue().toString(),
-                            new LatLng(lat,lon),
-                            new MarkerOptions().position(new LatLng(lat,lon))
-                                               .title(siteKey.child("siteName").getValue().toString())
-                                               .icon(BitmapDescriptorFactory.fromBitmap(markerIconHashMap.get((Integer.parseInt(siteKey.getKey()))))));
-                    integerSiteHashMap.put(i,site);
-                    i++;
-                }
-                addMarkers(mMap,integerSiteHashMap);
-            }
-
-            @Override
-            public void onCancelled(DatabaseError error) {
-                // Failed to read value
-            }
-        });
-
-        //integerSiteHashMap.get(0).getTracks().add(track);
-        //integerSiteHashMap.get(1).getTracks().add(new Track("מקיף מכללה","",R.raw.academic_tlv));
-        //integerSiteHashMap.get(2).getTracks().add(new Track("סובב הר ארבל","",-1));*/
 
     }
 
@@ -362,114 +406,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         map.getUiSettings().setZoomControlsEnabled(true);
     }
 
-    private void initialiseUser() {
-        final boolean[] isUserExits = {false};
-        final DatabaseReference usersReference = greenStoryFirebaseDB.getReference("users");
-        usersReference.addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                isUserExits[0] = dataSnapshot.hasChildren();
-
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-
-        //GreenStoryDbHelper dbHelper = new GreenStoryDbHelper(this);
-        //mDb = dbHelper.getWritableDatabase();
-        final User user = new User();
-        //new DBLoadUserTask().execute(user,null,null);
-        if (!isUserExits[0]) {
-            AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
-            View mView = getLayoutInflater().inflate(R.layout.activity_home_dialog_login, null);
-            Button mLogin = mView.findViewById(R.id.btnLogin);
-            mUserName = mView.findViewById(R.id.etUserName);
-            mFamilyName = mView.findViewById(R.id.etFamilyName);
-            mBuilder.setView(mView);
-            final AlertDialog dialog = mBuilder.create();
-            dialog.show();
-            dialog.setCancelable(false);
-            dialog.setCanceledOnTouchOutside(false);
-            mLogin.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View view) {
-                    if (!mUserName.getText().toString().isEmpty() && !mFamilyName.getText().toString().isEmpty()) {
-                        Toast.makeText(context, "ברוך הבא " + mUserName.getText(), Toast.LENGTH_SHORT).show();
-                        user.setUserName(String.valueOf(mUserName.getText()));
-                        user.setFamilyName(String.valueOf(mFamilyName.getText()));
-                        user.setPartnerName("none");
-                        user.setUserAge(0);
-                        user.setPartnerAge(0);
-                        user.setIsFamily(false);
-                        user.setPoints(0);
-                        usersReference.addValueEventListener(new ValueEventListener() {
-                            @Override
-                            public void onDataChange(DataSnapshot dataSnapshot) {
-
-                            }
-
-                            @Override
-                            public void onCancelled(DatabaseError databaseError) {
-
-                            }
-                        });
-                        //new DBUserRegisterTask().execute(user, null, null);
-                        dialog.dismiss();
-                        if (!user.equals(null)){
-                            //nameTitleTextView.setText("ברוך הבא "+user.getUserName());
-                        }
-
-                    }
-                    else {
-                        Toast.makeText(context, "השלם שדות חסרים", Toast.LENGTH_SHORT).show();
-                    }
-                }
-            });
-        }
-    }
-
-    private void initDataLists(final HashMap<String, HashMap<Integer, String>> dataLists) {
-        greenStoryFirebaseDB.getReference("lists").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot list  :  dataSnapshot.getChildren()){
-                    dataLists.put(String.valueOf(list.getKey()),new HashMap<Integer, String>());
-                    for (DataSnapshot listData : list.getChildren()){
-                        Log.d("","");
-                        dataLists.get(list.getKey()).put(Integer.parseInt(listData.getKey()),String.valueOf(listData.getValue()));
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-        greenStoryFirebaseDB.getReference("lists").addValueEventListener(new ValueEventListener() {
-            @Override
-            public void onDataChange(DataSnapshot dataSnapshot) {
-                for (DataSnapshot list  :  dataSnapshot.getChildren()){
-                    HashMap<Integer,String> newHashMap = new HashMap<>();
-                    for (DataSnapshot listData : list.getChildren()){
-                        //dataLists.put(String.valueOf(list.getKey(), newHashMap.put(Integer.parseInt(listData.getKey()), String.valueOf(listData.getValue()));
-
-                    }
-                }
-            }
-
-            @Override
-            public void onCancelled(DatabaseError databaseError) {
-
-            }
-        });
-    }
-
-
-
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
@@ -490,6 +426,67 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showLoginDialog(){
+        AlertDialog.Builder mBuilder = new AlertDialog.Builder(this);
+        final Button registerLoginButton = loginDialogView.findViewById(R.id.btnRegisterLogin);
+        final Button loginAsGuestButton = loginDialogView.findViewById(R.id.btnLoginAsGuest);
+        final Button registerUserButton = loginDialogView.findViewById(R.id.btnRegisterUser);
+        final Button registerUserBackButton = loginDialogView.findViewById(R.id.btnRegisterUserBack);
+
+        mUserName = loginDialogView.findViewById(R.id.etUserName);
+        mFamilyName = loginDialogView.findViewById(R.id.etFamilyName);
+        mBuilder.setView(loginDialogView);
+        final AlertDialog dialog = mBuilder.create();
+        dialog.show();
+        dialog.setCancelable(false);
+        dialog.setCanceledOnTouchOutside(false);
+        registerLoginButton.setOnClickListener(new View.OnClickListener() {
+
+            @Override
+            public void onClick(View view) {
+                mUserName.setVisibility(View.VISIBLE);
+                mFamilyName.setVisibility(View.VISIBLE);
+                registerUserButton.setVisibility(View.VISIBLE);
+                loginAsGuestButton.setVisibility(View.GONE);
+                registerLoginButton.setVisibility(View.GONE);
+                registerUserBackButton.setVisibility(View.VISIBLE);
+                registerUserButton.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        if (!mUserName.getText().toString().isEmpty() && !mFamilyName.getText().toString().isEmpty()) {
+                            DatabaseReference greenStoryUsersReference = greenStoryFirebaseDB.getReference("users");
+                            User user = new User();
+                            Toast.makeText(context, "ברוך הבא " + mUserName.getText(), Toast.LENGTH_SHORT).show();
+                            user.setUserName(String.valueOf(mUserName.getText()));
+                            user.setFamilyName(String.valueOf(mFamilyName.getText()));
+                            user.setPartnerName("none");
+                            user.setUserAge(0);
+                            user.setPartnerAge(0);
+                            user.setIsFamily(false);
+                            user.setPoints(0);
+                            greenStoryUsersReference.push().setValue(user);
+                            dialog.dismiss();
+                            if (!user.equals(null)){
+                                //nameTitleTextView.setText("ברוך הבא "+user.getUserName());
+                            }
+                        }
+                        else {
+                            Toast.makeText(context, "השלם שדות חסרים", Toast.LENGTH_SHORT).show();
+                        }
+                    }
+                });
+
+            }
+        });
+
+        loginAsGuestButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                dialog.dismiss();
+            }
+        });
     }
 
     private void showSiteDialog(final Marker siteMarker) {
@@ -522,8 +519,8 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                 Intent intent = new Intent(context, MapsActivity.class);
                 for (int i=0;i<integerSiteHashMap.size();i++){
                     if(siteMarker.getTitle().contentEquals(integerSiteHashMap.get(i).getSiteName())){
-                        intent.putExtra("kmlResource", i);
-                        intent.putExtra("siteName",integerSiteHashMap.get(i).getSiteName());
+
+                        intent.putExtra("tracks", integerSiteHashMap.get(i).getTracks());
                         break;
                     }
                 }
@@ -589,7 +586,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         aboutDialog.setCanceledOnTouchOutside(true);
         }
 
-
     class FetchIconsTask extends AsyncTask< HashMap<Integer,String>, Void, Void> {
         HashMap<Integer,Bitmap> integerBitmapHashMap = new HashMap<>();
 
@@ -615,59 +611,6 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         protected void onPostExecute(Void aVoid) {
             super.onPostExecute(aVoid);
             initialiseSites(integerBitmapHashMap);
-        }
-    }
-
-    class DBUserRegisterTask extends AsyncTask<User, Void, Void> {
-
-        @Override
-        protected Void doInBackground(User... user) {
-
-            try {
-                Utils.UpdateInitialScreenUser(user[0], mDb);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-
-        }
-
-    }
-
-    class DBUserUpdateTask extends AsyncTask<User, Void, Void> {
-
-        @Override
-        protected Void doInBackground(User... user) {
-
-            try {
-                Utils.UpdateUserInfo(user[0], mDb);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(Void aVoid) {
-            super.onPostExecute(aVoid);
-        }
-    }
-
-    class DBLoadUserTask extends AsyncTask<User, Void, Void> {
-
-        @Override
-        protected Void doInBackground(User... user) {
-
-            try {
-                Utils.LoadUserFromDB(user[0], mDb);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-            return null;
         }
     }
 

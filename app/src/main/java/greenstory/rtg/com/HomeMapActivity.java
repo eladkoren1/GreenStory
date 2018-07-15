@@ -54,6 +54,7 @@ import java.io.IOException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Map;
 
 import greenstory.rtg.com.classes.Site;
 import greenstory.rtg.com.classes.Track;
@@ -234,7 +235,7 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
         greenStorySitesReference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(DataSnapshot dataSnapshot) {
-                int i=0;
+                int i=1;
                 for (DataSnapshot siteKey : dataSnapshot.getChildren()) {
 
                     double lat = (Double) siteKey.child("coordinates").child("latitude").getValue();
@@ -249,12 +250,13 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
                     for (DataSnapshot trackKey : siteKey.child("tracks").getChildren()) {
 
                         site.addTrack(new Track(
-                                (String) trackKey.child("name").getValue(),
+                                (String) trackKey.child("trackName").getValue(),
                                 "",
                                 (String) trackKey.child("kmlSource").getValue()));
+
                     }
 
-                    integerSiteHashMap.put(i,site);
+                    integerSiteHashMap.put(Integer.parseInt(siteKey.getKey()),site);
                     i++;
                 }
                 addMarkers(mMap,integerSiteHashMap);
@@ -365,8 +367,8 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
 
     public void addMarkers(GoogleMap map,HashMap<Integer,Site> integerSiteHashMap) {
 
-        for (int i=0;i<integerSiteHashMap.size();i++){
-            map.addMarker(integerSiteHashMap.get(i).getSiteHomeMarker());
+        for (Map.Entry<Integer,Site> siteKey:integerSiteHashMap.entrySet()){
+            map.addMarker(integerSiteHashMap.get(siteKey.getKey()).getSiteHomeMarker());
         }
     }
 
@@ -504,9 +506,9 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
             }
         });
         siteDialog.show();
-        for (int i=0;i<integerSiteHashMap.size();i++) {
-            if (siteMarker.getTitle().contentEquals(integerSiteHashMap.get(i).getSiteName())) {
-                siteDescription.setText(integerSiteHashMap.get(i).getSiteDescription());
+        for (Map.Entry<Integer,Site>siteKey:integerSiteHashMap.entrySet()) {
+            if (siteMarker.getTitle().contentEquals(integerSiteHashMap.get(siteKey.getKey()).getSiteName())) {
+                siteDescription.setText(integerSiteHashMap.get(siteKey.getKey()).getSiteDescription());
                 break;
             }
         }
@@ -517,10 +519,12 @@ public class HomeMapActivity extends AppCompatActivity implements OnMapReadyCall
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(context, MapsActivity.class);
-                for (int i=0;i<integerSiteHashMap.size();i++){
-                    if(siteMarker.getTitle().contentEquals(integerSiteHashMap.get(i).getSiteName())){
+                //for (int i=0;i<integerSiteHashMap.size();i++){
+                for (Map.Entry<Integer,Site> siteName : integerSiteHashMap.entrySet()){
+                    if(siteMarker.getTitle().contentEquals(integerSiteHashMap.get(siteName.getKey()).getSiteName())){
 
-                        intent.putExtra("tracks", integerSiteHashMap.get(i).getTracks());
+                        intent.putExtra("tracks", integerSiteHashMap.get(siteName.getKey()).getTracks());
+                        intent.putExtra("siteKey",(String.valueOf(siteName.getKey())));
                         break;
                     }
                 }

@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.Bitmap;
+import android.graphics.ColorSpace;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
@@ -32,12 +33,18 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
+import com.google.firebase.database.DatabaseReference;
+import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.ValueEventListener;
 import com.google.maps.android.data.kml.KmlLayer;
 
 import org.xmlpull.v1.XmlPullParserException;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.StringReader;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -62,7 +69,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     ImageButton takePictureBtn;
     Image image;
     Bitmap picture;
-    String siteName = null;
+    String siteKey = null;
     View view;
     ArrayList<Track> tracks = new ArrayList<>();
     Question question1;
@@ -74,12 +81,14 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     Question question7;
     Question question8;
 
+    FirebaseDatabase greenStoryFirebaseDB = FirebaseDatabase.getInstance();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_maps);
         tracks = (ArrayList<Track>) getIntent().getSerializableExtra("tracks");
-        siteName = "";
+        siteKey = getIntent().getStringExtra("siteKey");
         initialiseQuestions();
 
         locationManager = (LocationManager) getSystemService(LOCATION_SERVICE);
@@ -121,9 +130,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             } catch (IOException e) {
                                 e.printStackTrace();
                             }
-                            image = new Image(siteName,data.getData().toString());
-                            new DBinsertImageDataToDbTask().execute(image,null,null);
-                            showImageDialog();
+                            image = new Image("",data.getData().toString());
+                            //new DBinsertImageDataToDbTask().execute(image,null,null);
+                            //showImageDialog();
 
                         }
                     });
@@ -140,9 +149,9 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         //initialiseSiteTracks();
 
         for (Track track : tracks){
-            new GetKmlTask().execute(track.getKmlUrl(),null,null);
+            //new GetKmlTask().execute(track.getKmlUrl(),null,null);
         }
-        initiateLocation();
+        //initiateLocation();
         //LoadTracksMarkers(siteLayer);
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -213,35 +222,35 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                             //Log.d("location delta",bigDelta.toString());
                             if ((delta1Lat<0.0001)&&(delta1Lon<0.0001)){
                                 Log.d("location delta", "enough");
-                                showQuestionDialog(question1);
+                                //showQuestionDialog(question1);
                             }
                             if ((delta2Lat<0.0001)&&(delta2Lon<0.0001)){
                                 Log.d("location delta", "enough");
-                                showQuestionDialog(question2);
+                                //showQuestionDialog(question2);
                             }
                             if ((delta3Lat<0.0001)&&(delta3Lon<0.0001)){
                                 Log.d("location delta", "enough");
-                                showQuestionDialog(question3);
+                                //showQuestionDialog(question3);
                             }
                             if ((delta4Lat<0.0001)&&(delta4Lon<0.0001)){
                                 Log.d("location delta", "enough");
-                                showQuestionDialog(question4);
+                                //showQuestionDialog(question4);
                             }
                             if ((delta5Lat<0.0001)&&(delta5Lon<0.0001)){
                                 Log.d("location delta", "enough");
-                                showQuestionDialog(question5);
+                                //showQuestionDialog(question5);
                             }
                             if ((delta6Lat<0.0001)&&(delta6Lon<0.0001)){
                                 Log.d("location delta", "enough");
-                                showQuestionDialog(question6);
+                                //showQuestionDialog(question6);
                             }
                             if ((delta7Lat<0.0001)&&(delta7Lon<0.0001)){
                                 Log.d("location delta", "enough");
-                                showQuestionDialog(question7);
+                                //showQuestionDialog(question7);
                             }
                             if ((delta8Lat<0.0001)&&(delta8Lon<0.0001)){
                                 Log.d("location delta", "enough");
-                                showQuestionDialog(question8);
+                                //showQuestionDialog(question8);
                             }
                         }
 
@@ -269,49 +278,83 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
     }
 
     public void initialiseQuestions(){
-        question1 = new Question(1,
+
+        DatabaseReference greenStoryTracksReference = greenStoryFirebaseDB.getReference("sites").child(siteKey).child("tracks");
+        greenStoryTracksReference.addValueEventListener(new ValueEventListener() {
+            @Override
+            public void onDataChange(DataSnapshot dataSnapshot) {
+                for (DataSnapshot trackKey : dataSnapshot.getChildren()) {
+                     for (DataSnapshot questionKey : trackKey.child("questions").getChildren()){
+                             ArrayList<String> answersArrayList = new ArrayList<>();
+                             for (DataSnapshot answer: questionKey.child("answers").getChildren()){
+                                 answersArrayList.add(String.valueOf(answer.getValue()));
+                             }
+                            double lat = Double.parseDouble(questionKey.child("coordinates").child("latitude").getValue().toString());
+                            double lon = Double.parseDouble( questionKey.child("coordinates").child("longitude").getValue().toString());
+                            tracks.get(Integer.parseInt(trackKey.getKey())-1)
+                                    .addQuestion(new Question(
+                                            String.valueOf(questionKey.child("question").getValue()),
+                                            answersArrayList,
+                                            Integer.parseInt(String.valueOf(questionKey.child("correctAnswer").getValue())),
+                                            new LatLng(lat,lon)));
+                            Log.d("",tracks.toString());
+
+                    }
+                }
+            }
+
+
+            @Override
+            public void onCancelled(DatabaseError databaseError) {
+
+            }
+        });
+        return;
+
+        /*ArrayList<String> answers = new ArrayList<>();
+        question1 = new Question(
                 new LatLng(32.0732843,34.7963482),
                 "מהו הרחוב הוותיק ביותר בתל אביב?",
-                "רחוב הרצל","שדרות קק''ל","רחוב אלנבי", "שדרות רוטשילד",
+                answers.add(1,); "רחוב הרצל","שדרות קק''ל","רחוב אלנבי", "שדרות רוטשילד",
                 1,false);
 
-        question2 = new Question(2,
+        question2 = new Question(
                 new LatLng(32.0731386,34.7949018),
                 "איזו כתובת מהבאות יוצאת דופן",
                 "כיכר קדומים 14","הרכב 8","יונה הנביא 6", "דוד חכמי 35",
                 2,false);
 
-        question3 = new Question(3,
+        question3 = new Question(
                 new LatLng(32.0721558,34.7957219),
                 "איזו שכונה הייתה מזוהה היסטורית עם מועדון הכדורגל שמשון תל אביב?",
                 "יד אליהו","קריית שלום","כפר התימנים", "כפר שלם",
                 3,false);
 
-        question4 = new Question(4,
+        question4 = new Question(
                 new LatLng(32.0723749,34.7973027),
                 "איזו מחנויות הספרים הבאות לא נמצאות באלנבי?",
                 "קדמת עדן","הלפר ספרים","לוטוס", "הנסיך הקטן",
                 4,false);
-        question5 = new Question(5,
+        question5 = new Question(
                 new LatLng(32.04764, 34.76005),
                 "באיזו שנה הוקם מסגד נוזהה בשדרות ירושלים?",
                 "1933","1901","1940", "1970",
                 1,false);
-        question6 = new Question(6,
+        question6 = new Question(
                 new LatLng(32.04733, 34.75951),
                 "מה היה אחד השימושים העיקריים בנמל יפו בשנות החמישים?",
                 "נמל דיג","נמל לחיל הים","ייצוא פרי הדר", "ייבוא בגדים",
                 3,false);
-        question7 = new Question(7,
+        question7 = new Question(
                 new LatLng(32.04688, 34.75945),
                 "מי היה האדריכל האחראי על הקמת בית הדואר ביפו?",
                 "נעמי יודקובסקי","יצחק רפופורט","אליעזר ילין", "ויטוריו קורינלדי",
                 2,false);
-        question8 = new Question(8,
+        question8 = new Question(
                 new LatLng(32.04661, 34.76),
                 "באיזו שנה הוקמה המכללה האקדמית תל אביב יפו",
                 "2004","1999","1994", "2000",
-                3,false);
+                3,false);*/
     }
 
     private void showOutDialog(){
@@ -367,10 +410,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
         final RadioButton rbAnswerC = (RadioButton) mView.findViewById(R.id.rb_answer_c);
         final RadioButton rbAnswerD = (RadioButton) mView.findViewById(R.id.rb_answer_d);
         tvQuestion.setText(question.getQuestion());
-        rbAnswerA.setText(question.getAnswerA());
-        rbAnswerB.setText(question.getAnswerB());
-        rbAnswerC.setText(question.getAnswerC());
-        rbAnswerD.setText(question.getAnswerD());
+        //rbAnswerA.setText(question.getAnswerA());
+        //rbAnswerB.setText(question.getAnswerB());
+        //rbAnswerC.setText(question.getAnswerC());
+        //rbAnswerD.setText(question.getAnswerD());
         mBuilder.setView(mView);
         final AlertDialog dialog = mBuilder.create();
         if (!question.isAnswered()){
@@ -384,7 +427,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
             @Override
             public void onClick(View v) {
             if (rbAnswerA.isChecked()) {
-                if (question.getCorrectAnswer() == 1) {
+/*                if (question.getCorrectAnswer() == 1) {
                     Toast.makeText(context, "תשובה נכונה! +10 נקודות", Toast.LENGTH_SHORT).show();
                     question.setIsAnswered(true);
                     dialog.dismiss();
@@ -393,11 +436,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
                     return;
-                }
+                }*/
                 return;
             }
             if (rbAnswerB.isChecked()) {
-                if (question.getCorrectAnswer() == 2) {
+                /*if (question.getCorrectAnswer() == 2) {
                     Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_SHORT).show();
                     question.setIsAnswered(true);
                     dialog.dismiss();
@@ -407,10 +450,10 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     user.setPoints(newPoints);
                     return;
                 }
-                return;
+                return;*/
             }
             if (rbAnswerC.isChecked()) {
-                if (question.getCorrectAnswer() == 3) {
+                /*if (question.getCorrectAnswer() == 3) {
                     Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_SHORT).show();
                     question.setIsAnswered(true);
                     dialog.dismiss();
@@ -419,11 +462,11 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
                     return;
-                }
+                }*/
                 return;
             }
             if (rbAnswerD.isChecked()) {
-                if (question.getCorrectAnswer() == 4) {
+                /*if (question.getCorrectAnswer() == 4) {
                     Toast.makeText(context, "תשובה נכונה!", Toast.LENGTH_SHORT).show();
                     question.setIsAnswered(true);
                     dialog.dismiss();
@@ -432,7 +475,7 @@ public class MapsActivity extends FragmentActivity implements OnMapReadyCallback
                     int newPoints = user.getPoints()+10;
                     user.setPoints(newPoints);
                     return;
-                }
+                }*/
                 return;
             }
             }
